@@ -1,0 +1,428 @@
+<template>
+    
+    <div class="slds-box slds-theme--default" style="padding-bottom: 52px;">
+        <div class="slds-text-heading_medium" style="font-weight: bold;">Deal Units</div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th>
+                        Zone
+                    </th>
+                    <th>
+                        Tower<br>Name
+                    </th>
+                    <th>
+                        Level
+                    </th>
+                    <th>
+                        Apartment<br>Type
+                    </th>
+                    <th>
+                        Unit No
+                    </th>
+                    <th>
+                        View
+                    </th>
+                    <th>
+                        Unit<br>Area/Sqm
+                    </th>
+                    <th>
+                        Min.<br>Weighted
+                    </th>
+                    <th>
+                        Min.<br>Weighted Rate
+                    </th>
+                    <th>
+                        Client Min<br>Price SAR
+                    </th>
+                    <th>
+                        Ask.<br>Weighted
+                    </th>
+                    <th>
+                        Ask.<br>Weighted Rate
+                    </th>
+                    <th>
+                        Client Asking<br>Price SAR
+                    </th>
+                    <th>
+                        Total<br>Selling<br>Price SAR
+                    </th>
+                    <th>
+                        <lightning-button variant="brand" title="Update" onclick={updatePage} icon-name="utility:refresh" class="slds-m-left_x-small"></lightning-button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                    <template for:each={DealRecords} for:item="dealrecord" for:index="index">
+                        <tr class="slds-hint-parent" id={index} data-id={dealrecord.Id} key={dealrecord.Id} data-index={index}>
+                            <td data-label="Zone">
+                                {dealrecord.Zone__c}
+                                <!--<a onclick={navigateToRecordPage} data-id={dealrecord.Id}>-->
+                                    <!--{dealrecord.Building__r.Name}-->
+                                <!--</a>-->
+                            </td>
+                            <td data-label="Tower Name">
+                                {dealrecord.Tower_Name__c}
+                            </td>
+                            <td data-label="Level">
+                                {dealrecord.Level__c}
+                            </td>
+                            <td data-label="Apartment Type">
+                                {dealrecord.Apartment_Type__c}
+                            </td>
+                            <td data-label="Unit No">
+                                {dealrecord.Unit_No__c}
+                            </td>
+                            <td data-label="View">
+                                {dealrecord.View__c}
+                            </td>
+                            <td data-label="Unit_Area_Sqm">
+                                {dealrecord.Unit_Area_Sqm__c}
+                            </td>
+                            <td data-label="Min_Weighted">
+                                {dealrecord.Min_Weighted__c}
+                            </td>
+                            <td data-label="Min_Weighted_Rate">
+                                {dealrecord.Min_Weighted_Rate__c}
+                            </td>
+                            <td data-label="Client_Min_Price_SAR">
+                                {dealrecord.Client_Min_Price_SAR__c}
+                            </td>
+                            <td data-label="Ask_Weighted">
+                                {dealrecord.Ask_Weighted__c}
+                            </td>
+                            <td data-label="Ask_Weighted_Rate">
+                                {dealrecord.Ask_Weighted_Rate__c}
+                            </td>
+                            <td data-label="Client_Asking_Price_SAR">
+                                {dealrecord.Client_Asking_Price_SAR__c}
+                            </td>
+                            <td data-label="Total Selling Price SAR">
+                                {dealrecord.Total_Selling_Price_SAR__c}
+                            </td>
+                            <td>
+                                <lightning-button variant="brand" label="Edit" title="Edit" onclick={openModal} class="slds-m-left_x-small" data-id={dealrecord.Id}></lightning-button>
+                                <lightning-button variant="brand" label="Delete" title="Delete" onclick={deleteRecordModal} class="slds-m-left_x-small" data-id={dealrecord.Id}></lightning-button>
+                            </td>
+                        </tr>                   
+                    </template>
+            </tbody>
+        </table>
+        <div class="slds-grid">
+            
+            <div class="slds-col slds-size_8-of-8">
+                <div style="width:100%; height:25px;"></div>
+                <div style="width:100%; height:7px; border-top:5px solid black;"></div>
+                <div class="slds-text-heading_medium" style="font-weight: bold;">Units</div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-12">
+                        <lightning-combobox
+                                name="Zone"
+                                label="Zone"
+                                options={options1}
+                                value={value}
+                                placeholder="Select Value"
+                                onchange={handleChange1}>
+                        </lightning-combobox>
+                    </div>
+                    <!--<div class="slds-col slds-size_1-of-12">
+                        <lightning-combobox
+                                name="Lease Phases"
+                                label="Lease Phases"
+                                options={options2}
+                                value={value2}
+                                placeholder="Select Value"
+                                onchange={handleChange2}>
+                        </lightning-combobox>
+                    </div>-->
+                    <div class="slds-col slds-size_1-of-12">
+                        <lightning-combobox
+                                name="Tower Name"
+                                label="Tower Name"
+                                options={options3}
+                                value={value3}
+                                placeholder="Select Value"
+                                onchange={handleChange3}>
+                        </lightning-combobox>
+                    </div>
+                    <!--<div class="slds-col slds-size_1-of-12">
+                        <lightning-combobox
+                                name="Building Type"
+                                label="Building Type"
+                                options={options4}
+                                value={value4}
+                                placeholder="Select Value"
+                                onchange={handleChange4}>
+                        </lightning-combobox>
+                    </div>-->
+                    <div class="slds-col slds-size_1-of-12">
+                        <lightning-combobox
+                                name="Status"
+                                label="Status"
+                                options={options5}
+                                value={value5}
+                                placeholder="Select Value"
+                                onchange={handleChange5}>
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-12">
+                        <lightning-combobox
+                                name="Level/Floor"
+                                label="Level/Floor"
+                                options={options6}
+                                value={value6}
+                                placeholder="Select Value"
+                                onchange={handleChange6}>
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-12">
+                        <lightning-combobox
+                                name="Apartment Type"
+                                label="Apartment Type"
+                                options={options6_5}
+                                value={value6_5}
+                                placeholder="Select Value"
+                                onchange={handleChange6_5}>
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-12">
+                        <lightning-combobox
+                                name="Unit No"
+                                label="Unit No"
+                                options={options7}
+                                value={value7}
+                                placeholder="Select Value"
+                                onchange={handleChange7}>
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-12">
+                        <lightning-combobox
+                                name="View"
+                                label="View"
+                                options={options8}
+                                value={value8}
+                                placeholder="Select Value"
+                                onchange={handleChange8}>
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-12">
+                        <!--<div class="button-container">-->
+                        <!--</div>-->
+                    </div>
+                    <div class="slds-col slds-size_1-of-12">
+                        <!--<div class="button-container">-->
+                        <!--</div>-->
+                    </div>
+                    <div class="slds-col slds-size_1-of-12">
+                        <!--<div class="button-container">-->
+                        <!--</div>-->
+                    </div>
+                    <div class="slds-col slds-size_2-of-12">
+                        <label class="slds-form-element__label"></label>
+                        <div class="slds-grid slds-wrap slds-p-bottom_small">
+                            <lightning-button style="width:200px" variant="brand" label="Add Units" title="Add Units" onclick={getAllId} class="slds-m-right_x-small" data-id="reprocess"></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-size_8-of-8">
+                <!--<template if:true={showMessage}>
+                    <p class="community-message">{messageText}</p>
+                </template>-->
+                <!--<lightning-button variant="brand" label="Reset filters" title="Reset filters" onclick={resetData} class="slds-m-left_x-small" data-id="reprocess1"></lightning-button>-->
+            </div>
+            
+        </div> 
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th>
+                        <lightning-input class="slds-p-left_x-large" type="checkbox" onchange={handleChange} ></lightning-input>
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        Zone
+                    </th>
+                    <th>
+                        Tower<br>Name
+                    </th>
+                    <th>
+                        Level
+                    </th>
+                    <th>
+                        Apartment Type
+                    </th>
+                    <th>
+                        Unit No
+                    </th>
+                    <th>
+                        View
+                    </th>
+                    <th>
+                        Unit<br>Area/Sqm
+                    </th>
+                    <th>
+                        Min.<br>Weighted
+                    </th>
+                    <th>
+                        Min.<br>Weighted Rate
+                    </th>
+                    <th>
+                        Client Min<br>Price SAR
+                    </th>
+                    <th>
+                        Ask.<br>Weighted
+                    </th>
+                    <th>
+                        Ask.<br>Weighted Rate
+                    </th>
+                    <th>
+                        Client Asking<br>Price SAR
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                    <template for:each={records} for:item="record" for:index="index">
+                        <tr class="slds-hint-parent" id={index} data-id={record.Id} key={record.Id} data-index={index}>
+                            <td >
+                                <lightning-input class="slds-p-left_x-large" type="checkbox" checked={record.selected} onchange={oneChange} title="checkboxTitle" data-id={record.Id} ></lightning-input>
+                            </td>
+                            <!--<td data-label="Building Name">
+                                <a onclick={navigateToRecordPage} data-id={record.Id}>
+                                    {record.Name}
+                                </a>
+                            </td>-->
+                            <td data-label="Status">
+                                {record.Status__c}
+                            </td>
+                            <td data-label="Zone">
+                                {record.Zone__c}
+                            </td>
+                            <td data-label="Tower Name">
+                                {record.Tower_Name__c}
+                            </td>
+                            <td data-label="Level">
+                                {record.Level__c}
+                            </td>
+                            <td data-label="Level">
+                                {record.Unit_Area_Sqm__c}
+                            </td>
+                            <td data-label="Unit No">
+                                {record.Unit_No__c}
+                            </td>
+                            <td data-label="View">
+                                {record.View__c}
+                            </td>
+                            <td data-label="Unit_Area_Sqm">
+                                {record.Unit_Area_Sqm__c}
+                            </td>
+                            <td data-label="Min_Weighted">
+                                {record.Min_Weighted__c}
+                            </td>
+                            <td data-label="Min_Weighted_Rate">
+                                {record.Min_Weighted_Rate__c}
+                            </td>
+                            <td data-label="Client_Min_Price_SAR">
+                                {record.Client_Min_Price_SAR__c}
+                            </td>
+                            <td data-label="Ask_Weighted">
+                                {record.Ask_Weighted__c}
+                            </td>
+                            <td data-label="Ask_Weighted_Rate">
+                                {record.Ask_Weighted_Rate__c}
+                            </td>
+                            <td data-label="Client_Asking_Price_SAR">
+                                {record.Client_Asking_Price_SAR__c}
+                            </td>
+                        </tr>                   
+                    </template>
+            </tbody>
+        </table>
+        <template if:true={isModalOpen}>
+            <!-- Modal/Popup Box LWC starts here -->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box LWC header here -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close"
+                                alternative-text="close"
+                                variant="inverse"
+                                size="small" ></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Modal/PopUp Box header LWC</h2>
+                    </header>
+                    <!-- Modal/Popup Box LWC body starts here -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning-record-edit-form object-api-name="Deal_Building__c"
+                        record-id={recordEditId}
+                        onsuccess={handleSuccess}
+                        onerror={handleError}>
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size="12">
+                            <lightning-input-field field-name="Total_Selling_Price_SAR__c"></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12">
+                                <lightning-input-field field-name="Price_Notes__c"></lightning-input-field>
+                                </lightning-layout-item>
+                            <lightning-layout-item size="12">
+                            <div class="slds-m-top_large slds-grid slds-grid_align-center">
+                                <lightning-button variant="neutral"
+                                                label="Cancel"
+                                                title="Cancel"
+                                                type="text"
+                                                onclick={handleCancel}
+                                                class="slds-m-right_small"></lightning-button>
+                                <lightning-button variant="brand"
+                                                label="Submit"
+                                                title="Submit"
+                                                type="submit"
+                                                onclick={submitDetails}></lightning-button>
+                            </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+</lightning-record-edit-form>	
+                    </div>
+                    <!-- Modal/Popup Box LWC footer starts here -->
+                    <footer class="slds-modal__footer">
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <!--DELETE SECTION START-->
+        <template if:true={isModalOpen2}>
+            <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal2}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Deleted Deal Building</h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                    <p><b>Record will be deleted. Are you sure?
+                    </b></p>
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal2} title="Cancel">Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={submitDetails2} title="OK">OK</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <!--DELETE SECTION END-->
+    </div>
+</template>

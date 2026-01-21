@@ -6,6 +6,5 @@
     <inlineHelpText>90 Days From The Lease Commencement Date</inlineHelpText>
     <label>Rent Payment Commencement Date</label>
     <required>false</required>
-    <trackTrending>false</trackTrending>
     <type>Date</type>
 </CustomField>

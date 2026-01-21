@@ -5,6 +5,5 @@
     <summarizedField>Payment_Schedule__c.Amount__c</summarizedField>
     <summaryForeignKey>Payment_Schedule__c.Deal__c</summaryForeignKey>
     <summaryOperation>sum</summaryOperation>
-    <trackTrending>false</trackTrending>
     <type>Summary</type>
 </CustomField>

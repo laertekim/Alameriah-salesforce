@@ -28,6 +28,5 @@
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Deal Booked &amp; Paid Date Notify</label>
-    <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

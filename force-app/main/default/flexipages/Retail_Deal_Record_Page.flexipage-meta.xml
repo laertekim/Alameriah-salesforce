@@ -1139,7 +1139,7 @@
                     <criteria>
                         <leftValue>{!Record.Site__r.Center_Full_ID__c}</leftValue>
                         <operator>CONTAINS</operator>
-                        <rightValue>a02UF000008Q0vpYAC</rightValue>
+                        <rightValue>a029X00000PyFlqQAF</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>

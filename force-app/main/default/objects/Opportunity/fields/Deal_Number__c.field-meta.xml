@@ -4,6 +4,5 @@
     <displayFormat>D# {00000000}</displayFormat>
     <externalId>false</externalId>
     <label>Deal Number</label>
-    <trackTrending>false</trackTrending>
     <type>AutoNumber</type>
 </CustomField>
