@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Zone__c</fullName>
+    <label>Zone</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>A - The Canyon Avenue</fullName>
+                <color>#33FFFF</color>
+                <default>false</default>
+                <label>A - The Canyon Avenue</label>
+            </value>
+            <value>
+                <fullName>B - The Western District</fullName>
+                <color>#009900</color>
+                <default>false</default>
+                <label>B - The Western District</label>
+            </value>
+            <value>
+                <fullName>C - The Eastern District</fullName>
+                <color>#CC33CC</color>
+                <default>false</default>
+                <label>C - The Eastern District</label>
+            </value>
+            <value>
+                <fullName>A - The Avenue Boardwalk</fullName>
+                <color>#66FFFF</color>
+                <default>false</default>
+                <label>A - The Avenue Boardwalk</label>
+            </value>
+            <value>
+                <fullName>B - The Northern Boardwalk</fullName>
+                <color>#009900</color>
+                <default>false</default>
+                <label>B - The Northern Boardwalk</label>
+            </value>
+            <value>
+                <fullName>C - The Eastern Boardwalk</fullName>
+                <color>#CC33CC</color>
+                <default>false</default>
+                <label>C - The Eastern Boardwalk</label>
+            </value>
+            <value>
+                <fullName>A - THE BOXPARK WALK</fullName>
+                <default>false</default>
+                <label>A - THE BOXPARK WALK</label>
+            </value>
+            <value>
+                <fullName>B - THE WORKOUT WALK</fullName>
+                <default>false</default>
+                <label>B - THE WORKOUT WALK</label>
+            </value>
+            <value>
+                <fullName>C - GALLERIA</fullName>
+                <default>false</default>
+                <label>C - GALLERIA</label>
+            </value>
+            <value>
+                <fullName>D - THE SIDE WALK</fullName>
+                <default>false</default>
+                <label>D - THE SIDE WALK</label>
+            </value>
+            <value>
+                <fullName>CULTURAL OLD TOWN</fullName>
+                <default>false</default>
+                <label>CULTURAL OLD TOWN</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

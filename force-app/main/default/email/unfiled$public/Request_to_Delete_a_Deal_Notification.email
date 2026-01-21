@@ -1,0 +1,8 @@
+Hello,
+You have a request to delete this deal: {!Opportunity.Link}
+
+Deal Name: {!Opportunity.Name}
+
+Deal Owner: {!Opportunity.OwnerFullName}
+
+Last Modified By: {!Opportunity.LastModifiedBy}

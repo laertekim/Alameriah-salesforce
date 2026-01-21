@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Request_to_Delete_a_Deal_Notification</fullName>
+        <description>Request to Delete a Deal Notification</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>mark@cetdigit.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Request_to_Delete_a_Deal_Notification</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>Change_Approval_Status</fullName>
+        <field>Price_Approval_Status__c</field>
+        <literalValue>Submitted for Approval</literalValue>
+        <name>Change Approval Status</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Change_Status_Approved</fullName>
+        <field>Price_Approval_Status__c</field>
+        <literalValue>Approved</literalValue>
+        <name>Change Status Approved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Change_Status_Rejected</fullName>
+        <field>Price_Approval_Status__c</field>
+        <literalValue>Rejected</literalValue>
+        <name>Change Status Rejected</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+</Workflow>

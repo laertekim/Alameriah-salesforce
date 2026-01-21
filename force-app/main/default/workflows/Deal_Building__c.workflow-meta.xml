@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Email_alert</fullName>
+        <description>Email alert</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>mark@cetdigit.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/Approval_Process_Price_Changed</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>Change_Price_Back</fullName>
+        <field>Total_Selling_Price_SAR__c</field>
+        <formula>Total_Selling_Price_SAR_Before__c</formula>
+        <name>Change Price Back</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Change_Status</fullName>
+        <field>Price_Approval_Status__c</field>
+        <literalValue>Submitted for Approval</literalValue>
+        <name>Change Status</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Change_Status_Approved</fullName>
+        <field>Price_Approval_Status__c</field>
+        <literalValue>Approved</literalValue>
+        <name>Change Status Approved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Change_Status_Rejected</fullName>
+        <field>Price_Approval_Status__c</field>
+        <literalValue>Rejected</literalValue>
+        <name>Change Status Rejected</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+</Workflow>

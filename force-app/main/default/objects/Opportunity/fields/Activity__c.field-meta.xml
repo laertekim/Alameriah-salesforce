@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Activity__c</fullName>
+    <label>Activity</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Accessories</fullName>
+                <color>#78C953</color>
+                <default>false</default>
+                <label>Accessories</label>
+            </value>
+            <value>
+                <fullName>Chocolates</fullName>
+                <color>#78C953</color>
+                <default>false</default>
+                <label>Chocolates</label>
+            </value>
+            <value>
+                <fullName>Dates</fullName>
+                <color>#78C953</color>
+                <default>false</default>
+                <label>Dates</label>
+            </value>
+            <value>
+                <fullName>Gifts</fullName>
+                <color>#78C953</color>
+                <default>false</default>
+                <label>Gifts</label>
+            </value>
+            <value>
+                <fullName>Gold Jewellery</fullName>
+                <color>#78C953</color>
+                <default>false</default>
+                <label>Gold Jewellery</label>
+            </value>
+            <value>
+                <fullName>Textile</fullName>
+                <color>#78C953</color>
+                <default>false</default>
+                <label>Textile</label>
+            </value>
+            <value>
+                <fullName>Watches</fullName>
+                <color>#78C953</color>
+                <default>false</default>
+                <label>Watches</label>
+            </value>
+            <value>
+                <fullName>Fashion</fullName>
+                <color>#419249</color>
+                <default>false</default>
+                <label>Fashion</label>
+            </value>
+            <value>
+                <fullName>Sportswear</fullName>
+                <color>#419249</color>
+                <default>false</default>
+                <label>Sportswear</label>
+            </value>
+            <value>
+                <fullName>Coffee Shop</fullName>
+                <color>#CC66CC</color>
+                <default>false</default>
+                <label>Coffee Shop</label>
+            </value>
+            <value>
+                <fullName>Restaurant</fullName>
+                <color>#993399</color>
+                <default>false</default>
+                <label>Restaurant</label>
+            </value>
+            <value>
+                <fullName>Car Rentals</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>Car Rentals</label>
+            </value>
+            <value>
+                <fullName>Co Working Office</fullName>
+                <color>#FF9900</color>
+                <default>false</default>
+                <label>Co Working Office</label>
+            </value>
+            <value>
+                <fullName>Female GYM</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>Female GYM</label>
+            </value>
+            <value>
+                <fullName>Male GYM</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>Male GYM</label>
+            </value>
+            <value>
+                <fullName>Mens Salon</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>Mens Salon</label>
+            </value>
+            <value>
+                <fullName>Pharmacy</fullName>
+                <color>#FF0000</color>
+                <default>false</default>
+                <label>Pharmacy</label>
+            </value>
+            <value>
+                <fullName>Printing</fullName>
+                <color>#FF9900</color>
+                <default>false</default>
+                <label>Printing</label>
+            </value>
+            <value>
+                <fullName>Retail Bank</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>Retail Bank</label>
+            </value>
+            <value>
+                <fullName>Super Market</fullName>
+                <color>#FF0000</color>
+                <default>false</default>
+                <label>Super Market</label>
+            </value>
+            <value>
+                <fullName>Telecom</fullName>
+                <color>#FF99FF</color>
+                <default>false</default>
+                <label>Telecom</label>
+            </value>
+            <value>
+                <fullName>Womens Salon</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>Womens Salon</label>
+            </value>
+            <value>
+                <fullName>Nutrition Store</fullName>
+                <color>#FF9900</color>
+                <default>false</default>
+                <label>Nutrition Store</label>
+            </value>
+            <value>
+                <fullName>SPA / GYM</fullName>
+                <color>#FF9900</color>
+                <default>false</default>
+                <label>SPA / GYM</label>
+            </value>
+            <value>
+                <fullName>Travel Agency</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>Travel Agency</label>
+            </value>
+            <value>
+                <fullName>Mobiles / Laptops</fullName>
+                <color>#FF99FF</color>
+                <default>false</default>
+                <label>Mobiles / Laptops</label>
+            </value>
+            <value>
+                <fullName>Supermarket</fullName>
+                <color>#FF0000</color>
+                <default>false</default>
+                <label>Supermarket</label>
+            </value>
+            <value>
+                <fullName>MEN&apos;S GYM</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>MEN&apos;S GYM</label>
+            </value>
+            <value>
+                <fullName>MEN&apos;S SPA</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>MEN&apos;S SPA</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

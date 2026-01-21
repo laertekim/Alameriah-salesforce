@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Term_of_Lease</fullName>
+    <active>true</active>
+    <errorConditionFormula>OR(
+AND(ISBLANK(Term_of_Lease_Years__c),
+    NOT(ISBLANK(Term_of_Lease_Months__c)),
+    NOT(ISBLANK(Term_of_Lease_Days__c ))
+   ),
+AND(ISBLANK(Term_of_Lease_Months__c),
+    NOT(ISBLANK(Term_of_Lease_Years__c)),
+    NOT(ISBLANK(Term_of_Lease_Days__c ))
+   ),
+AND(ISBLANK(Term_of_Lease_Days__c ),
+    NOT(ISBLANK(Term_of_Lease_Months__c)),
+    NOT(ISBLANK(Term_of_Lease_Years__c))
+   ),
+AND(NOT(ISBLANK(Term_of_Lease_Days__c )),
+    NOT(ISBLANK(Term_of_Lease_Months__c)),
+    NOT(ISBLANK(Term_of_Lease_Years__c))
+   )
+)</errorConditionFormula>
+    <errorDisplayField>Term_of_Lease_Years__c</errorDisplayField>
+    <errorMessage>Only one &quot;Term of Lease&quot; can be filled in at a time!</errorMessage>
+</ValidationRule>

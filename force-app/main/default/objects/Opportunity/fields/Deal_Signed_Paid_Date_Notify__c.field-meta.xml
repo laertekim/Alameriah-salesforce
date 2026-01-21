@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Deal_Signed_Paid_Date_Notify__c</fullName>
+    <formula>IF(
+  OR(
+    AND(
+      CloseDate = TODAY() + 1, /* tomorrow */
+      NOT(OR(
+          WEEKDAY(TODAY()) = 6, /* friday */
+          WEEKDAY(TODAY()) = 7 /* saturday */
+      ))
+    ),
+    AND(
+      WEEKDAY(TODAY()) = 5, /* thursday */
+      OR(
+        CloseDate = TODAY() + 1, /* friday */
+        CloseDate = TODAY() + 2, /* saturday */
+								CloseDate = TODAY() + 3 /* sunday */
+      )
+    ),
+    AND(
+      WEEKDAY(TODAY()) = 7, /* sunday */
+      CloseDate = TODAY() + 1 /* monday */
+    )
+  ),
+  TRUE,
+  FALSE
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Deal Signed &amp; Paid Date Notify</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

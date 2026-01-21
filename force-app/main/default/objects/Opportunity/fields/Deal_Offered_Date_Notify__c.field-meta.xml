@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Deal_Offered_Date_Notify__c</fullName>
+    <formula>IF(
+  OR(
+    AND(
+      Deal_Offered_Date__c = TODAY() + 1, /* tomorrow */
+      NOT(OR(
+          WEEKDAY(TODAY()) = 6, /* friday */
+          WEEKDAY(TODAY()) = 7 /* saturday */
+      ))
+    ),
+    AND(
+      WEEKDAY(TODAY()) = 5, /* thursday */
+      OR(
+        Deal_Offered_Date__c = TODAY() + 1, /* friday */
+        Deal_Offered_Date__c = TODAY() + 2, /* saturday */
+								Deal_Offered_Date__c = TODAY() + 3 /* sunday */
+      )
+    ),
+    AND(
+      WEEKDAY(TODAY()) = 7, /* sunday */
+      Deal_Offered_Date__c = TODAY() + 1 /* monday */
+    )
+  ),
+  TRUE,
+  FALSE
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Deal Offered Date Notify</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

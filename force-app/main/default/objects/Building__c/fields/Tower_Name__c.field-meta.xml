@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tower_Name__c</fullName>
+    <label>Tower Name</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Building 1</fullName>
+                <color>#000099</color>
+                <default>false</default>
+                <label>Building 1</label>
+            </value>
+            <value>
+                <fullName>Building 2 (K103)</fullName>
+                <color>#000099</color>
+                <default>false</default>
+                <label>Building 2 (K103)</label>
+            </value>
+            <value>
+                <fullName>Tower 01</fullName>
+                <default>false</default>
+                <label>Tower 01</label>
+            </value>
+            <value>
+                <fullName>Tower 01 (K101)</fullName>
+                <default>false</default>
+                <label>Tower 01 (K101)</label>
+            </value>
+            <value>
+                <fullName>Tower 02</fullName>
+                <default>false</default>
+                <label>Tower 02</label>
+            </value>
+            <value>
+                <fullName>Tower 02 (K102)</fullName>
+                <default>false</default>
+                <label>Tower 02 (K102)</label>
+            </value>
+            <value>
+                <fullName>Tower 03</fullName>
+                <default>false</default>
+                <label>Tower 03</label>
+            </value>
+            <value>
+                <fullName>Tower 04</fullName>
+                <default>false</default>
+                <label>Tower 04</label>
+            </value>
+            <value>
+                <fullName>Tower 04 (K105)</fullName>
+                <default>false</default>
+                <label>Tower 04 (K105)</label>
+            </value>
+            <value>
+                <fullName>Tower 05</fullName>
+                <default>false</default>
+                <label>Tower 05</label>
+            </value>
+            <value>
+                <fullName>Tower 05 (K104)</fullName>
+                <default>false</default>
+                <label>Tower 05 (K104)</label>
+            </value>
+            <value>
+                <fullName>Tower 06</fullName>
+                <default>false</default>
+                <label>Tower 06</label>
+            </value>
+            <value>
+                <fullName>Tower 07</fullName>
+                <default>false</default>
+                <label>Tower 07</label>
+            </value>
+            <value>
+                <fullName>Tower 07 (207)</fullName>
+                <default>false</default>
+                <label>Tower 07 (207)</label>
+            </value>
+            <value>
+                <fullName>Tower 08</fullName>
+                <default>false</default>
+                <label>Tower 08</label>
+            </value>
+            <value>
+                <fullName>Tower 09</fullName>
+                <default>false</default>
+                <label>Tower 09</label>
+            </value>
+            <value>
+                <fullName>Tower 10</fullName>
+                <default>false</default>
+                <label>Tower 10</label>
+            </value>
+            <value>
+                <fullName>Tower 10 &amp; 11</fullName>
+                <color>#000099</color>
+                <default>false</default>
+                <label>Tower 10 &amp; 11</label>
+            </value>
+            <value>
+                <fullName>Tower 11</fullName>
+                <default>false</default>
+                <label>Tower 11</label>
+            </value>
+            <value>
+                <fullName>Tower 12</fullName>
+                <default>false</default>
+                <label>Tower 12</label>
+            </value>
+            <value>
+                <fullName>Tower 13</fullName>
+                <color>#000099</color>
+                <default>false</default>
+                <label>Tower 13</label>
+            </value>
+            <value>
+                <fullName>Tower 14</fullName>
+                <default>false</default>
+                <label>Tower 14</label>
+            </value>
+            <value>
+                <fullName>Tower 15</fullName>
+                <default>false</default>
+                <label>Tower 15</label>
+            </value>
+            <value>
+                <fullName>Tower 16</fullName>
+                <default>false</default>
+                <label>Tower 16</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

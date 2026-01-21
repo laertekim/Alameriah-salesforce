@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Category__c</fullName>
+    <label>Category</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Accessories</fullName>
+                <color>#78C953</color>
+                <default>false</default>
+                <label>Accessories</label>
+            </value>
+            <value>
+                <fullName>Fashion Apparel</fullName>
+                <color>#419249</color>
+                <default>false</default>
+                <label>Fashion Apparel</label>
+            </value>
+            <value>
+                <fullName>Food &amp; Beverage</fullName>
+                <color>#A845DC</color>
+                <default>false</default>
+                <label>Food &amp; Beverage</label>
+            </value>
+            <value>
+                <fullName>HIGH TECH</fullName>
+                <color>#FF99FF</color>
+                <default>false</default>
+                <label>HIGH TECH</label>
+            </value>
+            <value>
+                <fullName>High Tech / Electronics</fullName>
+                <color>#FF99FF</color>
+                <default>false</default>
+                <label>High Tech / Electronics</label>
+            </value>
+            <value>
+                <fullName>Neighborhood Retail</fullName>
+                <color>#FF0000</color>
+                <default>false</default>
+                <label>Neighborhood Retail</label>
+            </value>
+            <value>
+                <fullName>Neighborhood Services</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>Neighborhood Services</label>
+            </value>
+            <value>
+                <fullName>Specialty Retail</fullName>
+                <color>#FF9900</color>
+                <default>false</default>
+                <label>Specialty Retail</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

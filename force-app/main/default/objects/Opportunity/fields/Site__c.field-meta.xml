@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Site__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Site</label>
+    <lookupFilter>
+        <active>true</active>
+        <booleanFilter>(1 AND 2) OR (3 AND 4) OR (5 AND 6) OR 7</booleanFilter>
+        <filterItems>
+            <field>$Source.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Offices</value>
+        </filterItems>
+        <filterItems>
+            <field>Center__c.Unit_Record_Type__c</field>
+            <operation>contains</operation>
+            <value>Offices</value>
+        </filterItems>
+        <filterItems>
+            <field>$Source.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Residential</value>
+        </filterItems>
+        <filterItems>
+            <field>Center__c.Unit_Record_Type__c</field>
+            <operation>contains</operation>
+            <value>Residential</value>
+        </filterItems>
+        <filterItems>
+            <field>$Source.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Retail</value>
+        </filterItems>
+        <filterItems>
+            <field>Center__c.Unit_Record_Type__c</field>
+            <operation>contains</operation>
+            <value>Retail</value>
+        </filterItems>
+        <filterItems>
+            <field>$Source.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Special Leasing</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Center__c</referenceTo>
+    <relationshipLabel>Deals</relationshipLabel>
+    <relationshipName>Deals</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

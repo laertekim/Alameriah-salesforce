@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Leasing_Assistance_Fee_SR__c</fullName>
+    <formula>IF( RecordType.Name =&apos;Offices&apos;,Total_Annual_Rent_SR_Annum__c*0.10,
+IF( RecordType.Name =&apos;Retail&apos;,Total_Annual_Rent__c*0.10,
+NULL))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>10%	of 1st year rent, In favor of D&amp;B GROUP.</inlineHelpText>
+    <label>Leasing Assistance Fee (SR)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

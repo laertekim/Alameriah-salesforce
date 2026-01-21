@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Level__c</fullName>
+    <label>Level</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>1</fullName>
+                <default>false</default>
+                <label>1</label>
+            </value>
+            <value>
+                <fullName>2</fullName>
+                <default>false</default>
+                <label>2</label>
+            </value>
+            <value>
+                <fullName>3</fullName>
+                <default>false</default>
+                <label>3</label>
+            </value>
+            <value>
+                <fullName>4</fullName>
+                <default>false</default>
+                <label>4</label>
+            </value>
+            <value>
+                <fullName>5</fullName>
+                <default>false</default>
+                <label>5</label>
+            </value>
+            <value>
+                <fullName>6</fullName>
+                <default>false</default>
+                <label>6</label>
+            </value>
+            <value>
+                <fullName>7</fullName>
+                <default>false</default>
+                <label>7</label>
+            </value>
+            <value>
+                <fullName>8</fullName>
+                <default>false</default>
+                <label>8</label>
+            </value>
+            <value>
+                <fullName>B1</fullName>
+                <default>false</default>
+                <label>B1</label>
+            </value>
+            <value>
+                <fullName>B2</fullName>
+                <default>false</default>
+                <label>B2</label>
+            </value>
+            <value>
+                <fullName>B3</fullName>
+                <default>false</default>
+                <label>B3</label>
+            </value>
+            <value>
+                <fullName>G</fullName>
+                <default>false</default>
+                <label>G</label>
+            </value>
+            <value>
+                <fullName>R</fullName>
+                <default>false</default>
+                <label>R</label>
+            </value>
+            <value>
+                <fullName>First</fullName>
+                <default>false</default>
+                <label>First</label>
+            </value>
+            <value>
+                <fullName>Ground</fullName>
+                <default>false</default>
+                <label>Ground</label>
+            </value>
+            <value>
+                <fullName>Level 0</fullName>
+                <default>false</default>
+                <label>Level 0</label>
+            </value>
+            <value>
+                <fullName>Level 1</fullName>
+                <default>false</default>
+                <label>Level 1</label>
+            </value>
+            <value>
+                <fullName>Level 10</fullName>
+                <default>false</default>
+                <label>Level 10</label>
+            </value>
+            <value>
+                <fullName>Level 11</fullName>
+                <default>false</default>
+                <label>Level 11</label>
+            </value>
+            <value>
+                <fullName>Level 12</fullName>
+                <default>false</default>
+                <label>Level 12</label>
+            </value>
+            <value>
+                <fullName>Level 2</fullName>
+                <default>false</default>
+                <label>Level 2</label>
+            </value>
+            <value>
+                <fullName>Level 3</fullName>
+                <default>false</default>
+                <label>Level 3</label>
+            </value>
+            <value>
+                <fullName>Level 4</fullName>
+                <default>false</default>
+                <label>Level 4</label>
+            </value>
+            <value>
+                <fullName>Level 5</fullName>
+                <default>false</default>
+                <label>Level 5</label>
+            </value>
+            <value>
+                <fullName>Level 6</fullName>
+                <default>false</default>
+                <label>Level 6</label>
+            </value>
+            <value>
+                <fullName>Level 7</fullName>
+                <default>false</default>
+                <label>Level 7</label>
+            </value>
+            <value>
+                <fullName>Level 8</fullName>
+                <default>false</default>
+                <label>Level 8</label>
+            </value>
+            <value>
+                <fullName>Level 9</fullName>
+                <default>false</default>
+                <label>Level 9</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

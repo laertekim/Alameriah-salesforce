@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status__c</fullName>
+    <label>Status</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Available Units</fullName>
+                <color>#FF0000</color>
+                <default>true</default>
+                <label>Available Units</label>
+            </value>
+            <value>
+                <fullName>Offered</fullName>
+                <color>#FF9900</color>
+                <default>false</default>
+                <label>Offered</label>
+            </value>
+            <value>
+                <fullName>Booked</fullName>
+                <color>#419249</color>
+                <default>false</default>
+                <label>Booked</label>
+            </value>
+            <value>
+                <fullName>Booked &amp; Paid</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>Booked &amp; Paid</label>
+            </value>
+            <value>
+                <fullName>Signed &amp; Paid</fullName>
+                <color>#993399</color>
+                <default>false</default>
+                <label>Signed &amp; Paid</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

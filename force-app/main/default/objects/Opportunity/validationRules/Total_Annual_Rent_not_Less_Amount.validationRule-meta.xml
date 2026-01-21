@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Annual_Rent_not_Less_Amount</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    RecordType.Name = &apos;Retail&apos;,
+    TEXT(Price_Approval_Status__c) &lt;&gt; &apos;Approved&apos;,
+    Total_Annual_Rent__c &lt; Amount
+    )</errorConditionFormula>
+    <errorDisplayField>Total_Annual_Rent__c</errorDisplayField>
+    <errorMessage>&quot;Total Annual Rent&quot; cannot be less than the Deal Amount until it is approved!</errorMessage>
+</ValidationRule>

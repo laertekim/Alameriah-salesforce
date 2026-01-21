@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Brand_Name_on_Shop__c</fullName>
+    <label>Brand Name on Shop</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Example 1</fullName>
+                <default>false</default>
+                <label>Example 1</label>
+            </value>
+            <value>
+                <fullName>Example 2</fullName>
+                <default>false</default>
+                <label>Example 2</label>
+            </value>
+            <value>
+                <fullName>Example 3</fullName>
+                <default>false</default>
+                <label>Example 3</label>
+            </value>
+            <value>
+                <fullName>Lead</fullName>
+                <default>false</default>
+                <label>Lead</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>3</visibleLines>
+</CustomField>

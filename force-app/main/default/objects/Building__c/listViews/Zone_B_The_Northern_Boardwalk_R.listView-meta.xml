@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Zone_B_The_Northern_Boardwalk_R</fullName>
+    <columns>NAME</columns>
+    <columns>Status__c</columns>
+    <columns>Level__c</columns>
+    <columns>Unit_Type__c</columns>
+    <columns>Unit_No__c</columns>
+    <columns>Unit_Area_Sqm__c</columns>
+    <columns>Asking_Price__c</columns>
+    <columns>Asking_Annual_Rent__c</columns>
+    <columns>Retail_Category__c</columns>
+    <columns>Type_of_Activity__c</columns>
+    <columns>RN__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Center_Name__c</field>
+        <operation>equals</operation>
+        <value>Kayanat Central - Retail</value>
+    </filters>
+    <filters>
+        <field>Zone__c</field>
+        <operation>equals</operation>
+        <value>B - The Northen Boardwalk</value>
+    </filters>
+    <label>Zone B - The Northern Boardwalk (R)</label>
+</ListView>

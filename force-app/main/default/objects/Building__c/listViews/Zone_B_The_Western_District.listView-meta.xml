@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Zone_B_The_Western_District</fullName>
+    <columns>NAME</columns>
+    <columns>Status__c</columns>
+    <columns>Tower_Name__c</columns>
+    <columns>Building_Type__c</columns>
+    <columns>Level__c</columns>
+    <columns>Unit_No__c</columns>
+    <columns>View__c</columns>
+    <columns>Total_Unit_Area_Sqm__c</columns>
+    <columns>Total_NSA__c</columns>
+    <columns>Total_Prices_Services_Areas__c</columns>
+    <columns>Total_Prices_Terraces_Areas__c</columns>
+    <columns>Gross_Leasable_Amount_SAR__c</columns>
+    <columns>Agent_Commission_8__c</columns>
+    <columns>Edara_Commission_2__c</columns>
+    <columns>RN__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Center_Name__c</field>
+        <operation>equals</operation>
+        <value>Kayanat Central - Commercial Offices</value>
+    </filters>
+    <filters>
+        <field>Zone__c</field>
+        <operation>equals</operation>
+        <value>B - The Western District</value>
+    </filters>
+    <label>Zone B - The Western District (CO)</label>
+</ListView>
