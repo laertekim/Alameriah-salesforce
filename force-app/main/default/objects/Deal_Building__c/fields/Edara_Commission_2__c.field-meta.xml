@@ -3,7 +3,7 @@
     <fullName>Edara_Commission_2__c</fullName>
     <formula>Total_Selling_Price_SAR__c*0.02</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>Edara Commission 2%</label>
+    <label>Commission 2%</label>
     <precision>18</precision>
     <required>false</required>
     <scale>2</scale>

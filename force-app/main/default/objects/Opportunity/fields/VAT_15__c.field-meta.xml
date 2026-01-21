@@ -4,6 +4,5 @@
     <defaultValue>false</defaultValue>
     <label>VAT 15%</label>
     <trackFeedHistory>false</trackFeedHistory>
-    <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

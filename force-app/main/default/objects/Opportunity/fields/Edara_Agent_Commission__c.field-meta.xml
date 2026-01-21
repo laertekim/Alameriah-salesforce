@@ -2,11 +2,10 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Edara_Agent_Commission__c</fullName>
     <defaultValue>000.03</defaultValue>
-    <label>Edara Agent Commission</label>
+    <label>Agent Commission</label>
     <precision>3</precision>
     <required>false</required>
     <scale>0</scale>
     <trackFeedHistory>false</trackFeedHistory>
-    <trackTrending>false</trackTrending>
     <type>Percent</type>
 </CustomField>

@@ -4,6 +4,5 @@
     <defaultValue>false</defaultValue>
     <label>Request to Delete a Deal</label>
     <trackFeedHistory>false</trackFeedHistory>
-    <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

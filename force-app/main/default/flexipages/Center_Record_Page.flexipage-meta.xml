@@ -296,54 +296,6 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>cacheAge</name>
-                    <value>1440</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>List of All Units by Status</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>reportName</name>
-                    <value>Kayanat_Central_Commercial_Offices_KtB</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>showRefreshButton</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:reportChart</componentName>
-                <identifier>flexipage_reportChart</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>cacheAge</name>
-                    <value>1440</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>DETAILS OF LEASING PROGRESS</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>reportName</name>
-                    <value>Offices_DETAILS_OF_LEASING_PROGRESS2_4U2</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>showRefreshButton</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:reportChart</componentName>
-                <identifier>flexipage_reportChart3</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-e44a5138-0448-4912-ad5f-4aeb422cb668</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
                     <name>active</name>
                     <value>true</value>
                 </componentInstanceProperties>
@@ -375,20 +327,6 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
                 <identifier>flexipage_tab4</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-e44a5138-0448-4912-ad5f-4aeb422cb668</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>title</name>
-                    <value>Report Chart</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:tab</componentName>
-                <identifier>flexipage_tab5</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-f92d10fc-3954-4564-b07a-896f03592e1b</name>
@@ -526,32 +464,6 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>cacheAge</name>
-                    <value>1440</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>List of All Units by Status</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>reportName</name>
-                    <value>Kayanat_Central_Retail_6Cg</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>showRefreshButton</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:reportChart</componentName>
-                <identifier>flexipage_reportChart2</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-2d9af2ca-1c6e-43a6-a1d3-4fe9e67b8827</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
                     <name>active</name>
                     <value>true</value>
                 </componentInstanceProperties>
@@ -579,20 +491,6 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
                 <identifier>flexipage_tab9</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-2d9af2ca-1c6e-43a6-a1d3-4fe9e67b8827</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>title</name>
-                    <value>Report Chart</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:tab</componentName>
-                <identifier>flexipage_tab7</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-7ab6bd94-9545-4a5b-b15d-677bd65fa1b3</name>
@@ -699,7 +597,7 @@
                     <criteria>
                         <leftValue>{!Record.Center_Full_ID__c}</leftValue>
                         <operator>CONTAINS</operator>
-                        <rightValue>a02UF000008Q0vpYAC</rightValue>
+                        <rightValue>a029X00000PyFlqQAF</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>

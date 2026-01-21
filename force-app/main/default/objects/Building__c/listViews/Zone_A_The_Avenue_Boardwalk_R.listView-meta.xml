@@ -16,7 +16,7 @@
     <filters>
         <field>Center_Name__c</field>
         <operation>equals</operation>
-        <value>Kayanat Central - Retail</value>
+        <value>Central Unit Test - Retail</value>
     </filters>
     <filters>
         <field>Zone__c</field>

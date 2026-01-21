@@ -1,0 +1,40 @@
+<template>
+    <lightning-card title="Create Deal" icon-name="standard:quote">
+        <div class="slds-m-around_medium"  if:true={record}>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-input label="Record Type" value={record.RecordType.Name} readonly="true"></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-input label="Site" value={record.Center_Name__r.Name} readonly="true"></lightning-input>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-input label="Deal Name" value={name} onchange={handleChangeName} required="true"></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-input type="date" label="Deal Signed &amp; Paid Date" value={closeDate} onchange={handleChangeCloseDate} required="true"></lightning-input>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-combobox label="Stage" value={stage} onchange={handleChangeStage} required="true" options={options}></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2" style="padding-top: 21px;">
+                    <!--<lightning-input label="Tenants Name" value={tenantsName} onchange={handleChangeTenantsName} required="true"></lightning-input>-->
+                    <lightning-record-edit-form object-api-name="Opportunity" id="createContactForm" >
+                        <lightning-input-field field-name="AccountId" variant="label-hidden" onchange={handleAccountSelection} required> </lightning-input-field>
+                    </lightning-record-edit-form>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters" style="padding-top:20px">
+                <div class="slds-col">
+                    <lightning-button style="float: right;" variant="brand" label="Cancel" title="Cancel" onclick={handleClickCancel} class="slds-m-right_x-small"></lightning-button>                </div>
+                <div class="slds-col">
+                    <lightning-button variant="brand" label="Save" title="Save" onclick={handleClickSave} class="slds-m-left_x-small"></lightning-button>                </div>
+            </div>
+        </div>
+        
+    </lightning-card>
+</template>

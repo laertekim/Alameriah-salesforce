@@ -28,6 +28,5 @@
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Deal Offered Date Notify</label>
-    <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

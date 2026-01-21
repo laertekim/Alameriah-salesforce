@@ -4,6 +4,5 @@
     <label>Submitted Date</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
-    <trackTrending>false</trackTrending>
     <type>Date</type>
 </CustomField>
