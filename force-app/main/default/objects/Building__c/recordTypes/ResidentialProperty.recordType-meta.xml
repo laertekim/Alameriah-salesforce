@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Standard_Retail</fullName>
+    <fullName>ResidentialProperty</fullName>
     <active>true</active>
-    <label>Standard Retail</label>
+    <label>Residential Property</label>
     <picklistValues>
         <picklist>Apartment_Type__c</picklist>
         <values>
@@ -48,98 +48,6 @@
             <fullName>A1</fullName>
             <default>false</default>
         </values>
-        <values>
-            <fullName>A2</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>A3</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>A4</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>A5 - %28A5-1 %26 A5-2%29</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B1</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B2</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B2-2</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B2-3</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B3</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B3-2</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B3-3</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B4</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B5</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B6</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>C1</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>C2</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>C3</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>C3-2</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>C3-3</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>C4</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>C5</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>R1</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>R2</fullName>
-            <default>false</default>
-        </values>
     </picklistValues>
     <picklistValues>
         <picklist>Lease_Phases__c</picklist>
@@ -147,23 +55,59 @@
             <fullName>PHASE 1</fullName>
             <default>false</default>
         </values>
-        <values>
-            <fullName>PHASE 2</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>PHASE 3</fullName>
-            <default>false</default>
-        </values>
     </picklistValues>
     <picklistValues>
         <picklist>Level__c</picklist>
         <values>
-            <fullName>First</fullName>
+            <fullName>Level 0</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Ground</fullName>
+            <fullName>Level 1</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Level 10</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Level 11</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Level 12</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Level 2</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Level 3</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Level 4</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Level 5</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Level 6</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Level 7</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Level 8</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Level 9</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -189,19 +133,11 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>Fashion Apparel</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Food %26 Beverage</fullName>
             <default>false</default>
         </values>
         <values>
             <fullName>HIGH TECH</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>High Tech %2F Electronics</fullName>
             <default>false</default>
         </values>
         <values>
@@ -243,47 +179,7 @@
     <picklistValues>
         <picklist>Tower_Name__c</picklist>
         <values>
-            <fullName>Building 1</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Building 2 %28K103%29</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Tower 01</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Tower 10</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Tower 10 %26 11</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Tower 11</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Tower 12</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Tower 13</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Tower 14</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Tower 15</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Tower 16</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -357,10 +253,6 @@
     <picklistValues>
         <picklist>Type_of_Activity__c</picklist>
         <values>
-            <fullName>Accessories</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Car Rentals</fullName>
             <default>false</default>
         </values>
@@ -377,31 +269,7 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>Dates</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Fashion</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Female GYM</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Gifts</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Gold Jewellery</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>MEN%27S GYM</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>MEN%27S SPA</fullName>
             <default>false</default>
         </values>
         <values>
@@ -410,14 +278,6 @@
         </values>
         <values>
             <fullName>Mens Salon</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Mobiles %2F Laptops</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Nutrition Store</fullName>
             <default>false</default>
         </values>
         <values>
@@ -437,35 +297,11 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>SPA %2F GYM</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Sportswear</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Super Market</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Supermarket</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Telecom</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Textile</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Travel Agency</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Watches</fullName>
             <default>false</default>
         </values>
         <values>
@@ -480,615 +316,431 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>AFG T02</fullName>
+            <fullName>102</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>AFG T03</fullName>
+            <fullName>103</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>AGF 01</fullName>
+            <fullName>104</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>AGF 02</fullName>
+            <fullName>105</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>AGF 03</fullName>
+            <fullName>106</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>AGF 04</fullName>
+            <fullName>107</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF02</fullName>
+            <fullName>108</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF03</fullName>
+            <fullName>109</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF06</fullName>
+            <fullName>110</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF09</fullName>
+            <fullName>111</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF10</fullName>
+            <fullName>112</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF14</fullName>
+            <fullName>113</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF15</fullName>
+            <fullName>114</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF18</fullName>
+            <fullName>115</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF19</fullName>
+            <fullName>116</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF22</fullName>
+            <fullName>117</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF25</fullName>
+            <fullName>118</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF28</fullName>
+            <fullName>119</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF29</fullName>
+            <fullName>120</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF32</fullName>
+            <fullName>121</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF33</fullName>
+            <fullName>122</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>FF36</fullName>
+            <fullName>123</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 01%2C02</fullName>
+            <fullName>124</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 03%2C04</fullName>
+            <fullName>125</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 05%2C06</fullName>
+            <fullName>126</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 07</fullName>
+            <fullName>127</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 09%2C10</fullName>
+            <fullName>128</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 11</fullName>
+            <fullName>129</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 12%2C13%2C 14%2C15</fullName>
+            <fullName>130</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 20</fullName>
+            <fullName>131</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 21</fullName>
+            <fullName>132</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 22</fullName>
+            <fullName>133</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 23</fullName>
+            <fullName>134</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 24</fullName>
+            <fullName>135</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 25%2C 26</fullName>
+            <fullName>136</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 27</fullName>
+            <fullName>137</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 28</fullName>
+            <fullName>138</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 29 - MF 29</fullName>
+            <fullName>139</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 30 - MF 30</fullName>
+            <fullName>140</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 31</fullName>
+            <fullName>141</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 32</fullName>
+            <fullName>142</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 33%2C 34</fullName>
+            <fullName>143</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 35</fullName>
+            <fullName>144</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 36</fullName>
+            <fullName>145</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 37</fullName>
+            <fullName>146</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 38</fullName>
+            <fullName>147</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 39</fullName>
+            <fullName>148</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 40</fullName>
+            <fullName>149</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 41%2C 42</fullName>
+            <fullName>150</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 43%2C44</fullName>
+            <fullName>151</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 45</fullName>
+            <fullName>152</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 47</fullName>
+            <fullName>153</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 48%2C 49</fullName>
+            <fullName>154</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF 50%2C51</fullName>
+            <fullName>155</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF01</fullName>
+            <fullName>156</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF02</fullName>
+            <fullName>157</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF03</fullName>
+            <fullName>158</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF04-GF05</fullName>
+            <fullName>159</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF06</fullName>
+            <fullName>160</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF07</fullName>
+            <fullName>161</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF08</fullName>
+            <fullName>162</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF09</fullName>
+            <fullName>163</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF10</fullName>
+            <fullName>164</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF11</fullName>
+            <fullName>165</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF12-GF13</fullName>
+            <fullName>166</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF14</fullName>
+            <fullName>167</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF15</fullName>
+            <fullName>168</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF16</fullName>
+            <fullName>169</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF17</fullName>
+            <fullName>170</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF18</fullName>
+            <fullName>171</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF19</fullName>
+            <fullName>172</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF20</fullName>
+            <fullName>173</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF21</fullName>
+            <fullName>174</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF22</fullName>
+            <fullName>175</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF23</fullName>
+            <fullName>176</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF24</fullName>
+            <fullName>177</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF25</fullName>
+            <fullName>178</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF26</fullName>
+            <fullName>179</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF27</fullName>
+            <fullName>180</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF28</fullName>
+            <fullName>181</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF29</fullName>
+            <fullName>182</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF30</fullName>
+            <fullName>183</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF31</fullName>
+            <fullName>184</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF32</fullName>
+            <fullName>185</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF33</fullName>
+            <fullName>186</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF34</fullName>
+            <fullName>187</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF35</fullName>
+            <fullName>188</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF36</fullName>
+            <fullName>189</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF37</fullName>
+            <fullName>190</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF38</fullName>
+            <fullName>191</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF39</fullName>
+            <fullName>192</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF40</fullName>
+            <fullName>193</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF41</fullName>
+            <fullName>194</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>GF42</fullName>
+            <fullName>195</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>SFF02</fullName>
+            <fullName>196</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>SFF03</fullName>
+            <fullName>197</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>SFF06</fullName>
+            <fullName>198</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>SFF09</fullName>
+            <fullName>199</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>SFF10</fullName>
+            <fullName>200</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>SFF14</fullName>
+            <fullName>201</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>SFF15</fullName>
+            <fullName>202</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>SFF18</fullName>
+            <fullName>203</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>SFF19</fullName>
+            <fullName>204</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>SFF22</fullName>
+            <fullName>205</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>SFF25</fullName>
+            <fullName>206</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>SFF28</fullName>
+            <fullName>207</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>SFF29</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>SFF32</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>SFF33</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>SFF36</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>SFF39</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>SFF40</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>SFF41</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>SFF42</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 20</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 21</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 22</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 23</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 24</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 25%2C 26</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 27%2C 28</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 31 32</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 33%2C 34</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 35</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 36</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 37</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 38</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 39</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T 40</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T01</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T02</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T03</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T06</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T09</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T10</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T14</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T15</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T16</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T17</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T18</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T19</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T20</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T21</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T22</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T25</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T26</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T27</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T28</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T29</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T30</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T32</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T33</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>T36</fullName>
+            <fullName>208</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -1099,22 +751,38 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Social Hub</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Terrace</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Type A</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Type B</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Type C</fullName>
             <default>false</default>
         </values>
     </picklistValues>
     <picklistValues>
         <picklist>View__c</picklist>
         <values>
-            <fullName>AV</fullName>
+            <fullName>BV</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>ER</fullName>
+            <fullName>OV</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>WD</fullName>
+            <fullName>SV</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -1125,27 +793,11 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>A - The Avenue Boardwalk</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>B - THE WORKOUT WALK</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>B - The Northern Boardwalk</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>C - GALLERIA</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>C - The Eastern Boardwalk</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>CULTURAL OLD TOWN</fullName>
             <default>false</default>
         </values>
         <values>

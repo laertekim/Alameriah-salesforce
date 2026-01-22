@@ -180,6 +180,21 @@
         </values>
     </picklistValues>
     <picklistValues>
+        <picklist>LocationAndVisibility__c</picklist>
+        <values>
+            <fullName>Garden View</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sidewalk View</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Valley View</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>Retail_Category__c</picklist>
         <values>
             <fullName>Accessories</fullName>

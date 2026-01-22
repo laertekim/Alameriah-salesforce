@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ResidentialProperties</fullName>
+    <columns>NAME</columns>
+    <columns>LocationAndVisibility__c</columns>
+    <columns>Unit_Type__c</columns>
+    <columns>LandArea__c</columns>
+    <columns>LandSellableAreaSqm__c</columns>
+    <columns>LandSellableAmount__c</columns>
+    <columns>VillaArea__c</columns>
+    <columns>VillaSellableAreaSqm__c</columns>
+    <columns>VillaSellableAmount__c</columns>
+    <columns>PreLaunchPrice__c</columns>
+    <columns>Asking_Price__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Building__c.ResidentialProperty</value>
+    </filters>
+    <label>Residential Properties</label>
+</ListView>
