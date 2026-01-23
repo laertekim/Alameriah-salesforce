@@ -166,6 +166,7 @@
         <type>Text</type>
     </nameField>
     <pluralLabel>Centers</pluralLabel>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <searchLayouts></searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
