@@ -2,7 +2,7 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
    <types>
         
-        <members>Center__c</members>
+        <members>Opportunity</members>
         
         <name>CustomObject</name>
     </types>
@@ -11,24 +11,20 @@
     <!--layout -->
     <types>
        
-        <members>Center__c-Residential Property</members>
+        <members>Opportunity-Residential Property</members>
         <name>Layout</name>
     </types>
 
-    <types>
+   <!-- <types>
         <members>Center_Residencial_Property</members>
         <name>FlexiPage</name>
-    </types>
+    </types> -->
    
-   
-
+    <!--profiles -->
     <types>
         <members>*</members>
         <name>Profile</name>
     </types>
-
    
-    
-
     <version>63.0</version>
 </Package>
