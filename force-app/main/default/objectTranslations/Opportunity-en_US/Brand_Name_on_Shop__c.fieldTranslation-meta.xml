@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Brand Name on Shop --></label>
+    <name>Brand_Name_on_Shop__c</name>
+    <picklistValues>
+        <masterLabel>Example 1</masterLabel>
+        <translation><!-- Example 1 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Example 2</masterLabel>
+        <translation><!-- Example 2 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Example 3</masterLabel>
+        <translation><!-- Example 3 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Lead</masterLabel>
+        <translation><!-- Lead --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- This amount will not be encashed if shopfitting work is completed on time ( Area (Sqm)*50 ) --></help>
+    <label><!-- Shopfitting Guarantee (SR) --></label>
+    <name>Shopfitting_Guarantee_SR__c</name>
+</CustomFieldTranslation>

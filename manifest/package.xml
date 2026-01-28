@@ -3,10 +3,28 @@
    <types>
         
         <members>Opportunity</members>
+        <members>Deal_Building__c</members>
         
         <name>CustomObject</name>
     </types>
 
+    <types>
+        <members>DealBuildingTrigger</members>
+        <name>ApexTrigger</name>
+    </types>
+
+    <types>
+        <members>DealBuildingTriggerHandler</members>
+        <members>DealBuildingService</members>  
+        <members>DealBuildingAggregator</members>
+        <members>OpportunityRepository</members>
+        <members>DealBuildingTriggerHandler</members>
+        <members>BuildingRepository</members>
+        <members>DealBuildingRepository</members>
+        <members>OtherChargesTriggerHandler</members>
+        <members>OpportunityTriggerHandler</members>
+        <name>ApexClass</name>
+    </types>
    
     <!--layout -->
     <types>
@@ -15,16 +33,40 @@
         <name>Layout</name>
     </types>
 
-   <!-- <types>
-        <members>Center_Residencial_Property</members>
+    <types>
+        <members>Residential_Property</members>
+        <members>ResidentialPropertyDealUnit</members>
         <name>FlexiPage</name>
-    </types> -->
+    </types> 
    
-    <!--profiles -->
+    <!--profiles 
     <types>
         <members>*</members>
         <name>Profile</name>
-    </types>
+    </types> -->
    
+    <types>
+        <members>Opportunity-en_US</members>
+        <name>CustomObjectTranslation</name>
+    </types>
+
+    <types>
+        <members>OtherChargesTrigger</members>
+        <members>OpportunityTrigger</members>
+        <name>ApexTrigger</name>
+    </types>
+
+    
+
+    <types>
+        <members>residentialPropertyJunctionTable</members>
+        <name>LightningComponentBundle</name>
+    </types>
+
+    <types>
+        <members>Deal_Unit_Price_Change</members>
+        <name>Flow</name>
+    </types>
+
     <version>63.0</version>
 </Package>

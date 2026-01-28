@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Will Be Decided Later and Shall not Exeed Market Rate --></help>
+    <label><!-- Service Charges (SR/Year) --></label>
+    <name>Service_Charges_SR_Year__c</name>
+</CustomFieldTranslation>

@@ -167,6 +167,7 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Deal Units</pluralLabel>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <searchLayouts></searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>

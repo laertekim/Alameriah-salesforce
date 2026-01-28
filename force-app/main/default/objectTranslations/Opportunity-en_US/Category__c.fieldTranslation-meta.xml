@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Category --></label>
+    <name>Category__c</name>
+    <picklistValues>
+        <masterLabel>Accessories</masterLabel>
+        <translation><!-- Accessories --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Fashion Apparel</masterLabel>
+        <translation><!-- Fashion Apparel --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Food &amp; Beverage</masterLabel>
+        <translation><!-- Food &amp; Beverage --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>HIGH TECH</masterLabel>
+        <translation><!-- HIGH TECH --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>High Tech / Electronics</masterLabel>
+        <translation><!-- High Tech / Electronics --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Neighborhood Retail</masterLabel>
+        <translation><!-- Neighborhood Retail --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Neighborhood Services</masterLabel>
+        <translation><!-- Neighborhood Services --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Other</masterLabel>
+        <translation><!-- Other --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Specialty Retail</masterLabel>
+        <translation><!-- Specialty Retail --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

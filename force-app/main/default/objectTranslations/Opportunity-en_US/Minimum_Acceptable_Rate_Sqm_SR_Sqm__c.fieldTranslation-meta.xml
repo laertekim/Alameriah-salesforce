@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Minimum Acceptable Rate/Sqm (SAR/Sqm) --></label>
+    <name>Minimum_Acceptable_Rate_Sqm_SR_Sqm__c</name>
+</CustomFieldTranslation>
