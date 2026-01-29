@@ -1,4 +1,32 @@
 public with sharing class DealJunkTableController {
+
+    public class ObjectDTO {
+        @AuraEnabled public Map<String, String> fieldAndValue;
+        
+    }
+
+    @AuraEnabled
+    public static List<Building__c> getAllBuildingsResidentialProperty(String objectDTO) {
+        
+        ObjectDTO objDTO = (ObjectDTO)JSON.deserialize(objectDTO, ObjectDTO.class);
+        //query all fields from Building__c object using schema describe
+        Schema.DescribeSObjectResult describeResult = Schema.getGlobalDescribe().get('Building__c').getDescribe();
+        Map<String, Schema.SObjectField> fieldMap = describeResult.fields.getMap();
+        List<String> fields = new List<String>();
+        for(Schema.SObjectField field : fieldMap.values()){
+            fields.add(field.getDescribe().getName());
+        }
+        String query = 'SELECT ' + String.join(fields, ', ') + ' FROM Building__c WHERE RecordType.name = \'Residential Property\'';
+        for(String field : objDTO.fieldAndValue.keySet()){
+            if(objDTO.fieldAndValue.get(field) != null && objDTO.fieldAndValue.get(field) != ''){
+                query += ' AND ' + field + ' = \'' + objDTO.fieldAndValue.get(field) + '\'';
+            }
+        }
+
+        
+        return Database.query(query);
+    }
+
     @AuraEnabled
     public static List<Building__c> getAllBuildings(String dealRecordId, 
                                                     String zone, 
@@ -85,67 +113,23 @@ public with sharing class DealJunkTableController {
 
     @AuraEnabled
     public static List<Deal_Building__c> getRelatedDealBuilding(String dealRecordId) {
-        List<Deal_Building__c> lstDealBuilding = [SELECT Id, 
-                                                        Name, 
-                                                        Building__c, 
-                                                        Building__r.Name, 
-                                                        Deal__c, 
-                                                        Deal__r.Name,
-                                                        Zone__c,
-                                                        Tower_Name__c,
-                                                        Lease_Phases__c,
-                                                        Level__c,
-                                                        Apartment_Type__c,
-                                                        Min_Weighted__c,
-                                                        Min_Weighted_Rate__c,
-                                                        Client_Min_Price_SAR__c,
-                                                        Ask_Weighted__c,
-                                                        Ask_Weighted_Rate__c,
-                                                        Client_Asking_Price_SAR__c,
-                                                        Building_Type__c,
-                                                        Unit_No__c,
-                                                        View__c,
-                                                        Total_Unit_Area_Sqm__c,
-                                                        Office_Area_Sqm__c,
-                                                        Service_Area_Sqm__c,
-                                                        Passage_Area_Sqm__c,
-                                                        wc_Toilets_Area_Sqm__c,
-                                                        Total_Leasable_Area_Sqm__c,
-                                                        Terrace_Area_Sqm__c,
-                                                        Leasing_Rate_Sqm_SAR__c,
-                                                        Price_Sqm_SAR_Services__c,
-                                                        Price_Sqm_SAR_Terraces__c,
-                                                        Total_NSA__c,
-                                                        Total_Prices_Terraces_Areas__c,
-                                                        Total_Prices_Services_Areas__c,
-                                                        Total_Selling_Price_SAR__c, 
-                                                        Unit_Area_Sqm__c, 
-                                                        Asking_Price__c, 
-                                                        Asking_Annual_Rent__c, 
-                                                        Retail_Category__c, 
-                                                        Type_of_Activity__c,
-                                                        Unit_Type__c,
-                                                        Minimum_Annual_Rent__c,
-                                                        //---------------------
-                                                        Unit_Area_Sqm_NSA__c,
-                                                        Gross_Leasable_Amount_SAR__c,
-                                                        Agent_Commission_8__c,
-                                                        Edara_Commission_2__c,
-                                                        Price_Sqm_SAR_Lobby__c,
-                                                        Total_Prices_Lobby__c,
-                                                        Lobby_Area_Sqm__c
-                                                FROM Deal_Building__c 
-                                                WHERE Deal__c =: dealRecordId];
-                                                for(Deal_Building__c item : lstDealBuilding){
-                                                    System.debug(item.Id+' item.Building__r.Name '+item.Building__r.Name);
-                                                }
-        return lstDealBuilding;    
+
+        //get all fields from Deal_Building__c object using schema describe
+        Schema.DescribeSObjectResult describeResult = Schema.getGlobalDescribe().get('Deal_Building__c').getDescribe();
+        Map<String, Schema.SObjectField> fieldMap = describeResult.fields.getMap();
+        List<String> fields = new List<String>();
+        for(Schema.SObjectField field : fieldMap.values()){
+            fields.add(field.getDescribe().getName());
+        }
+        String query = 'SELECT ' + String.join(fields, ', ') + ' FROM Deal_Building__c WHERE Deal__c =: dealRecordId';
+        System.debug('@@ query '+Database.query(query));
+        return Database.query(query);
+       
     } 
 
     @AuraEnabled
     public static void createJunctionObject(String dealRecordId, String stringBuildingsIds) {
-        System.debug('stringBuildingsIds '+stringBuildingsIds);
-        System.debug('DealRecordId '+dealRecordId);
+        
         List<String> buildingsIds = new List<String>();
         if(stringBuildingsIds != ''){
             buildingsIds = stringBuildingsIds.split(', ');
@@ -171,131 +155,6 @@ public with sharing class DealJunkTableController {
             }
         }
         update buildings;
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
-        if(stringBuildingsIds != ''){}
+       
     }
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>54.0</apiVersion>
+    <description>Unified table component for Deal Junction with configurable columns and filters</description>
+    <masterLabel>Unified Deal Junction Table</masterLabel>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property name="recordTypeName" type="String" label="Record Type Name" default="Residential" description="The Building record type: Residential, Offices, or Retail"/>
+            <property name="columnConfig" type="String" label="Column Configuration (JSON)" description="Optional JSON string to customize columns. If not provided, uses default based on recordTypeName"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -3,8 +3,8 @@
     <actionCalls>
         <name>Submit_for_Approval</name>
         <label>Submit for Approval</label>
-        <locationX>182</locationX>
-        <locationY>863</locationY>
+        <locationX>308</locationX>
+        <locationY>1247</locationY>
         <actionName>submit</actionName>
         <actionType>submit</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -33,10 +33,35 @@
     <apiVersion>63.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <decisions>
+        <name>CheckRecordType</name>
+        <label>Check RecordType</label>
+        <locationX>176</locationX>
+        <locationY>323</locationY>
+        <defaultConnector>
+            <targetReference>Price_lest_than</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>IsResidentialProperty</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>ResidentialProperty</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Pending_Approval_Request</targetReference>
+            </connector>
+            <label>Is Residential Property?</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Is_there_Pending_request</name>
         <label>Is there Pending request?</label>
-        <locationX>50</locationX>
-        <locationY>539</locationY>
+        <locationX>176</locationX>
+        <locationY>923</locationY>
         <defaultConnector>
             <targetReference>Save_Previous_Total_Value</targetReference>
         </defaultConnector>
@@ -57,8 +82,8 @@
     <decisions>
         <name>Price_lest_than</name>
         <label>Price lest than</label>
-        <locationX>248</locationX>
-        <locationY>323</locationY>
+        <locationX>308</locationX>
+        <locationY>431</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Yes</name>
@@ -141,8 +166,8 @@
     <recordLookups>
         <name>Get_Pending_Approval_Request</name>
         <label>Get Pending Approval Request</label>
-        <locationX>50</locationX>
-        <locationY>431</locationY>
+        <locationX>176</locationX>
+        <locationY>815</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Is_there_Pending_request</targetReference>
@@ -169,8 +194,8 @@
     <recordUpdates>
         <name>Save_Deal_Unit_ID</name>
         <label>Save Deal Unit ID</label>
-        <locationX>182</locationX>
-        <locationY>755</locationY>
+        <locationX>308</locationX>
+        <locationY>1139</locationY>
         <connector>
             <targetReference>Submit_for_Approval</targetReference>
         </connector>
@@ -193,8 +218,8 @@
     <recordUpdates>
         <name>Save_Previous_Total_Value</name>
         <label>Save Previous Total Value</label>
-        <locationX>182</locationX>
-        <locationY>647</locationY>
+        <locationX>308</locationX>
+        <locationY>1031</locationY>
         <connector>
             <targetReference>Save_Deal_Unit_ID</targetReference>
         </connector>
@@ -207,10 +232,10 @@
         <inputReference>$Record</inputReference>
     </recordUpdates>
     <start>
-        <locationX>122</locationX>
+        <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Price_lest_than</targetReference>
+            <targetReference>CheckRecordType</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>

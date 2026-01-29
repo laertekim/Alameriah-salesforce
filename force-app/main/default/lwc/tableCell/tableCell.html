@@ -1,0 +1,11 @@
+<template>
+    <template if:true={isCurrency}>
+        <lightning-formatted-number value={cellValue} format-style="currency" currency-code="SAR"></lightning-formatted-number>
+    </template>
+    <template if:true={isNumber}>
+        <lightning-formatted-number value={cellValue}></lightning-formatted-number>
+    </template>
+    <template if:true={isText}>
+        {cellValue}
+    </template>
+</template>

@@ -5,7 +5,7 @@
     <label>Site</label>
     <lookupFilter>
         <active>true</active>
-        <booleanFilter>(1 AND 2) OR (3 AND 4) OR (5 AND 6) OR 7</booleanFilter>
+        <booleanFilter>(1 AND 2) OR (3 AND 4) OR (5 AND 6) OR 7 OR (8 AND 9)</booleanFilter>
         <filterItems>
             <field>$Source.RecordTypeId</field>
             <operation>equals</operation>
@@ -40,6 +40,16 @@
             <field>$Source.RecordTypeId</field>
             <operation>equals</operation>
             <value>Special Leasing</value>
+        </filterItems>
+        <filterItems>
+            <field>$Source.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Residential Property</value>
+        </filterItems>
+        <filterItems>
+            <field>Center__c.Unit_Record_Type__c</field>
+            <operation>equals</operation>
+            <value>Residential</value>
         </filterItems>
         <isOptional>false</isOptional>
     </lookupFilter>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Activity --></label>
+    <name>Activity__c</name>
+    <picklistValues>
+        <masterLabel>Accessories</masterLabel>
+        <translation><!-- Accessories --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Car Rentals</masterLabel>
+        <translation><!-- Car Rentals --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Chocolates</masterLabel>
+        <translation><!-- Chocolates --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Co Working Office</masterLabel>
+        <translation><!-- Co Working Office --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Coffee Shop</masterLabel>
+        <translation><!-- Coffee Shop --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Dates</masterLabel>
+        <translation><!-- Dates --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Fashion</masterLabel>
+        <translation><!-- Fashion --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Female GYM</masterLabel>
+        <translation><!-- Female GYM --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Gifts</masterLabel>
+        <translation><!-- Gifts --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Gold Jewellery</masterLabel>
+        <translation><!-- Gold Jewellery --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>MEN&apos;S GYM</masterLabel>
+        <translation><!-- MEN&apos;S GYM --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>MEN&apos;S SPA</masterLabel>
+        <translation><!-- MEN&apos;S SPA --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Male GYM</masterLabel>
+        <translation><!-- Male GYM --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Mens Salon</masterLabel>
+        <translation><!-- Mens Salon --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Mobiles / Laptops</masterLabel>
+        <translation><!-- Mobiles / Laptops --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Nutrition Store</masterLabel>
+        <translation><!-- Nutrition Store --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Other</masterLabel>
+        <translation><!-- Other --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pharmacy</masterLabel>
+        <translation><!-- Pharmacy --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Printing</masterLabel>
+        <translation><!-- Printing --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Restaurant</masterLabel>
+        <translation><!-- Restaurant --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Retail Bank</masterLabel>
+        <translation><!-- Retail Bank --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SPA / GYM</masterLabel>
+        <translation><!-- SPA / GYM --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Sportswear</masterLabel>
+        <translation><!-- Sportswear --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Super Market</masterLabel>
+        <translation><!-- Super Market --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Supermarket</masterLabel>
+        <translation><!-- Supermarket --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Telecom</masterLabel>
+        <translation><!-- Telecom --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Textile</masterLabel>
+        <translation><!-- Textile --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Travel Agency</masterLabel>
+        <translation><!-- Travel Agency --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Watches</masterLabel>
+        <translation><!-- Watches --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Womens Salon</masterLabel>
+        <translation><!-- Womens Salon --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

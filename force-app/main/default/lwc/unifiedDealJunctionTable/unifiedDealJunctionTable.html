@@ -1,0 +1,165 @@
+<template>
+    <div class="slds-box slds-theme--default" style="padding-bottom: 52px;">
+        <div class="slds-text-heading_medium" style="font-weight: bold;">Deal Units</div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <template for:each={processedDealColumns} for:item="column">
+                        <th key={column.fieldApiName} data-column-index={column.index}>{column.label}</th>
+                    </template>
+                    <th>
+                        <lightning-button variant="brand" title="Update" onclick={updatePage} icon-name="utility:refresh" class="slds-m-left_x-small"></lightning-button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={processedDealRecords} for:item="dealrecord" for:index="index">
+                    <tr class="slds-hint-parent" key={dealrecord.Id} data-id={dealrecord.Id}>
+                        <template for:each={processedDealColumns} for:item="column" for:index="colIndex">
+                            <td key={column.fieldApiName} data-label={column.label}>
+                                <c-table-cell record={dealrecord} column={column} column-index={column.index}></c-table-cell>
+                            </td>
+                        </template>
+                        <td>
+                            <lightning-button variant="brand" label="Edit" title="Edit" onclick={openModal} class="slds-m-left_x-small" data-id={dealrecord.Id}></lightning-button>
+                            <lightning-button variant="brand" label="Delete" title="Delete" onclick={deleteRecordModal} class="slds-m-left_x-small" data-id={dealrecord.Id}></lightning-button>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+        
+        <div class="slds-grid">
+            <div class="slds-col slds-size_8-of-8">
+                <div style="width:100%; height:25px;"></div>
+                <div style="width:100%; height:7px; border-top:5px solid black;"></div>
+                <div class="slds-text-heading_medium" style="font-weight: bold;">Units</div>
+                <div class="slds-grid slds-gutters">
+                    <template for:each={filterFieldsWithData} for:item="filterField" for:index="filterIndex">
+                        <div key={filterField.fieldApiName} class="slds-col slds-size_1-of-8">
+                            <lightning-combobox
+                                name={filterField.fieldApiName}
+                                label={filterField.label}
+                                options={filterField.options}
+                                value={filterField.value}
+                                placeholder="Select Value"
+                                data-field={filterField.fieldApiName}
+                                onchange={handleFilterChange}>
+                            </lightning-combobox>
+                        </div>
+                    </template>
+                    <div class="slds-col slds-size_2-of-8">
+                        <label class="slds-form-element__label"></label>
+                        <div class="slds-grid slds-wrap slds-p-bottom_small">
+                            <lightning-button style="width:200px" variant="brand" label="Add Units" title="Add Units" onclick={getAllId} class="slds-m-right_x-small" data-id="reprocess"></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th>
+                        <lightning-input class="slds-p-left_x-large" type="checkbox" onchange={handleChange}></lightning-input>
+                    </th>
+                    <template for:each={processedUnitColumns} for:item="column">
+                        <th key={column.fieldApiName} data-column-index={column.index}>{column.label}</th>
+                    </template>
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={processedRecords} for:item="record" for:index="index">
+                    <tr class="slds-hint-parent" key={record.Id} data-id={record.Id}>
+                        <td>
+                            <lightning-input class="slds-p-left_x-large" type="checkbox" checked={record.selected} onchange={oneChange} title="checkboxTitle" data-id={record.Id}></lightning-input>
+                        </td>
+                        <template for:each={processedUnitColumns} for:item="column" for:index="colIndex">
+                            <td key={column.fieldApiName} data-label={column.label}>
+                                <c-table-cell record={record} column={column} column-index={column.index}></c-table-cell>
+                            </td>
+                        </template>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+        
+        <!-- Edit Modal -->
+        <template if:true={isModalOpen}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close"
+                                alternative-text="close"
+                                variant="inverse"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit Deal Building</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning-record-edit-form object-api-name="Deal_Building__c"
+                            record-id={recordEditId}
+                            onsuccess={handleSuccess}
+                            onerror={handleError}>
+                            <lightning-layout multiple-rows>
+                                <lightning-layout-item size="12">
+                                    <lightning-input-field field-name="Total_Selling_Price_SAR__c"></lightning-input-field>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="12">
+                                    <lightning-input-field field-name="Price_Notes__c"></lightning-input-field>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="12">
+                                    <div class="slds-m-top_large slds-grid slds-grid_align-center">
+                                        <lightning-button variant="neutral"
+                                            label="Cancel"
+                                            title="Cancel"
+                                            type="text"
+                                            onclick={handleCancel}
+                                            class="slds-m-right_small"></lightning-button>
+                                        <lightning-button variant="brand"
+                                            label="Submit"
+                                            title="Submit"
+                                            type="submit"
+                                            onclick={submitDetails}></lightning-button>
+                                    </div>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </lightning-record-edit-form>
+                    </div>
+                    <footer class="slds-modal__footer">
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        
+        <!-- Delete Modal -->
+        <template if:true={isModalOpen2}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true" aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal2}>
+                            <lightning-icon icon-name="utility:close"
+                                alternative-text="close"
+                                variant="inverse"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Delete Deal Building</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                        <p><b>Record will be deleted. Are you sure?</b></p>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal2} title="Cancel">Cancel</button>
+                        <button class="slds-button slds-button_brand" onclick={submitDetails2} title="OK">OK</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Quarter Rent (SR In favor of ) --></label>
+    <name>Quarter_Rent_SR_In_favor_of__c</name>
+</CustomFieldTranslation>
