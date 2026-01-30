@@ -1,0 +1,72 @@
+.results-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.table-shell {
+    margin: 0.75rem;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    background: #fff;
+    overflow: hidden;
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+.results-table th,
+.results-table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cell-input {
+    width: 100%;
+}
+
+.cell-textarea {
+    width: 100%;
+    resize: vertical;
+    height: auto;
+    min-height: 2.125rem;
+    line-height: 1.5rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+}
+
+.col-pa {
+    width: 14%;
+}
+
+.col-item {
+    width: 6%;
+}
+
+.col-next-action {
+    width: 24%;
+}
+
+.col-assignment {
+    width: 24%;
+}
+
+.col-target-date {
+    width: 12%;
+}
+
+.col-status {
+    width: 12%;
+}
+
+.col-actions {
+    width: 8%;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+}

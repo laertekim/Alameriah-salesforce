@@ -1,0 +1,122 @@
+<template>
+    <template if:true={showSection}>
+        <div class="slds-p-horizontal_small slds-p-bottom_small">
+            <div class="slds-text-title_bold slds-m-bottom_x-small">Projects List</div>
+
+            <template if:true={isLoading}>
+                <lightning-spinner size="small"></lightning-spinner>
+            </template>
+
+            <template if:true={results.length}>
+                <div class="table-shell">
+                    <div class="slds-scrollable_x table-scroll">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered results-table">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col" class="col-pa"><div class="slds-truncate">PA Number</div></th>
+                                    <th scope="col" class="col-item"><div class="slds-truncate">Item</div></th>
+                                    <th scope="col" class="col-next-action"><div class="slds-truncate">Next Action / Decision Required</div></th>
+                                    <th scope="col" class="col-assignment"><div class="slds-truncate">Assignment Description</div></th>
+                                    <th scope="col" class="col-target-date"><div class="slds-truncate">Target Date</div></th>
+                                    <th scope="col" class="col-status"><div class="slds-truncate">Status</div></th>
+                                    <th scope="col" class="col-actions"><div class="slds-truncate">Actions</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={results} for:item="row">
+                                    <tr key={row.id}>
+                                        <td class="col-pa">
+                                            <lightning-input
+                                                variant="label-hidden"
+                                                class="cell-input"
+                                                data-row-id={row.id}
+                                                data-field="paNumber"
+                                                value={row.paNumber}
+                                                onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </td>
+                                        <td class="col-item">
+                                            <lightning-input
+                                                type="number"
+                                                variant="label-hidden"
+                                                class="cell-input"
+                                                data-row-id={row.id}
+                                                data-field="item"
+                                                value={row.item}
+                                                onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </td>
+                                        <td class="col-next-action">
+                                            <textarea
+                                                class="cell-textarea"
+                                                rows="1"
+                                                data-row-id={row.id}
+                                                data-field="nextActionText"
+                                                onchange={handleFieldChange}>{row.nextActionText}</textarea>
+                                        </td>
+                                        <td class="col-assignment">
+                                            <textarea
+                                                class="cell-textarea"
+                                                rows="1"
+                                                data-row-id={row.id}
+                                                data-field="assignmentText"
+                                                onchange={handleFieldChange}>{row.assignmentText}</textarea>
+                                        </td>
+                                        <td class="col-target-date">
+                                            <lightning-input
+                                                type="date"
+                                                variant="label-hidden"
+                                                class="cell-input"
+                                                data-row-id={row.id}
+                                                data-field="targetDate"
+                                                value={row.targetDate}
+                                                onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </td>
+                                        <td class="col-status">
+                                            <lightning-combobox
+                                                variant="label-hidden"
+                                                class="cell-input"
+                                                data-row-id={row.id}
+                                                data-field="status"
+                                                value={row.status}
+                                                options={statusOptions}
+                                                onchange={handleFieldChange}>
+                                            </lightning-combobox>
+                                        </td>
+                                        <td class="col-actions">
+                                            <div class="slds-button-group action-buttons" role="group">
+                                                <lightning-button-icon
+                                                    icon-name="utility:check"
+                                                    alternative-text="Save"
+                                                    title="Save"
+                                                    data-row-id={row.id}
+                                                    onclick={handleSaveRow}
+                                                    disabled={row.isSaving}>
+                                                </lightning-button-icon>
+                                                <lightning-button-icon
+                                                    icon-name="utility:delete"
+                                                    alternative-text="Delete"
+                                                    title="Delete"
+                                                    data-row-id={row.id}
+                                                    onclick={handleDeleteRow}
+                                                    disabled={row.isDeleting}>
+                                                </lightning-button-icon>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </template>
+
+            <template if:true={showNoResults}>
+                <div class="slds-text-color_weak slds-p-around_x-small">
+                    No results.
+                </div>
+            </template>
+        </div>
+    </template>
+</template>
