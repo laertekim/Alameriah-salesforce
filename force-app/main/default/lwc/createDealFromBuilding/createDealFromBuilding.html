@@ -28,6 +28,16 @@
                     </lightning-record-edit-form>
                 </div>
             </div>
+            <div class="slds-grid slds-gutters" style="padding-top:20px" if:true={showPaymentPlan}>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-combobox label="Payment Plan" 
+                                        value={paymentPlan} 
+                                        onchange={handleChangePaymentPlan} 
+                                        options={paymentPlans}
+                                        placeholder="Select Payment Plan">
+                    </lightning-combobox>
+                </div>
+            </div>
             <div class="slds-grid slds-gutters" style="padding-top:20px">
                 <div class="slds-col">
                     <lightning-button style="float: right;" variant="brand" label="Cancel" title="Cancel" onclick={handleClickCancel} class="slds-m-right_x-small"></lightning-button>                </div>

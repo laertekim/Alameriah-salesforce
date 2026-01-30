@@ -1,0 +1,131 @@
+/* Card must allow dropdown overflow */
+.slds-card,
+.slds-card__body {
+    overflow: visible !important;
+}
+
+.card-offset-right {
+    padding-left: 0.75rem;
+}
+
+/* Keep horizontal scroll, allow vertical overflow for dropdowns */
+.slds-scrollable_x {
+    overflow-x: auto;
+    overflow-y: visible !important;
+    position: relative;
+}
+
+.slds-form-element__label {
+    font-weight: bold;
+}
+
+.table-shell {
+    margin: 0.75rem;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    background: #fff;
+    overflow: visible;
+}
+
+.table-scroll {
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+/* Remove "gaps" e garante grid certinho */
+.table-shell .slds-table {
+    border: none;
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+/* ========================= */
+/* Print table: NO dividers   */
+/* ========================= */
+.table-shell thead th,
+.table-shell tbody td {
+    border: none;
+}
+
+td {
+    position: relative;
+    overflow: visible !important;
+}
+
+.resizable-textarea {
+    resize: vertical;
+    height: 2.125rem;
+    min-height: 2.125rem;
+}
+
+/* =============== */
+/* Compact lookups */
+/* =============== */
+.lookup-container {
+    position: relative;
+    max-width: 520px;
+}
+
+.lookup-input {
+    width: 100%;
+}
+
+.lookup-readonly {
+    position: relative;
+}
+
+.lookup-edit-btn {
+    position: absolute;
+    right: 0.35rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+.lookup-dropdown {
+    position: absolute;
+    top: calc(100% + 0.15rem);
+    left: 0;
+    width: 100%;
+    z-index: 7000;
+    max-height: 280px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.16);
+}
+
+/* Datepicker: only z-index help */
+:host {
+    --lwc-zIndexModal: 10000;
+}
+
+/* ========================= */
+/* Actions buttons spacing    */
+/* ========================= */
+.actions-group lightning-button-icon {
+    margin-right: 0.35rem;
+}
+
+.actions-group lightning-button-icon:last-child {
+    margin-right: 0;
+}
+
+/* ========================= */
+/* Status dropdown (opens up) */
+/* ========================= */
+.status-combobox {
+    position: relative;
+}
+
+.status-dropdown {
+    z-index: 9000;
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    background: #fff;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.16);
+}

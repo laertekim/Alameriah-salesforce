@@ -1,0 +1,33 @@
+<template>
+    <lightning-card title="Executive Report PDF">
+        <div class="slds-p-around_medium">
+            <div class="slds-text-heading_small slds-m-bottom_medium">
+                Confirm PDF generation?
+            </div>
+
+            <div class="slds-m-top_medium">
+                <lightning-button
+                    label="Generate PDF"
+                    variant="brand"
+                    onclick={handleGenerate}
+                    disabled={isLoading}
+                    class="slds-m-right_small">
+                </lightning-button>
+
+                <lightning-button
+                    label="Cancel"
+                    variant="neutral"
+                    onclick={handleCancel}
+                    disabled={isLoading}>
+                </lightning-button>
+            </div>
+
+            <template if:true={isLoading}>
+                <div class="slds-m-top_small">
+                    <lightning-spinner size="small"></lightning-spinner>
+                    <p class="slds-m-top_small">Generating PDF...</p>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,308 @@
+<template>
+    <div class="card-offset-right">
+        <lightning-card title="Quick Add Items">
+        <!-- Global lookups -->
+        <div class="slds-p-horizontal_small slds-p-bottom_x-small">
+            <div class="slds-grid slds-wrap">
+
+                <!-- Executive Report -->
+                <div class="slds-col slds-size_1-of-1 slds-m-bottom_x-small">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">Executive Report</label>
+                        <div class="slds-form-element__control lookup-container">
+                            <template if:true={globalExecutiveReportId}>
+                                <div class="lookup-readonly">
+                                    <lightning-input
+                                        variant="label-stacked"
+                                        value={globalExecutiveReportLabel}
+                                        placeholder="Executive Report..."
+                                        readonly
+                                        class="lookup-input slds-m-bottom_xx-small">
+                                    </lightning-input>
+
+                                    <button
+                                        type="button"
+                                        class="slds-button slds-button_icon slds-button_icon-x-small lookup-edit-btn"
+                                        onclick={handleGlobalExecutiveReportClear}
+                                        title="Edit">
+                                        <lightning-icon icon-name="utility:edit" size="x-small"></lightning-icon>
+                                    </button>
+                                </div>
+                            </template>
+
+                            <template if:false={globalExecutiveReportId}>
+                                <lightning-input
+                                    type="search"
+                                    variant="label-hidden"
+                                    placeholder="Search Executive Report..."
+                                    value={globalExecutiveReportSearch}
+                                    onchange={handleGlobalExecutiveReportSearch}
+                                    class="lookup-input">
+                                </lightning-input>
+
+                                <template if:true={showGlobalExecutiveReportDropdown}>
+                                    <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid lookup-dropdown">
+                                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                            <template for:each={globalExecutiveReportOptions} for:item="option">
+                                                <li key={option.value} role="presentation" class="slds-listbox__item">
+                                                    <div class="slds-media slds-listbox__option slds-listbox__option_entity"
+                                                         role="option"
+                                                         data-value={option.value}
+                                                         onclick={handleGlobalExecutiveReportSelect}>
+                                                        <span class="slds-media__body">
+                                                            <span class="slds-listbox__option-text">{option.label}</span>
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project -->
+                <div class="slds-col slds-size_1-of-1">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">Project</label>
+                        <div class="slds-form-element__control lookup-container">
+                            <template if:true={globalProjectId}>
+                                <div class="lookup-readonly">
+                                    <lightning-input
+                                        type="text"
+                                        variant="label-hidden"
+                                        value={globalProjectLabel}
+                                        placeholder="Project..."
+                                        readonly
+                                        class="lookup-input">
+                                    </lightning-input>
+
+                                    <button
+                                        type="button"
+                                        class="slds-button slds-button_icon slds-button_icon-x-small lookup-edit-btn"
+                                        onclick={handleGlobalProjectClear}
+                                        title="Edit">
+                                        <lightning-icon icon-name="utility:edit" size="x-small"></lightning-icon>
+                                    </button>
+                                </div>
+                            </template>
+
+                            <template if:false={globalProjectId}>
+                                <lightning-input
+                                    type="search"
+                                    variant="label-hidden"
+                                    placeholder="Search Project..."
+                                    value={globalProjectSearch}
+                                    onchange={handleGlobalProjectSearch}
+                                    class="lookup-input">
+                                </lightning-input>
+
+                                <template if:true={showGlobalProjectDropdown}>
+                                    <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid lookup-dropdown">
+                                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                            <template for:each={globalProjectOptions} for:item="option">
+                                                <li key={option.value} role="presentation" class="slds-listbox__item">
+                                                    <div class="slds-media slds-listbox__option slds-listbox__option_entity"
+                                                         role="option"
+                                                         data-value={option.value}
+                                                         onclick={handleGlobalProjectSelect}>
+                                                        <span class="slds-media__body">
+                                                            <span class="slds-listbox__option-text">{option.label}</span>
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <c-project-assignment-search-results
+            search-term={projectResultsSearchTerm}
+            refresh-key={projectResultsRefreshKey}>
+        </c-project-assignment-search-results>
+
+        <template if:true={errorBanner}>
+            <div class="slds-notify slds-notify_alert slds-alert_error slds-m-around_small" role="alert">
+                <span>{errorBanner}</span>
+            </div>
+        </template>
+
+        <!-- Print table -->
+        <div class="table-shell">
+            <div class="slds-scrollable_x table-scroll"></div>
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col"><div class="slds-truncate">PA Number</div></th>
+                        <th scope="col"><div class="slds-truncate">Item</div></th>
+                        <th scope="col"><div class="slds-truncate">Next Action / Decision Required</div></th>
+                        <th scope="col"><div class="slds-truncate">Assignment Description</div></th>
+                        <th scope="col"><div class="slds-truncate">Target Date</div></th>
+                        <th scope="col"><div class="slds-truncate">Status</div></th>
+                        <th scope="col"><div class="slds-truncate">Actions</div></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <template for:each={rows} for:item="row" for:index="index">
+                        <tr key={row.key}>
+                            <td>
+                                <lightning-input
+                                    variant="label-hidden"
+                                    value={row.paNumber}
+                                    data-index={index}
+                                    data-field="paNumber"
+                                    onchange={handleChange}>
+                                </lightning-input>
+                            </td>
+
+                            <td style="width:120px">
+                                <lightning-input
+                                    type="number"
+                                    variant="label-hidden"
+                                    value={row.item}
+                                    data-index={index}
+                                    data-field="item"
+                                    onchange={handleChange}>
+                                </lightning-input>
+                            </td>
+
+                            <td style="min-width:340px">
+                                <textarea
+                                    class="slds-textarea resizable-textarea"
+                                    rows="1"
+                                    value={row.nextAction}
+                                    data-index={index}
+                                    data-field="nextAction"
+                                    onchange={handleChange}>
+                                </textarea>
+                            </td>
+
+                            <td style="min-width:340px">
+                                <textarea
+                                    class="slds-textarea resizable-textarea"
+                                    rows="1"
+                                    value={row.assignment}
+                                    data-index={index}
+                                    data-field="assignment"
+                                    onchange={handleChange}>
+                                </textarea>
+                            </td>
+
+                            <td style="width:170px; position: relative; overflow: visible;">
+                                <lightning-input
+                                    type="date"
+                                    variant="label-hidden"
+                                    value={row.targetDate}
+                                    data-index={index}
+                                    data-field="targetDate"
+                                    onchange={handleChange}>
+                                </lightning-input>
+                            </td>
+
+                            <!-- Status (custom, opens UP) -->
+                            <td style="width:190px; position: relative; overflow: visible;">
+                                <div class="status-combobox">
+                                    <div class="slds-combobox_container">
+                                        <div class={row.statusComboboxClass} role="combobox" aria-expanded={row.showStatusDropdown} aria-haspopup="listbox">
+                                            <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                                <input
+                                                    class="slds-input slds-combobox__input"
+                                                    type="text"
+                                                    readonly
+                                                    placeholder="Select an Option"
+                                                    value={row.statusLabel}
+                                                    data-index={index}
+                                                    onclick={toggleStatusDropdown}
+                                                />
+                                                <span class="slds-icon_container slds-input__icon slds-input__icon_right">
+                                                    <lightning-icon icon-name="utility:down" size="x-small"></lightning-icon>
+                                                </span>
+                                            </div>
+
+                                            <template if:true={row.showStatusDropdown}>
+                                                <div class="slds-dropdown slds-dropdown_fluid slds-dropdown_length-5 slds-dropdown_bottom status-dropdown">
+                                                    <ul class="slds-listbox slds-listbox_vertical" role="listbox">
+                                                        <template for:each={statusOptions} for:item="opt">
+                                                            <li key={opt.value} role="presentation" class="slds-listbox__item">
+                                                                <div
+                                                                    class="slds-listbox__option slds-listbox__option_plain slds-media"
+                                                                    role="option"
+                                                                    data-index={index}
+                                                                    data-value={opt.value}
+                                                                    data-label={opt.label}
+                                                                    onclick={selectStatus}>
+                                                                    <span class="slds-media__body">
+                                                                        <span class="slds-truncate">{opt.label}</span>
+                                                                    </span>
+                                                                </div>
+                                                            </li>
+                                                        </template>
+                                                    </ul>
+                                                </div>
+                                            </template>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Actions -->
+                            <td style="width:180px">
+                                <div class="slds-button-group actions-group" role="group">
+                                    <lightning-button-icon
+                                        icon-name="utility:check"
+                                        alternative-text="Save"
+                                        data-index={index}
+                                        onclick={save}>
+                                    </lightning-button-icon>
+                                    
+                                    <lightning-button-icon
+                                        icon-name="utility:edit"
+                                        alternative-text="Edit"
+                                        data-index={index}
+                                        onclick={handleRowEdit}>
+                                    </lightning-button-icon>
+
+                                    <lightning-button-icon
+                                        icon-name="utility:delete"
+                                        alternative-text="Remove"
+                                        data-index={index}
+                                        onclick={removeRow}>
+                                    </lightning-button-icon>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <template if:true={row.error}>
+                            <tr key={row.errorKey}>
+                                <td colspan="7">
+                                    <div class="slds-text-color_error slds-p-around_x-small">
+                                        {row.error}
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="slds-p-horizontal_small slds-p-top_small slds-p-bottom_small">
+            <div class="slds-p-horizontal_small slds-p-bottom_x-small">
+                <lightning-button label="Add Row" onclick={addRow}></lightning-button>
+            </div>
+        </div>
+        </lightning-card>
+    </div>
+</template>
