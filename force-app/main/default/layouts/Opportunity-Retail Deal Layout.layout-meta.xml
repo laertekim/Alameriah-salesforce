@@ -406,16 +406,16 @@
     <relatedLists>
         <excludeButtons>MassChangeOwner</excludeButtons>
         <fields>NAME</fields>
-        <fields>Year__c</fields>
-        <fields>Escalation__c</fields>
+        <fields>Description__c</fields>
+        <fields>Percentage__c</fields>
         <fields>Amount__c</fields>
-        <fields>VAT_Amount__c</fields>
         <fields>Scheduled_Payment_Date__c</fields>
         <fields>Payment_Status__c</fields>
         <fields>Receivable_Amount__c</fields>
         <fields>Payment_Date__c</fields>
-        <fields>CREATED_DATE</fields>
         <relatedList>Payment_Schedule__c.Deal__c</relatedList>
+        <sortField>Scheduled_Payment_Date__c</sortField>
+        <sortOrder>Asc</sortOrder>
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>

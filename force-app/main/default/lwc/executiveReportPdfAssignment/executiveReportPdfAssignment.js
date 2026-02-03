@@ -89,7 +89,7 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
   drawHeader(doc, ctx) {
     const { marginLeft, marginTop, pageWidth, headerHeight, logoDataUrl, reportDateStr } = ctx;
 
-    doc.setDrawColor(22, 50, 92); // #16325c
+    doc.setDrawColor(22, 50, 92);
     doc.setLineWidth(0.3);
     doc.line(marginLeft, marginTop + headerHeight, pageWidth - marginLeft, marginTop + headerHeight);
 
@@ -141,9 +141,7 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
   drawFooter(doc, ctx) {
     const { marginLeft, pageWidth, pageHeight, marginBottom } = ctx;
 
-    const pageCount = doc.getNumberOfPages();
     const pageNumber = doc.internal.getCurrentPageInfo().pageNumber;
-
     const footerY = pageHeight - marginBottom + 8;
 
     doc.setDrawColor(160, 160, 160);
@@ -159,17 +157,12 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
     doc.setFontSize(9);
     doc.setTextColor(112, 110, 107);
     doc.text('DEVELOPMENT DEPARTMENT', marginLeft + 35, footerY);
-
   }
 
-  measureRowPages(jsPDFCtor, head, body, tableTopY, margins, tableWidth, styles, headStyles, columnStyles, ctx) {
-    const measureDoc = new jsPDFCtor({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-
+  // Measurement pass to determine which page each row will be on
+  measureRowPages(jsPDF, head, body, tableTopY, margins, tableWidth, styles, headStyles, columnStyles, ctx) {
+    const measureDoc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
     const rowPageMap = {};
-
-    this.drawHeader(measureDoc, ctx);
-    this.drawLegend(measureDoc, ctx);
-    this.drawFooter(measureDoc, ctx);
 
     measureDoc.autoTable({
       head,
@@ -188,7 +181,7 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
         }
       },
 
-      didDrawPage: () => {
+      didDrawPage: (data) => {
         this.drawHeader(measureDoc, ctx);
         this.drawLegend(measureDoc, ctx);
         this.drawFooter(measureDoc, ctx);
@@ -198,29 +191,36 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
     return rowPageMap;
   }
 
-  computeProjectSpansPerPage(body, rowPageMap, projectColIndex = 1) {
-    const spanMap = new Array(body.length).fill(1);
-
+  // Compute rowSpan for project column based on page boundaries
+  computeProjectRowSpans(body, rowPageMap) {
+    const rowSpans = {};
+    
     let i = 0;
     while (i < body.length) {
-      const page = rowPageMap[i];
-
+      const currentPage = rowPageMap[i];
+      const currentProject = body[i][1]; // Project name is in column 1
+      
+      let spanCount = 1;
       let j = i + 1;
-      while (j < body.length && rowPageMap[j] === page) {
+      
+      // Count consecutive rows with same project on same page
+      while (j < body.length && 
+             rowPageMap[j] === currentPage && 
+             body[j][1] === currentProject) {
+        spanCount++;
         j++;
       }
-
-      const span = j - i;
-      spanMap[i] = span;
-
+      
+      // Set rowSpan for first row and 0 for subsequent rows
+      rowSpans[i] = spanCount;
       for (let k = i + 1; k < j; k++) {
-        spanMap[k] = 0;
+        rowSpans[k] = 0; // Hide these cells
       }
-
+      
       i = j;
     }
-
-    return spanMap;
+    
+    return rowSpans;
   }
 
   handleCancel() {
@@ -237,9 +237,6 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
       if (!jsPDF) throw new Error('jsPDF not found (window.jspdf.jsPDF)');
 
       const rows = await getAssignments({ executiveReportId: this.recordId });
-
-      console.log('rows sample', JSON.parse(JSON.stringify(rows?.[0])));
-      console.log('project name sample', rows?.[0]?.Project__r?.Name);
 
       const logoDataUrl = await this.loadImageAsDataUrl(LOGO);
 
@@ -279,32 +276,25 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
         'Priority / Notes'
       ]];
 
-      const projectGroups = [];
-      let currentProject = null;
-      let currentGroup = null;
+      // Build flat body array with all rows
+      const body = [];
+      const statusMap = {};
+      let itemCounter = 1;
 
-      (rows || []).forEach((a, idx) => {
+      (rows || []).forEach((a) => {
         const projectName = a.Project__r?.Name || a.Name || '';
+        const rowData = [
+          itemCounter++,
+          projectName,
+          this.stripHtmlToText(a.Assignment_Description__c),
+          this.stripHtmlToText(a.Next_Action_Decision_Required__c),
+          a.Action_By__r?.Name ?? '',
+          a.Target_Status__c ?? '',
+          this.stripHtmlToText(a.Priority_Notes__c)
+        ];
         
-        if (projectName !== currentProject) {
-          currentProject = projectName;
-          currentGroup = {
-            projectName: projectName,
-            items: [],
-            itemStartIndex: idx + 1
-          };
-          projectGroups.push(currentGroup);
-        }
-
-        currentGroup.items.push({
-          itemNumber: currentGroup.items.length + 1,
-          projectName: projectName,
-          assignmentDescription: this.stripHtmlToText(a.Assignment_Description__c),
-          nextAction: this.stripHtmlToText(a.Next_Action_Decision_Required__c),
-          actionBy: a.Action_By__r?.Name ?? '',
-          targetStatus: a.Target_Status__c ?? '',
-          priorityNotes: this.stripHtmlToText(a.Priority_Notes__c)
-        });
+        body.push(rowData);
+        statusMap[body.length - 1] = String(rowData[5] ?? '').trim();
       });
 
       const tableWidth = pageWidth - marginLeft - marginRight;
@@ -336,7 +326,7 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
 
       const columnStyles = {
         0: { cellWidth: w[0], halign: 'center', fontStyle: 'bold' },
-        1: { cellWidth: w[1], halign: 'center', valign: 'middle', fontStyle: 'bold', lineWidth: 0 },
+        1: { cellWidth: w[1], halign: 'center', valign: 'middle', fontStyle: 'bold' },
         2: { cellWidth: w[2] },
         3: { cellWidth: w[3] },
         4: { cellWidth: w[4] },
@@ -344,94 +334,77 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
         6: { cellWidth: w[6] }
       };
 
-      let currentY = tableTopY;
-      let isFirstPage = true;
+      // STEP 1: Measurement pass to determine page layout
+      const rowPageMap = this.measureRowPages(
+        jsPDF, head, body, tableTopY,
+        { left: marginLeft, right: marginRight, bottom: marginBottom },
+        tableWidth, styles, headStyles, columnStyles, ctx
+      );
 
-      for (const group of projectGroups) {
-        if (!isFirstPage) {
-          doc.addPage();
-          this.drawHeader(doc, ctx);
-          this.drawLegend(doc, ctx);
-          this.drawFooter(doc, ctx);
-          currentY = tableTopY;
-        }
-        isFirstPage = false;
+      // STEP 2: Compute rowSpans for project column
+      const projectRowSpans = this.computeProjectRowSpans(body, rowPageMap);
 
-        // Build body for this project (project column styled per row)
-        const body = group.items.map((item) => ([
-          item.itemNumber,
-          item.projectName,
-          item.assignmentDescription,
-          item.nextAction,
-          item.actionBy,
-          item.targetStatus,
-          item.priorityNotes
-        ]));
+      // STEP 3: Actual render with merged cells
+      doc.autoTable({
+        head,
+        body,
+        startY: tableTopY,
+        margin: { left: marginLeft, right: marginRight, top: tableTopY, bottom: marginBottom },
+        tableWidth,
+        showHead: 'everyPage',
+        styles,
+        headStyles,
+        tableLineColor: [0, 0, 0],
+        tableLineWidth: 0.6,
+        columnStyles,
 
-        const statusMap = {};
-        body.forEach((row, idx) => {
-          statusMap[idx] = String(row[5] ?? '').trim();
-        });
-
-        doc.autoTable({
-          head,
-          body,
-          startY: currentY,
-          margin: { left: marginLeft, right: marginRight, top: currentY, bottom: marginBottom },
-          tableWidth,
-          showHead: 'everyPage',
-          styles,
-          headStyles,
-          tableLineColor: [0, 0, 0],
-          tableLineWidth: 0.6,
-          columnStyles,
-
-          didParseCell: (data) => {
-            if (data.section === 'body' && data.column.index === 1) {
+        didParseCell: (data) => {
+          // Handle project column merging
+          if (data.section === 'body' && data.column.index === 1) {
+            const rowIndex = data.row.index;
+            const span = projectRowSpans[rowIndex];
+            
+            if (span > 1) {
+              data.cell.rowSpan = span;
+            } else if (span === 0) {
+              // Hide this cell (it's part of a merged cell above)
+              data.cell.styles.fillColor = false;
+              data.cell.styles.textColor = false;
+              data.cell.text = '';
+            }
+            
+            // Style for visible project cells
+            if (span >= 1) {
               data.cell.styles.fillColor = [22, 50, 92];
               data.cell.styles.textColor = [255, 255, 255];
               data.cell.styles.fontStyle = 'bold';
               data.cell.styles.halign = 'center';
               data.cell.styles.valign = 'middle';
-              data.cell.styles.lineWidth = 0;
             }
-
-            if (data.section === 'body' && data.column.index === 6) {
-              const rowIndex = data.row.index;
-              let statusText = statusMap[rowIndex];
-              
-              if (!statusText && data.row.raw && data.row.raw.length > 5) {
-                statusText = String(data.row.raw[6] ?? '').trim();
-              }
-              
-              if (!statusText && body && body[rowIndex] && body[rowIndex].length > 5) {
-                statusText = String(body[rowIndex][6] ?? '').trim();
-              }
-              
-              statusText = statusText || '';
-              
-              if (statusText) {
-                const rgb = this.resolveStatusColorByValue(statusText);
-                data.cell.styles.textColor = rgb;
-
-                if (statusText.toLowerCase().includes('pending')) {
-                  data.cell.styles.fontStyle = 'bold';
-                }
-              } else {
-                data.cell.styles.textColor = [0, 0, 0];
-              }
-            }
-          },
-
-          didDrawPage: () => {
-            this.drawHeader(doc, ctx);
-            this.drawLegend(doc, ctx);
-            this.drawFooter(doc, ctx);
           }
-        });
 
-        currentY = doc.lastAutoTable?.finalY ?? currentY;
-      }
+          // Handle status column coloring
+          if (data.section === 'body' && data.column.index === 5) {
+            const rowIndex = data.row.index;
+            const statusText = statusMap[rowIndex] || '';
+            
+            if (statusText) {
+              const rgb = this.resolveStatusColorByValue(statusText);
+              data.cell.styles.textColor = rgb;
+
+              if (statusText.toLowerCase().includes('pending')) {
+                data.cell.styles.fontStyle = 'bold';
+              }
+            }
+          }
+        },
+
+        didDrawPage: () => {
+          this.drawHeader(doc, ctx);
+          this.drawLegend(doc, ctx);
+          this.drawFooter(doc, ctx);
+        }
+      });
 
       doc.save(this.fileName());
       

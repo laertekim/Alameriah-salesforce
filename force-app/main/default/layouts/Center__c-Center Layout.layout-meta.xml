@@ -168,14 +168,15 @@
     <relatedLists>
         <excludeButtons>MassChangeOwner</excludeButtons>
         <fields>NAME</fields>
-        <fields>Status__c</fields>
-        <fields>Zone__c</fields>
-        <fields>Level__c</fields>
+        <fields>LocationAndVisibility__c</fields>
         <fields>Unit_Type__c</fields>
-        <fields>Unit_No__c</fields>
-        <fields>Unit_Area_Sqm__c</fields>
+        <fields>LandArea__c</fields>
+        <fields>LandSellableAmount__c</fields>
+        <fields>LandSellableAreaSqm__c</fields>
+        <fields>VillaArea__c</fields>
+        <fields>VillaSellableAmount__c</fields>
+        <fields>PreLaunchPrice__c</fields>
         <fields>Asking_Price__c</fields>
-        <fields>Asking_Annual_Rent__c</fields>
         <relatedList>Building__c.Center_Name__c</relatedList>
     </relatedLists>
     <relatedLists>

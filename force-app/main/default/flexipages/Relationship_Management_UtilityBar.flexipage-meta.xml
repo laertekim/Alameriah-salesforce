@@ -3,22 +3,30 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>notes:utilityBarNoteList</componentName>
-                <identifier>notes_utilityBarNoteList</identifier>
+                <componentName>runtime_sales_todo_list:unifiedToDoListAuraWrapper</componentName>
+                <identifier>runtime_sales_todo_list_unifiedToDoListAuraWrapper</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
             <componentInstance>
-                <componentName>console:history</componentName>
-                <identifier>console_history</identifier>
+                <componentName>notes:utilityBarNoteList</componentName>
+                <identifier>notes_utilityBarNoteList</identifier>
             </componentInstance>
         </itemInstances>
         <name>utilityItems</name>
         <type>Region</type>
     </flexiPageRegions>
+    <flexiPageRegions>
+        <name>backgroundComponents</name>
+        <type>Background</type>
+    </flexiPageRegions>
     <masterLabel>Relationship Management UtilityBar</masterLabel>
     <template>
         <name>one:utilityBarTemplateDesktop</name>
+        <properties>
+            <name>isLeftAligned</name>
+            <value>true</value>
+        </properties>
     </template>
     <type>UtilityBar</type>
 </FlexiPage>

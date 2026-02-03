@@ -747,15 +747,7 @@
     <picklistValues>
         <picklist>Unit_Type__c</picklist>
         <values>
-            <fullName>Retail</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Social Hub</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Terrace</fullName>
             <default>false</default>
         </values>
         <values>

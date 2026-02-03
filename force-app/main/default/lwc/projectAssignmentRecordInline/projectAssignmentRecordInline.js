@@ -362,7 +362,6 @@ export default class ProjectAssignmentRecordInline extends LightningElement {
         const term = event.detail?.value ?? event.target?.value ?? '';
         this.globalProjectSearch = term;
         this.showGlobalProjectDropdown = false;
-        this.projectResultsSearchTerm = term;
 
         if (this._globalProjectTimer) clearTimeout(this._globalProjectTimer);
 
@@ -402,6 +401,8 @@ export default class ProjectAssignmentRecordInline extends LightningElement {
         this.globalProjectSearch = '';
         this.globalProjectOptions = [];
         this.showGlobalProjectDropdown = false;
+        this.projectResultsSearchTerm = selectedLabel || '';
+        this.projectResultsRefreshKey += 1;
     }
 
     handleGlobalProjectClear() {

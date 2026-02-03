@@ -78,6 +78,54 @@
                 <identifier>RecordUnit_No_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.LandArea__c</fieldItem>
+                <identifier>RecordLandArea__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.LandSellableAreaSqm__c</fieldItem>
+                <identifier>RecordLandSellableAreaSqm__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.LocationAndVisibility__c</fieldItem>
+                <identifier>RecordLocationAndVisibility__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.LandSellableAmount__c</fieldItem>
+                <identifier>RecordLandSellableAmount__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.VillaArea__c</fieldItem>
+                <identifier>RecordVillaArea__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.VillaSellableAreaSqm__c</fieldItem>
+                <identifier>RecordVillaSellableAreaSqm__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.VillaSellableAmount__c</fieldItem>
+                <identifier>RecordVillaSellableAmount__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.PreLaunchPrice__c</fieldItem>
+                <identifier>RecordPreLaunchPrice__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-cf0e740c-b4fd-436c-b820-036a2ab97c38</name>
         <type>Facet</type>
     </flexiPageRegions>

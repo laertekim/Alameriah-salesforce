@@ -36,12 +36,12 @@
                                     variant="label-hidden"
                                     placeholder="Search Executive Report..."
                                     value={globalExecutiveReportSearch}
-                                    onchange={handleGlobalExecutiveReportSearch}
+                                    oninput={handleGlobalExecutiveReportSearch}
                                     class="lookup-input">
                                 </lightning-input>
 
                                 <template if:true={showGlobalExecutiveReportDropdown}>
-                                    <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid lookup-dropdown">
+                                    <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid slds-dropdown_right lookup-dropdown">
                                         <ul class="slds-listbox slds-listbox_vertical" role="presentation">
                                             <template for:each={globalExecutiveReportOptions} for:item="option">
                                                 <li key={option.value} role="presentation" class="slds-listbox__item">
@@ -100,7 +100,7 @@
                                 </lightning-input>
 
                                 <template if:true={showGlobalProjectDropdown}>
-                                    <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid lookup-dropdown">
+                                    <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid slds-dropdown_right lookup-dropdown">
                                         <ul class="slds-listbox slds-listbox_vertical" role="presentation">
                                             <template for:each={globalProjectOptions} for:item="option">
                                                 <li key={option.value} role="presentation" class="slds-listbox__item">

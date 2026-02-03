@@ -169,6 +169,16 @@
                 <identifier>RecordLandSellableAmount__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.TotalScheduledPayment__c</fieldItem>
+                <identifier>RecordTotalScheduledPayment__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-48564b2e-8bfb-4dd5-aea2-93d029c3f420</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -345,6 +355,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Offer_Valid_till__c</fieldItem>
                 <identifier>RecordOffer_Valid_till_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.TotalScheduledPayment__c</fieldItem>
+                <identifier>RecordTotalScheduledPayment_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-ac1def39-237a-44a2-95f0-329f6f5decd1</name>

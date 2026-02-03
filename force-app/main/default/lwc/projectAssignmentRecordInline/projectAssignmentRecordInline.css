@@ -83,10 +83,11 @@ td {
     z-index: 2;
 }
 
-.lookup-dropdown {
+.lookup-container .lookup-dropdown {
     position: absolute;
     top: calc(100% + 0.15rem);
-    left: 0;
+    left: auto !important;
+    right: 0 !important;
     width: 100%;
     z-index: 7000;
     max-height: 280px;

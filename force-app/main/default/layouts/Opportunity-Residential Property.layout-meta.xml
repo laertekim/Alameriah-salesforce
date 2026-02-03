@@ -107,6 +107,10 @@
                 <behavior>Edit</behavior>
                 <field>Offer_Valid_till__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>TotalScheduledPayment__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>
@@ -395,12 +399,12 @@
         <fields>Percentage__c</fields>
         <fields>Amount__c</fields>
         <fields>Scheduled_Payment_Date__c</fields>
-        <fields>Year__c</fields>
-        <fields>Escalation__c</fields>
         <fields>Payment_Status__c</fields>
         <fields>Receivable_Amount__c</fields>
         <fields>Payment_Date__c</fields>
         <relatedList>Payment_Schedule__c.Deal__c</relatedList>
+        <sortField>Scheduled_Payment_Date__c</sortField>
+        <sortOrder>Asc</sortOrder>
     </relatedLists>
     <relatedLists>
         <excludeButtons>MassChangeOwner</excludeButtons>
