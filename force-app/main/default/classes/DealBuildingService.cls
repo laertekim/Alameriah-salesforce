@@ -5,6 +5,7 @@ public class DealBuildingService {
     
     /**
      * Sets Total Selling Price based on Opportunity Record Type
+     * For Residential Property: uses Asking_Price__c if Total_Selling_Price_SAR__c is empty
      */
     public void setTotalSellingPrice(List<Deal_Building__c> dealBuildings) {
         Set<Id> opportunityIds = extractOpportunityIds(dealBuildings);
@@ -20,6 +21,13 @@ public class DealBuildingService {
             if (opp != null && building != null) {
                 dealBuilding.Total_Selling_Price_SAR__c = 
                     calculateSellingPrice(opp.RecordType.Name, building);
+            }
+            
+            // For Residential Property: use Asking_Price__c as fallback if Total_Selling_Price_SAR__c is empty
+            if (opp != null && opp.RecordType.Name == 'Residential Property') {
+                if (dealBuilding.Total_Selling_Price_SAR__c == null || dealBuilding.Total_Selling_Price_SAR__c == 0) {
+                    dealBuilding.Total_Selling_Price_SAR__c = nvl(dealBuilding.Asking_Price__c);
+                }
             }
         }
     }
@@ -78,7 +86,7 @@ public class DealBuildingService {
     /**
      * Recalculates all values for given opportunities from scratch
      */
-    private void recalculateOpportunities(Set<Id> opportunityIds) {
+    public void recalculateOpportunities(Set<Id> opportunityIds) {
         // Get all Deal Buildings for these opportunities
         List<Deal_Building__c> allDealBuildings = [
             SELECT Id, Deal__c, Building__c, Total_Selling_Price_SAR__c,
@@ -113,8 +121,10 @@ public class DealBuildingService {
         // Get opportunities and reset their values
         Map<Id, Opportunity> opportunityMap = opportunityRepo.getOpportunitiesWithFields(opportunityIds);
         
-        // Reset all calculated fields to zero
+        // Track opportunities where TotalSellingPrice changed (for payment schedule recalculation)
+        Map<Id, Decimal> oldTotalSellingPrices = new Map<Id, Decimal>();
         for (Opportunity opp : opportunityMap.values()) {
+            oldTotalSellingPrices.put(opp.Id, opp.TotalSellingPrice__c);
             resetOpportunityFields(opp);
         }
         
@@ -122,6 +132,8 @@ public class DealBuildingService {
         Map<Id, DealBuildingAggregator> aggregatorMap = buildAggregatorMap(allDealBuildings, opportunityMap);
         
         List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
+        Set<Id> opportunitiesWithTotalSellingPriceChange = new Set<Id>();
+        
         for (Id oppId : opportunityIds) {
             Opportunity opp = opportunityMap.get(oppId);
             
@@ -131,9 +143,21 @@ public class DealBuildingService {
                     aggregatorMap.get(oppId).applyToOpportunity(opp);
                 }
                 
-                // Add Other Charges to Amount
+                // Add Other Charges to TotalSellingPrice
                 if (otherChargesMap.containsKey(oppId)) {
-                    opp.Amount = nvl(opp.Amount) + otherChargesMap.get(oppId);
+                    opp.TotalSellingPrice__c = nvl(opp.TotalSellingPrice__c) + otherChargesMap.get(oppId);
+                }
+                
+                // Add VAT if VAT_15__c is checked
+                if (opp.VAT_15__c == true && opp.VAT_Amount__c != null) {
+                    opp.TotalSellingPrice__c = nvl(opp.TotalSellingPrice__c) + opp.VAT_Amount__c;
+                }
+                
+                // Check if TotalSellingPrice changed
+                Decimal oldValue = oldTotalSellingPrices.get(oppId);
+                Decimal newValue = opp.TotalSellingPrice__c;
+                if (oldValue != newValue) {
+                    opportunitiesWithTotalSellingPriceChange.add(oppId);
                 }
                 
                 // If no Deal Buildings, fields remain at zero (from reset)
@@ -143,6 +167,45 @@ public class DealBuildingService {
         
         if (!opportunitiesToUpdate.isEmpty()) {
             update opportunitiesToUpdate;
+            
+            // Recalculate payment schedules for opportunities where TotalSellingPrice changed
+            if (!opportunitiesWithTotalSellingPriceChange.isEmpty()) {
+                recalculatePaymentSchedules(opportunitiesWithTotalSellingPriceChange, opportunityMap);
+            }
+        }
+    }
+    
+    /**
+     * Recalculates payment schedules based on updated TotalSellingPrice
+     * Only updates schedules with Payment_Status__c != 'Paid'
+     */
+    private void recalculatePaymentSchedules(Set<Id> opportunityIds, Map<Id, Opportunity> opportunityMap) {
+        // Query payment schedules that are not paid
+        List<Payment_Schedule__c> schedules = [
+            SELECT Id, Deal__c, Percentage__c, Payment_Status__c
+            FROM Payment_Schedule__c
+            WHERE Deal__c IN :opportunityIds
+            AND Payment_Status__c != 'Paid'
+        ];
+        
+        if (schedules.isEmpty()) {
+            return;
+        }
+        
+        List<Payment_Schedule__c> schedulesToUpdate = new List<Payment_Schedule__c>();
+        
+        for (Payment_Schedule__c schedule : schedules) {
+            Opportunity opp = opportunityMap.get(schedule.Deal__c);
+            
+            if (opp != null && schedule.Percentage__c != null) {
+                Decimal newAmount = (schedule.Percentage__c / 100) * nvl(opp.TotalSellingPrice__c);
+                schedule.Amount__c = newAmount;
+                schedulesToUpdate.add(schedule);
+            }
+        }
+        
+        if (!schedulesToUpdate.isEmpty()) {
+            update schedulesToUpdate;
         }
     }
     
@@ -151,6 +214,7 @@ public class DealBuildingService {
      */
     private void resetOpportunityFields(Opportunity opp) {
         opp.Amount = 0;
+        opp.TotalSellingPrice__c = 0;
         opp.Unit_Size_SQM__c = 0;
         opp.Service_Area_Sqm__c = 0;
         opp.Terrace_Area_Sqm__c = 0;
@@ -176,7 +240,6 @@ public class DealBuildingService {
         opp.Asking_Rate_Sqm__c = 0;
         opp.Minimum_Acceptable_Rate_Sqm_SR_Sqm__c = 0;
         opp.PreLaunchPrice__c = 0;
-        opp.TotalSellingPrice__c = 0;
         opp.LandArea__c = 0;
         opp.LandSellableAmount__c = 0;
         opp.BuildUpArea__c = 0;

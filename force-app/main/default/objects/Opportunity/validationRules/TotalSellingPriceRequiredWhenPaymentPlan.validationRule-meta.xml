@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TotalSellingPriceRequiredWhenPaymentPlan</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    NOT(ISBLANK(PaymentPlan__c)),
+    ISBLANK(TotalSellingPrice__c)
+)</errorConditionFormula>
+    <errorMessage>Total Selling Price is required when a Payment Plan is selected.</errorMessage>
+</ValidationRule>

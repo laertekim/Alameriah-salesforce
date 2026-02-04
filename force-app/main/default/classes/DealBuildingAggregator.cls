@@ -2,8 +2,14 @@ public class DealBuildingAggregator {
     
     private String recordTypeName;
     
-    // Accumulated values
-    private Decimal totalAmount = 0;
+    // Accumulated values for Amount (based on record type)
+    private Decimal totalAmountOffices = 0;
+    private Decimal totalAmountRetail = 0;
+    private Decimal totalAmountResidential = 0;
+    
+    // Accumulated value for TotalSellingPrice (always from Total_Selling_Price_SAR__c)
+    private Decimal totalSellingPrice = 0;
+    
     private Decimal totalUnitSize = 0;
     private Decimal totalServiceAreaSqm = 0;
     private Decimal totalTerraceAreaSqm = 0;
@@ -34,7 +40,6 @@ public class DealBuildingAggregator {
     private Decimal totalVillaArea = 0;
     private Decimal totalVillaSellableAreaSqm = 0;
     private Decimal totalPreLaunchPrice = 0;
-    private Decimal totalSellingPrice = 0;
     
     public DealBuildingAggregator(String recordTypeName) {
         this.recordTypeName = recordTypeName;
@@ -44,8 +49,10 @@ public class DealBuildingAggregator {
      * Adds a Deal_Building record to the aggregation
      */
     public void add(Deal_Building__c db) {
+        // Always accumulate TotalSellingPrice from Total_Selling_Price_SAR__c
+        totalSellingPrice += nvl(db.Total_Selling_Price_SAR__c);
+        
         // Common fields
-        totalAmount += nvl(db.Total_Selling_Price_SAR__c);
         totalServiceAreaSqm += nvl(db.Service_Area_Sqm__c);
         totalTerraceAreaSqm += nvl(db.Terrace_Area_Sqm__c);
         totalServiceAreaSAR += nvl(db.Total_Prices_Services_Areas__c);
@@ -70,8 +77,10 @@ public class DealBuildingAggregator {
      * Applies aggregated values to an Opportunity
      */
     public void applyToOpportunity(Opportunity opp) {
-        // Common fields - use replace instead of addTo for recalculation scenarios
-        opp.Amount = totalAmount;
+        // Apply TotalSellingPrice (without Other Charges - those are added in the service)
+        opp.TotalSellingPrice__c = totalSellingPrice;
+        
+        // Common fields
         opp.Service_Area_Sqm__c = totalServiceAreaSqm;
         opp.Terrace_Area_Sqm__c = totalTerraceAreaSqm;
         opp.Service_Area_SAR__c = totalServiceAreaSAR;
@@ -99,6 +108,9 @@ public class DealBuildingAggregator {
     // ========================================================================
     
     private void addOfficeFields(Deal_Building__c db) {
+        // Amount for Offices = Total_Selling_Price_SAR__c
+        totalAmountOffices += nvl(db.Total_Selling_Price_SAR__c);
+        
         totalUnitSize += nvl(db.Unit_Area_Sqm_NSA__c);
         totalUnitAreaSqmNSA += nvl(db.Unit_Area_Sqm_NSA__c);
         totalNSA += nvl(db.Total_NSA__c);
@@ -116,6 +128,9 @@ public class DealBuildingAggregator {
     }
     
     private void addRetailFields(Deal_Building__c db) {
+        // Amount for Retail = Total_Selling_Price_SAR__c
+        totalAmountRetail += nvl(db.Total_Selling_Price_SAR__c);
+        
         totalUnitSize += nvl(db.Unit_Area_Sqm__c);
         totalUnitAreaSqm += nvl(db.Unit_Area_Sqm__c);
         totalAskingPrice += nvl(db.Asking_Price__c);
@@ -127,9 +142,9 @@ public class DealBuildingAggregator {
         }
     }
 
-    //add residential property fields
     private void addResidentialPropertyFields(Deal_Building__c db) {
-        
+        // Amount for Residential Property = PreLaunchPrice__c
+        totalAmountResidential += nvl(db.PreLaunchPrice__c);
         
         totalLandArea += nvl(db.LandArea__c);
         totalLandSellableAmount += nvl(db.LandSellableAmount__c);
@@ -137,11 +152,10 @@ public class DealBuildingAggregator {
         totalVillaSellableAreaSqm += nvl(db.VillaSellableAreaSqm__c);
         totalPreLaunchPrice += nvl(db.PreLaunchPrice__c);
         totalAskingPrice += nvl(db.Asking_Price__c);
-        totalSellingPrice += nvl(db.Total_Selling_Price_SAR__c);
-        
     }
     
     private void applyOfficeFields(Opportunity opp) {
+        opp.Amount = totalAmountOffices;
         opp.Unit_Area_Sqm__c = totalUnitAreaSqmNSA;
         opp.Total_Prices_Unit_Area__c = totalNSA;
         opp.Total_Prices_Service_Area__c = totalPricesServicesAreas;
@@ -150,7 +164,7 @@ public class DealBuildingAggregator {
         opp.Total_Prices_Lobby_Areas__c = totalPricesLobby;
         opp.Total_Asking_Rent_SR__c = totalNSA;
         opp.Area_Sqm__c = totalLeasableAreaSqm;
-        opp.Total_Annual_Rent_SR_Annum__c = totalAmount;
+        opp.Total_Annual_Rent_SR_Annum__c = totalAmountOffices;
         
         // Calculate derived fields
         opp.Price_Sqm_SAR_Unit__c = safeDivide(opp.Total_Prices_Unit_Area__c, opp.Unit_Area_Sqm__c);
@@ -163,6 +177,7 @@ public class DealBuildingAggregator {
     }
     
     private void applyRetailFields(Opportunity opp) {
+        opp.Amount = totalAmountRetail;
         opp.Area_Sqm__c = totalUnitAreaSqm;
         opp.Total_Annual_Rent__c = totalAnnualRent;
         
@@ -174,18 +189,12 @@ public class DealBuildingAggregator {
     }
 
     private void applyResidentialPropertyFields(Opportunity opp) {
+        opp.Amount = totalAmountResidential; // Changed from totalAskingPrice to totalPreLaunchPrice
         opp.LandArea__c = totalLandArea;
         opp.LandSellableAmount__c = totalLandSellableAmount;
         opp.BuildUpArea__c = totalVillaArea;
-        //opp.VillaSellableAreaSqm__c = totalVillaSellableAreaSqm;
         opp.PreLaunchPrice__c = totalPreLaunchPrice;
-        opp.Amount = totalAskingPrice;
-        opp.TotalSellingPrice__c = totalAskingPrice;
-    }
-    
-  
-    private Decimal addTo(Decimal existing, Decimal toAdd) {
-        return nvl(existing) + toAdd;
+        opp.Rate_per_Sqm_SR_Sqm__c =   totalVillaSellableAreaSqm ;
     }
     
     private Decimal safeDivide(Decimal numerator, Decimal denominator) {

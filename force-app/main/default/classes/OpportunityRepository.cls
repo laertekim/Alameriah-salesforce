@@ -13,6 +13,9 @@ public class OpportunityRepository {
             SELECT Id,
                    RecordType.Name,
                    Amount,
+                   TotalSellingPrice__c,
+                   VAT_15__c,
+                   VAT_Amount__c,
                    Unit_Size_SQM__c,
                    Service_Area_Sqm__c,
                    Terrace_Area_Sqm__c,
@@ -38,7 +41,6 @@ public class OpportunityRepository {
                    Price_Sqm_SAR_Terrace__c,
                    Total_Prices_Terrace_Area__c,
                    PreLaunchPrice__c,
-                   TotalSellingPrice__c,
                    LandArea__c,
                    LandSellableAmount__c,
                    BuildUpArea__c

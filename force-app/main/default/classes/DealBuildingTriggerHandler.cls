@@ -2,7 +2,9 @@ public class DealBuildingTriggerHandler {
     
     public static void beforeInsert(List<Deal_Building__c> newRecords) {
         DealBuildingService service = new DealBuildingService();
+        
         service.setTotalSellingPrice(newRecords);
+        
     }
     
     public static void afterInsert(List<Deal_Building__c> newRecords) {

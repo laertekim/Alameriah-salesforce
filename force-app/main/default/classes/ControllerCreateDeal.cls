@@ -125,6 +125,7 @@ public with sharing class ControllerCreateDeal {
         opp.TotalSellingPrice__c  =bg.Asking_Price__c;
         opp.Deal_Offered_Date__c = Date.today();
         opp.Offer_Valid_till__c = Date.today().addDays(14);
+        opp.PaymentPlan__c = paymentPlanId;
         insert opp;
         
         
@@ -137,36 +138,6 @@ public with sharing class ControllerCreateDeal {
         
         insert db;
 
-        if (paymentPlanId != null){
-            //query payment plan lines from payment plan
-            List<PaymentPlanLine__c> paymentPlanLines = [SELECT 
-                                                                Id, 
-                                                                Name, 
-                                                                PaymentPlan__c, 
-                                                                PaymentPlan__r.Name, 
-                                                                Sequence__c,
-                                                                Percentage__c,
-                                                                DaysAfterCreation__c,
-                                                                Description__c
-                                                                FROM PaymentPlanLine__c WHERE PaymentPlan__c =: paymentPlanId];
-            if (paymentPlanLines.size() > 0){              
-                List<Payment_Schedule__c> paymentSchedules = new List<Payment_Schedule__c>();
-                for (PaymentPlanLine__c paymentPlanLine : paymentPlanLines){
-                    Payment_Schedule__c paymentSchedule = new Payment_Schedule__c();
-                    paymentSchedule.Amount__c = (paymentPlanLine.Percentage__c / 100) * opp.TotalSellingPrice__c;
-                    //CurrencyIsoCode, Deal__c, Description__c, Escalation__c, Payment_Status__c,Percentage__c, Year__c
-                    paymentSchedule.CurrencyIsoCode = opp.CurrencyIsoCode;
-                    paymentSchedule.Deal__c = opp.Id;
-                    paymentSchedule.Description__c = paymentPlanLine.Description__c;
-                    paymentSchedule.Escalation__c = 1;
-                    paymentSchedule.Payment_Status__c = 'Not Paid';
-                    paymentSchedule.Percentage__c = paymentPlanLine.Percentage__c;
-                    paymentSchedule.Year__c = String.valueOf(Date.today().year());
-                    paymentSchedule.Scheduled_Payment_Date__c =   opp.CloseDate.addDays((Integer)paymentPlanLine.DaysAfterCreation__c);
-                    paymentSchedules.add(paymentSchedule);
-                }
-                insert paymentSchedules;
-            }
-        }
+        
     }
 }
