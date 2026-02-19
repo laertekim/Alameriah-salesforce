@@ -13,94 +13,85 @@
                         <table class="slds-table slds-table_cell-buffer slds-table_bordered results-table">
                             <thead>
                                 <tr class="slds-line-height_reset">
-                                    <th scope="col" class="col-pa"><div class="slds-truncate">PA Number</div></th>
-                                    <th scope="col" class="col-item"><div class="slds-truncate">Item</div></th>
-                                    <th scope="col" class="col-next-action"><div class="slds-truncate">Next Action / Decision Required</div></th>
-                                    <th scope="col" class="col-assignment"><div class="slds-truncate">Assignment Description</div></th>
-                                    <th scope="col" class="col-target-date"><div class="slds-truncate">Target Date</div></th>
-                                    <th scope="col" class="col-status"><div class="slds-truncate">Status</div></th>
-                                    <th scope="col" class="col-actions"><div class="slds-truncate">Actions</div></th>
+                                    <th scope="col" class="col-pa">
+                                        <div class="slds-truncate">PA Number</div>
+                                    </th>
+                                    <th scope="col" class="col-item">
+                                        <div class="slds-truncate">Item</div>
+                                    </th>
+                                    <th scope="col" class="col-next-action">
+                                        <div class="slds-truncate">Next Action / Decision Required</div>
+                                    </th>
+                                    <th scope="col" class="col-assignment">
+                                        <div class="slds-truncate">Assignment Description</div>
+                                    </th>
+                                    <th scope="col" class="col-action-by">
+                                        <div class="slds-truncate">Action By</div>
+                                    </th>
+                                    <th scope="col" class="col-target-date">
+                                        <div class="slds-truncate">Target Date</div>
+                                    </th>
+                                    <th scope="col" class="col-status">
+                                        <div class="slds-truncate">Status</div>
+                                    </th>
+                                    <th scope="col" class="col-actions">
+                                        <div class="slds-truncate">Actions</div>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <template for:each={results} for:item="row">
                                     <tr key={row.id}>
                                         <td class="col-pa">
-                                            <lightning-input
-                                                variant="label-hidden"
-                                                class="cell-input"
-                                                data-row-id={row.id}
-                                                data-field="paNumber"
-                                                value={row.paNumber}
+                                            <lightning-input variant="label-hidden" class="cell-input"
+                                                data-row-id={row.id} data-field="paNumber" value={row.paNumber}
                                                 onchange={handleFieldChange}>
                                             </lightning-input>
                                         </td>
                                         <td class="col-item">
-                                            <lightning-input
-                                                type="number"
-                                                variant="label-hidden"
-                                                class="cell-input"
-                                                data-row-id={row.id}
-                                                data-field="item"
-                                                value={row.item}
+                                            <lightning-input type="number" variant="label-hidden" class="cell-input"
+                                                data-row-id={row.id} data-field="item" value={row.item}
                                                 onchange={handleFieldChange}>
                                             </lightning-input>
                                         </td>
                                         <td class="col-next-action">
-                                            <textarea
-                                                class="cell-textarea"
-                                                rows="1"
-                                                data-row-id={row.id}
+                                            <textarea class="cell-textarea" rows="1" data-row-id={row.id}
                                                 data-field="nextActionText"
                                                 onchange={handleFieldChange}>{row.nextActionText}</textarea>
                                         </td>
                                         <td class="col-assignment">
-                                            <textarea
-                                                class="cell-textarea"
-                                                rows="1"
-                                                data-row-id={row.id}
+                                            <textarea class="cell-textarea" rows="1" data-row-id={row.id}
                                                 data-field="assignmentText"
                                                 onchange={handleFieldChange}>{row.assignmentText}</textarea>
                                         </td>
+
+                                        <td class="col-action-by">
+                                            <textarea class="cell-textarea" rows="1" data-row-id={row.id}
+                                                data-field="actionByText"
+                                                onchange={handleFieldChange}>{row.actionByText}</textarea>
+                                        </td>
+
                                         <td class="col-target-date">
-                                            <lightning-input
-                                                type="date"
-                                                variant="label-hidden"
-                                                class="cell-input"
-                                                data-row-id={row.id}
-                                                data-field="targetDate"
-                                                value={row.targetDate}
+                                            <lightning-input type="date" variant="label-hidden" class="cell-input"
+                                                data-row-id={row.id} data-field="targetDate" value={row.targetDate}
                                                 onchange={handleFieldChange}>
                                             </lightning-input>
                                         </td>
                                         <td class="col-status">
-                                            <lightning-combobox
-                                                variant="label-hidden"
-                                                class="cell-input"
-                                                data-row-id={row.id}
-                                                data-field="status"
-                                                value={row.status}
-                                                options={statusOptions}
-                                                onchange={handleFieldChange}>
+                                            <lightning-combobox variant="label-hidden" class="cell-input"
+                                                data-row-id={row.id} data-field="status" value={row.status}
+                                                options={statusOptions} onchange={handleFieldChange}>
                                             </lightning-combobox>
                                         </td>
                                         <td class="col-actions">
                                             <div class="slds-button-group action-buttons" role="group">
-                                                <lightning-button-icon
-                                                    icon-name="utility:check"
-                                                    alternative-text="Save"
-                                                    title="Save"
-                                                    data-row-id={row.id}
-                                                    onclick={handleSaveRow}
+                                                <lightning-button-icon icon-name="utility:check" alternative-text="Save"
+                                                    title="Save" data-row-id={row.id} onclick={handleSaveRow}
                                                     disabled={row.isSaving}>
                                                 </lightning-button-icon>
-                                                <lightning-button-icon
-                                                    icon-name="utility:delete"
-                                                    alternative-text="Delete"
-                                                    title="Delete"
-                                                    data-row-id={row.id}
-                                                    onclick={handleDeleteRow}
-                                                    disabled={row.isDeleting}>
+                                                <lightning-button-icon icon-name="utility:delete"
+                                                    alternative-text="Delete" title="Delete" data-row-id={row.id}
+                                                    onclick={handleDeleteRow} disabled={row.isDeleting}>
                                                 </lightning-button-icon>
                                             </div>
                                         </td>

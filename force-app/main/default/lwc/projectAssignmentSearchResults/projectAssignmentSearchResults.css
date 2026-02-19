@@ -1,72 +1,104 @@
-.results-table {
-    table-layout: fixed;
-    width: 100%;
-}
-
+/* Wrapper da tabela */
 .table-shell {
-    margin: 0.75rem;
-    border: 1px solid #dddbda;
+    border: 1px solid #d8dde6;
     border-radius: 0.25rem;
-    background: #fff;
-    overflow: hidden;
+    background: #ffffff;
 }
 
+/* Scroll horizontal */
 .table-scroll {
     overflow-x: auto;
 }
 
-.results-table th,
-.results-table td {
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* Tabela */
+.results-table {
+    min-width: 1100px;
+    table-layout: fixed;
+}
+
+/* Cabeçalho */
+.results-table thead th {
+    background-color: #f3f2f2;
+    font-weight: 600;
     white-space: nowrap;
 }
 
+/* Células */
+.results-table td,
+.results-table th {
+    vertical-align: middle;
+    padding: 0.25rem;
+}
+
+/* Inputs padrão das células */
 .cell-input {
     width: 100%;
 }
 
+/* Textareas das células */
 .cell-textarea {
     width: 100%;
-    resize: vertical;
-    height: auto;
-    min-height: 2.125rem;
-    line-height: 1.5rem;
-    padding: 0.25rem 0.5rem;
-    border: 1px solid #dddbda;
+    resize: none;
+    border: 1px solid #d8dde6;
     border-radius: 0.25rem;
+    padding: 0.25rem;
+    font-family: inherit;
+    font-size: 0.8125rem;
 }
 
+/* Ajuste de altura para parecer input */
+.cell-textarea:focus {
+    outline: none;
+    border-color: #1b96ff;
+}
+
+/* Colunas – larguras controladas */
 .col-pa {
-    width: 14%;
+    width: 120px;
 }
 
 .col-item {
-    width: 6%;
+    width: 80px;
 }
 
 .col-next-action {
-    width: 24%;
+    width: 260px;
 }
 
 .col-assignment {
-    width: 24%;
+    width: 260px;
 }
 
 .col-target-date {
-    width: 12%;
+    width: 140px;
 }
 
 .col-status {
-    width: 12%;
+    width: 140px;
 }
 
 .col-actions {
-    width: 8%;
+    width: 110px;
+    text-align: center;
 }
 
+/* Botões de ação */
 .action-buttons {
-    display: flex;
-    gap: 0.35rem;
-    align-items: center;
+    justify-content: center;
+}
+
+/* Espaço entre ícones */
+.action-buttons lightning-button-icon {
+    margin: 0 0.125rem;
+}
+
+/* Spinner centralizado */
+lightning-spinner {
+    display: block;
+    margin: 1rem auto;
+}
+
+/* Linha hover */
+.results-table tbody tr:hover {
+    background-color: #f3f9ff;
 }

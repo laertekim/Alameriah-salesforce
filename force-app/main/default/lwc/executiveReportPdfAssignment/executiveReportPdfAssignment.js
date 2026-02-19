@@ -39,7 +39,7 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
     if (!html) return '';
 
     let s = String(html)
-      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<br\s*\/?\s*>/gi, '\n')
       .replace(/<\/p>/gi, '\n')
       .replace(/<\/div>/gi, '\n')
       .replace(/<\/li>/gi, '\n');
@@ -74,6 +74,15 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
     return `ExecutiveReport__${recordId}_${dateStr}.pdf`;
   }
 
+  buildAttachmentLabel(att, idx) {
+    const fallback = `File ${idx + 1}`;
+    const name = String(att?.fileName || '').trim();
+    if (!name) return fallback;
+
+    const maxLen = 16;
+    return name.length > maxLen ? `${name.slice(0, maxLen - 3)}...` : name;
+  }
+
   resolveStatusColorByValue(status) {
     if (!status) return [0, 0, 0];
     const s = String(status).toLowerCase();
@@ -89,7 +98,7 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
   drawHeader(doc, ctx) {
     const { marginLeft, marginTop, pageWidth, headerHeight, logoDataUrl, reportDateStr } = ctx;
 
-    doc.setDrawColor(22, 50, 92);
+    doc.setDrawColor(22, 50, 92); // #16325c
     doc.setLineWidth(0.3);
     doc.line(marginLeft, marginTop + headerHeight, pageWidth - marginLeft, marginTop + headerHeight);
 
@@ -141,7 +150,9 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
   drawFooter(doc, ctx) {
     const { marginLeft, pageWidth, pageHeight, marginBottom } = ctx;
 
+    const pageCount = doc.getNumberOfPages();
     const pageNumber = doc.internal.getCurrentPageInfo().pageNumber;
+
     const footerY = pageHeight - marginBottom + 8;
 
     doc.setDrawColor(160, 160, 160);
@@ -157,12 +168,17 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
     doc.setFontSize(9);
     doc.setTextColor(112, 110, 107);
     doc.text('DEVELOPMENT DEPARTMENT', marginLeft + 35, footerY);
+
   }
 
-  // Measurement pass to determine which page each row will be on
-  measureRowPages(jsPDF, head, body, tableTopY, margins, tableWidth, styles, headStyles, columnStyles, ctx) {
-    const measureDoc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  measureRowPages(jsPDFCtor, head, body, tableTopY, margins, tableWidth, styles, headStyles, columnStyles, ctx) {
+    const measureDoc = new jsPDFCtor({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
     const rowPageMap = {};
+
+    this.drawHeader(measureDoc, ctx);
+    this.drawLegend(measureDoc, ctx);
+    this.drawFooter(measureDoc, ctx);
 
     measureDoc.autoTable({
       head,
@@ -181,7 +197,7 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
         }
       },
 
-      didDrawPage: (data) => {
+      didDrawPage: () => {
         this.drawHeader(measureDoc, ctx);
         this.drawLegend(measureDoc, ctx);
         this.drawFooter(measureDoc, ctx);
@@ -191,40 +207,115 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
     return rowPageMap;
   }
 
-  // Compute rowSpan for project column based on page boundaries
-  computeProjectRowSpans(body, rowPageMap) {
-    const rowSpans = {};
-    
+  computeProjectSpansPerPage(body, rowPageMap, projectColIndex = 1) {
+    const spanMap = new Array(body.length).fill(1);
+
     let i = 0;
     while (i < body.length) {
-      const currentPage = rowPageMap[i];
-      const currentProject = body[i][1]; // Project name is in column 1
-      
-      let spanCount = 1;
+      const page = rowPageMap[i];
+
       let j = i + 1;
-      
-      // Count consecutive rows with same project on same page
-      while (j < body.length && 
-             rowPageMap[j] === currentPage && 
-             body[j][1] === currentProject) {
-        spanCount++;
+      while (j < body.length && rowPageMap[j] === page) {
         j++;
       }
-      
-      // Set rowSpan for first row and 0 for subsequent rows
-      rowSpans[i] = spanCount;
+
+      const span = j - i;
+      spanMap[i] = span;
+
       for (let k = i + 1; k < j; k++) {
-        rowSpans[k] = 0; // Hide these cells
+        spanMap[k] = 0;
       }
-      
+
       i = j;
     }
-    
-    return rowSpans;
+
+    return spanMap;
   }
 
   handleCancel() {
     this.dispatchEvent(new CloseActionScreenEvent());
+  }
+
+  /* alterar cor do projeto name */
+  /* getProjectColor(projectName) {
+  if (!projectName) return [230, 230, 230];
+
+  let hash = 0;
+  for (let i = 0; i < projectName.length; i++) {
+    hash = projectName.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  const hue = Math.abs(hash) % 360;
+
+  // HSL → RGB (pdf trabalha melhor com RGB)
+  return this.hslToRgb(hue / 360, 0.4, 0.85); // fundo claro
+}
+*/
+
+  /* alterar cor do projeto name */
+  /* getProjectColor(projectName) {
+  if (!projectName) return [230, 230, 230];
+
+  let hash = 0;
+  for (let i = 0; i < projectName.length; i++) {
+    hash = projectName.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  const hue = Math.abs(hash) % 360;
+
+  // HSL → RGB (pdf trabalha melhor com RGB)
+  return this.hslToRgb(hue / 360, 0.4, 0.85); // fundo claro
+}
+*/
+
+  getProjectColor(projectName) {
+    if (!projectName) return [200, 200, 200];
+
+    const palette = [
+      [85, 110, 55],
+      [95, 125, 70],
+      [75, 100, 50],
+      [70, 95, 115],
+      [60, 85, 105],
+      [90, 115, 90]
+    ];
+
+    let hash = 0;
+    for (let i = 0; i < projectName.length; i++) {
+      hash = projectName.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    return palette[Math.abs(hash) % palette.length];
+  }
+
+  hslToRgb(h, s, l) {
+    let r, g, b;
+
+    if (s === 0) {
+      r = g = b = l;
+    } else {
+      const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      };
+
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+
+      r = hue2rgb(p, q, h + 1 / 3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1 / 3);
+    }
+
+    return [
+      Math.round(r * 255),
+      Math.round(g * 255),
+      Math.round(b * 255)
+    ];
   }
 
   async handleGenerate() {
@@ -268,38 +359,52 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
 
       const head = [[
         'Item',
-        'Project / Name',
-        'Assignment Description',
-        'Next Action / Decision Required',
+        'Project',
+        'Assignment',
+        'Next Action',
         'Action By',
-        'Target / Status',
-        'Priority / Notes'
+        'Target Date',
+        'Status',
+        'Attachments'
       ]];
 
-      // Build flat body array with all rows
-      const body = [];
-      const statusMap = {};
-      let itemCounter = 1;
+      const projectGroups = [];
+      let currentProject = null;
+      let currentGroup = null;
 
-      (rows || []).forEach((a) => {
-        const projectName = a.Project__r?.Name || a.Name || '';
-        const rowData = [
-          itemCounter++,
-          projectName,
-          this.stripHtmlToText(a.Assignment_Description__c),
-          this.stripHtmlToText(a.Next_Action_Decision_Required__c),
-          a.Action_By__r?.Name ?? '',
-          a.Target_Status__c ?? '',
-          this.stripHtmlToText(a.Priority_Notes__c)
-        ];
+      (rows || []).forEach((wrapper, idx) => {
+        // Handle both old format (direct Project_Assignment__c) and new format (wrapper with assignment + attachments)
+        const a = wrapper.assignment ? wrapper.assignment : wrapper;
+        const attachments = wrapper.attachments ? wrapper.attachments : [];
         
-        body.push(rowData);
-        statusMap[body.length - 1] = String(rowData[5] ?? '').trim();
+        const projectName = a.Project__r?.Name || a.Name || '';
+
+        if (projectName !== currentProject) {
+          currentProject = projectName;
+          currentGroup = {
+            projectName: projectName,
+            items: [],
+            itemStartIndex: idx + 1
+          };
+          projectGroups.push(currentGroup);
+        }
+
+        currentGroup.items.push({
+          itemNumber: currentGroup.items.length + 1,
+          projectName: projectName,
+          assignmentDescription: this.stripHtmlToText(a.Assignment_Description__c),
+          nextAction: this.stripHtmlToText(a.Next_Action_Decision_Required__c),
+          actionBy: a.Action_By2__c,
+          targetStatus: a.Target_Status__c ?? '',
+          priorityNotes: this.stripHtmlToText(a.Priority_Notes__c),
+          attachments: attachments || []
+        });
       });
 
       const tableWidth = pageWidth - marginLeft - marginRight;
 
-      const base = [12, 38, 52, 70, 28, 28, 40];
+      // Adjusted column weight distribution including new Attachments column (index 7).
+      const base = [12, 25, 55, 35, 15, 15, 20, 18];
       const sum = base.reduce((acc, v) => acc + v, 0);
       const w = base.map(v => (v / sum) * tableWidth);
 
@@ -307,7 +412,7 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
 
       const styles = {
         font: 'helvetica',
-        fontSize: 9,
+        fontSize: 8,
         cellPadding: 3,
         valign: 'top',
         lineColor: [0, 0, 0],
@@ -317,7 +422,8 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
       };
 
       const headStyles = {
-        fillColor: [22, 50, 92],
+        /* fillColor: [22, 50, 92],*/
+        fillColor: [220, 220, 220],
         textColor: [255, 255, 255],
         fontStyle: 'bold',
         lineColor: [0, 0, 0],
@@ -326,88 +432,303 @@ export default class ExecutiveReportAssignmentsPdf extends LightningElement {
 
       const columnStyles = {
         0: { cellWidth: w[0], halign: 'center', fontStyle: 'bold' },
-        1: { cellWidth: w[1], halign: 'center', valign: 'middle', fontStyle: 'bold' },
+        1: { cellWidth: w[1], halign: 'center', valign: 'middle', fontStyle: 'bold', lineWidth: 0 },
         2: { cellWidth: w[2] },
         3: { cellWidth: w[3] },
         4: { cellWidth: w[4] },
         5: { cellWidth: w[5], halign: 'center' },
-        6: { cellWidth: w[6] }
+        6: { cellWidth: w[6] },
+        7: { cellWidth: w[7] }
       };
 
-      // STEP 1: Measurement pass to determine page layout
-      const rowPageMap = this.measureRowPages(
-        jsPDF, head, body, tableTopY,
-        { left: marginLeft, right: marginRight, bottom: marginBottom },
-        tableWidth, styles, headStyles, columnStyles, ctx
-      );
+      let currentY = tableTopY;
+      let isFirstPage = true;
+      const attachmentLinksByPage = {}; // Store links by page number
 
-      // STEP 2: Compute rowSpans for project column
-      const projectRowSpans = this.computeProjectRowSpans(body, rowPageMap);
-
-      // STEP 3: Actual render with merged cells
-      doc.autoTable({
-        head,
-        body,
-        startY: tableTopY,
-        margin: { left: marginLeft, right: marginRight, top: tableTopY, bottom: marginBottom },
-        tableWidth,
-        showHead: 'everyPage',
-        styles,
-        headStyles,
-        tableLineColor: [0, 0, 0],
-        tableLineWidth: 0.6,
-        columnStyles,
-
-        didParseCell: (data) => {
-          // Handle project column merging
-          if (data.section === 'body' && data.column.index === 1) {
-            const rowIndex = data.row.index;
-            const span = projectRowSpans[rowIndex];
-            
-            if (span > 1) {
-              data.cell.rowSpan = span;
-            } else if (span === 0) {
-              // Hide this cell (it's part of a merged cell above)
-              data.cell.styles.fillColor = false;
-              data.cell.styles.textColor = false;
-              data.cell.text = '';
-            }
-            
-            // Style for visible project cells
-            if (span >= 1) {
-              data.cell.styles.fillColor = [22, 50, 92];
-              data.cell.styles.textColor = [255, 255, 255];
-              data.cell.styles.fontStyle = 'bold';
-              data.cell.styles.halign = 'center';
-              data.cell.styles.valign = 'middle';
-            }
-          }
-
-          // Handle status column coloring
-          if (data.section === 'body' && data.column.index === 5) {
-            const rowIndex = data.row.index;
-            const statusText = statusMap[rowIndex] || '';
-            
-            if (statusText) {
-              const rgb = this.resolveStatusColorByValue(statusText);
-              data.cell.styles.textColor = rgb;
-
-              if (statusText.toLowerCase().includes('pending')) {
-                data.cell.styles.fontStyle = 'bold';
-              }
-            }
-          }
-        },
-
-        didDrawPage: () => {
+      for (const group of projectGroups) {
+        if (!isFirstPage) {
+          doc.addPage();
           this.drawHeader(doc, ctx);
           this.drawLegend(doc, ctx);
           this.drawFooter(doc, ctx);
+          currentY = tableTopY;
         }
+        isFirstPage = false;
+
+        // Build body for this project (project column styled per row)
+        /* const body = group.items.map((item) => ([
+          item.itemNumber,
+          item.projectName,
+          item.assignmentDescription,
+          item.nextAction,
+          item.actionBy,
+          item.targetStatus,
+          item.priorityNotes
+        ])); */
+
+
+        /* const body = group.items.map((item, index) => ([
+          item.itemNumber,
+          index === 0 ? item.projectName : '', // ← só a primeira linha
+          item.assignmentDescription,
+          item.nextAction,
+          item.actionBy,
+          item.targetStatus,
+          item.priorityNotes
+        ])); */
+
+        
+        // Build a raw body with the project name on every row so we can detect
+        // where page breaks occur, then create a final body that shows the
+        // project name on the first row of the group and at the start of each page.
+        // Also store attachments metadata for creating clickable links later
+        const attachmentsByRowIndex = {};
+        
+        const rawBody = group.items.map((item, itemIdx) => {
+          // Format attachments as short link text
+          const attachmentsList = item.attachments && item.attachments.length > 0
+            ? item.attachments.map((att, idx) => this.buildAttachmentLabel(att, idx)).join('\n')
+            : '';
+          
+          // Store attachments metadata by item index for links
+          if (item.attachments && item.attachments.length > 0) {
+            attachmentsByRowIndex[itemIdx] = item.attachments;
+          }
+          
+          return [
+            item.itemNumber,
+            item.projectName,
+            item.assignmentDescription,
+            item.nextAction,
+            item.actionBy,
+            item.targetStatus,
+            item.priorityNotes,
+            attachmentsList
+          ];
+        });
+
+        // Measure pages using a temporary jsPDF so measurement matches final render
+        const tempDoc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+        const rowPageMap = {};
+
+        // draw header/legend/footer on temp doc to match spacing
+        this.drawHeader(tempDoc, ctx);
+        this.drawLegend(tempDoc, ctx);
+        this.drawFooter(tempDoc, ctx);
+
+        tempDoc.autoTable({
+          head,
+          body: rawBody,
+          startY: tableTopY,
+          margin: { left: marginLeft, right: marginRight, top: tableTopY, bottom: marginBottom },
+          tableWidth,
+          styles,
+          headStyles,
+          columnStyles,
+          showHead: 'everyPage',
+          didDrawCell: (data) => {
+            if (data.section === 'body' && data.column.index === 0) {
+              rowPageMap[data.row.index] = data.pageNumber;
+            }
+          },
+          didDrawPage: () => {
+            this.drawHeader(tempDoc, ctx);
+            this.drawLegend(tempDoc, ctx);
+            this.drawFooter(tempDoc, ctx);
+          }
+        });
+
+        // Build final body: show projectName on first row and on rows that start a new page
+        const body = rawBody.map((r, idx) => {
+          const showProject = (idx === 0) || (rowPageMap[idx] && rowPageMap[idx - 1] && rowPageMap[idx] !== rowPageMap[idx - 1]);
+          return [r[0], showProject ? r[1] : '', r[2], r[3], r[4], r[5], r[6], r[7]];
+        });
+
+
+        /* const body = group.items.map((item, index) => {
+        const row = [
+             item.itemNumber,
+             null, // Project Name (vamos tratar abaixo)
+             item.assignmentDescription,
+             item.nextAction,
+             item.actionBy,
+             item.targetStatus,
+             item.priorityNotes
+         ];
+
+        // PRIMEIRA LINHA DO PROJETO
+        if (index === 0) {
+            row[1] = {
+            content: item.projectName,
+            rowSpan: group.items.length
+        };
+        } else {
+            // DEMAIS LINHAS: célula "vazia"
+            row[1] = '';
+        }
+        return row;
+      }); */
+
+
+        const statusMap = {};
+        body.forEach((row, idx) => {
+          statusMap[idx] = String(row[6] ?? '').trim();
+        });
+
+        doc.autoTable({
+          head,
+          body,
+          startY: currentY,
+          margin: { left: marginLeft, right: marginRight, top: currentY, bottom: marginBottom },
+          tableWidth,
+          showHead: 'everyPage',
+          styles,
+          headStyles,
+          tableLineColor: [0, 0, 0],
+          tableLineWidth: 0.6,
+          columnStyles,
+
+          didParseCell: (data) => {
+
+
+            // FORÇA TEXTO PRETO NO HEADER
+            if (data.section === 'head') {
+              data.cell.styles.textColor = [0, 0, 0];   // PRETO
+              data.cell.styles.fontStyle = 'bold';
+            }
+
+            if (data.section === 'body' && data.column.index === 1) {
+              const projectName = group.projectName;
+              const bgColor = this.getProjectColor(projectName);
+              data.cell.styles.fillColor = bgColor;
+              data.cell.styles.textColor = [0, 0, 0];
+              data.cell.styles.fontStyle = 'bold';
+              data.cell.styles.halign = 'center';
+              data.cell.styles.valign = 'middle';
+              data.cell.styles.lineWidth = 0;
+            }
+
+            if (data.section === 'body' && data.column.index === 6) {
+              const rowIndex = data.row.index;
+              let statusText = statusMap[rowIndex];
+
+              if (!statusText && data.row.raw && data.row.raw.length > 5) {
+                statusText = String(data.row.raw[6] ?? '').trim();
+              }
+
+              if (!statusText && body && body[rowIndex] && body[rowIndex].length > 5) {
+                statusText = String(body[rowIndex][6] ?? '').trim();
+              }
+
+              statusText = statusText || '';
+
+              if (statusText) {
+                const rgb = this.resolveStatusColorByValue(statusText);
+                data.cell.styles.textColor = rgb;
+
+                if (statusText.toLowerCase().includes('pending')) {
+                  data.cell.styles.fontStyle = 'bold';
+                }
+              } else {
+                data.cell.styles.textColor = [0, 0, 0];
+              }
+            }
+
+            // Style attachments column with blue color
+            if (data.section === 'body' && data.column.index === 7) {
+              data.cell.styles.textColor = [0, 0, 255];  // Blue color
+              data.cell.styles.fontStyle = 'bold';
+              data.cell.styles.halign = 'left';
+              data.cell.styles.valign = 'top';
+            }
+
+            // REPLICAR COR DO PRIORITY / NOTES NAS OUTRAS COLUNAS
+            if (
+              data.section === 'body' &&
+              [2, 3, 4, 5, 6].includes(data.column.index)
+            ) {
+              const rowIndex = data.row.index;
+              const priorityText = String(data.row.raw?.[6] || '').trim();
+
+              if (priorityText) {
+                const rgb = this.resolveStatusColorByValue(priorityText);
+                data.cell.styles.textColor = rgb;
+
+                if (priorityText.toLowerCase().includes('pending')) {
+                  data.cell.styles.fontStyle = 'bold';
+                }
+              }
+            }
+          },
+
+          didDrawCell: (data) => {
+            // Capture attachment cell positions and create download links
+            if (data.section === 'body' && data.column.index === 7) {
+              const rowIndex = data.row.index;
+              if (attachmentsByRowIndex[rowIndex]) {
+                const attachments = attachmentsByRowIndex[rowIndex];
+                const pageNum = doc.internal.getNumberOfPages();
+                
+                // Store link data for this page
+                if (!attachmentLinksByPage[pageNum]) {
+                  attachmentLinksByPage[pageNum] = [];
+                }
+                
+                const paddingTop = typeof data.cell.padding === 'function'
+                  ? data.cell.padding('top')
+                  : 1;
+                let yOffset = paddingTop;
+                attachments.forEach((att, idx) => {
+                  if (!att.contentDocumentId) return;
+
+                  const fileUrl = `${window.location.origin}/sfc/servlet.shepherd/document/download/${att.contentDocumentId}`;
+
+                  const label = this.buildAttachmentLabel(att, idx);
+                  const maxLinkWidth = Math.max(data.cell.width - 2, 2);
+                  const textWidth = Math.min(doc.getTextWidth(label) + 1, maxLinkWidth);
+                  const fontSizePt = data.cell.styles?.fontSize || styles.fontSize || 8;
+                  const lineHeight = Math.max(fontSizePt * 0.3528, 2.5);
+                  
+                  // Store link to be added after rendering
+                  attachmentLinksByPage[pageNum].push({
+                    x: data.cell.x + 1,
+                    y: data.cell.y + yOffset,
+                    width: textWidth,
+                    height: lineHeight,
+                    url: fileUrl,
+                    text: label
+                  });
+
+                  yOffset += lineHeight;
+                });
+              }
+            }
+          },
+
+          didDrawPage: () => {
+            this.drawHeader(doc, ctx);
+            this.drawLegend(doc, ctx);
+            this.drawFooter(doc, ctx);
+          }
+        });
+
+        currentY = doc.lastAutoTable?.finalY ?? currentY;
+      }
+
+      // Add all the attachment download links that were captured during rendering
+      Object.keys(attachmentLinksByPage).forEach((pageNum) => {
+        const pageNumber = parseInt(pageNum);
+        doc.setPage(pageNumber);
+        
+        attachmentLinksByPage[pageNum].forEach((linkData) => {
+          doc.link(linkData.x, linkData.y, linkData.width, linkData.height, {
+            url: linkData.url
+          });
+        });
       });
 
       doc.save(this.fileName());
-      
+
       const dataUri = doc.output('datauristring');
       const base64 = dataUri.split('base64,')[1];
       const fileName = `Executive Report Assignments - ${this.formatDateDDMMYYYY(new Date())}.pdf`;

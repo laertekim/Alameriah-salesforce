@@ -1,0 +1,281 @@
+/* Table Container */
+.table-container {
+    overflow-x: auto;
+    max-height: 70vh;
+}
+
+/* Table Layout */
+.slds-table {
+    min-width: 1400px;
+}
+
+/* Resizable columns */
+.resizable-column {
+    position: relative;
+}
+
+.resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 5px;
+    cursor: col-resize;
+    background: transparent;
+    z-index: 10;
+}
+
+.resize-handle:hover {
+    background: #0176d3;
+}
+
+.resize-handle:active {
+    background: #014486;
+}
+
+.slds-table thead th {
+    user-select: none;
+}
+
+/* Column Widths */
+.col-drag {
+    width: 50px;
+    text-align: center;
+    cursor: grab;
+}
+
+.col-project {
+    width: 180px;
+}
+
+.col-pa-number {
+    display: none; /* Hidden as requested */
+}
+
+.col-item {
+    width: 60px; /* Made smaller */
+}
+
+.col-next-action {
+    width: 300px; /* Made larger */
+}
+
+.col-assignment {
+    width: 300px; /* Made larger */
+}
+
+.col-action-by {
+    width: 150px;
+}
+
+.col-target-date {
+    width: 140px;
+}
+
+.col-status {
+    width: 140px;
+}
+
+.col-attachments {
+    width: 150px;
+}
+
+.col-actions {
+    width: 100px;
+    text-align: center;
+}
+
+/* Drag Handle */
+.drag-handle {
+    cursor: grab;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.drag-handle:hover {
+    opacity: 1;
+}
+
+/* Dragging States */
+tr[draggable="true"] {
+    transition: background-color 0.2s, filter 0.2s;
+}
+
+tr.dragging {
+    opacity: 0.5;
+    filter: brightness(0.95);
+}
+
+tr.drag-over {
+    border-top: 3px solid #0176d3;
+}
+
+/* New Row Highlight */
+tr.new-row {
+    background-color: #fffacd !important;
+}
+
+/* Row Hover - use filter to darken instead of replacing background */
+tbody tr:hover {
+    filter: brightness(0.92);
+}
+
+/* Textarea in cells */
+lightning-textarea {
+    width: 100%;
+}
+
+/* Input alignment */
+lightning-input,
+lightning-combobox {
+    width: 100%;
+}
+
+/* Make textareas compact */
+.col-next-action lightning-textarea,
+.col-assignment lightning-textarea {
+    min-height: 60px;
+}
+
+/* Button group alignment */
+lightning-button-group {
+    display: flex;
+    justify-content: center;
+}
+
+/* Attachment links */
+.attachments-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.attachments-left {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.attachments-right {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    margin-left: auto;
+}
+
+/* Plain HTML badge */
+.attachment-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.375rem;
+    border: 1px solid #d8dde6;
+    border-radius: 0.25rem;
+    background: #f3f2f2;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.75rem;
+}
+
+.attachment-badge:hover {
+    background: #e5e5e5;
+    border-color: #0176d3;
+}
+
+.pdf-icon {
+    width: 12px !important;
+    height: 12px !important;
+    flex-shrink: 0;
+    display: block;
+}
+
+.attachment-count-text {
+    font-weight: 600;
+    color: #181818;
+    font-size: 0.75rem;
+    line-height: 1;
+}
+
+.attachment-badge-hidden {
+    display: none !important;
+}
+
+.file-link-preview {
+    color: #0176d3;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.file-link-preview:hover {
+    text-decoration: underline;
+    color: #014486;
+}
+
+.attachment-link {
+    display: block;
+    color: #0176d3;
+    text-decoration: none;
+    margin-bottom: 0.25rem;
+    font-size: 0.8125rem;
+}
+
+.attachment-link:hover {
+    text-decoration: underline;
+    color: #014486;
+}
+
+.attachment-icon {
+    margin-right: 0.25rem;
+}
+
+.no-attachments {
+    color: #706e6b;
+    font-style: italic;
+    font-size: 0.8125rem;
+}
+
+.upload-button {
+    margin-top: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .table-container {
+        max-height: 60vh;
+    }
+}
+
+/* Project Color Legend */
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+}
+
+.legend-item:hover {
+    background-color: #f3f3f3;
+}
+
+.legend-color-box {
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 0.25rem;
+    flex-shrink: 0;
+    display: inline-block !important;
+    border: 1px solid #d8dde6 !important;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+.legend-project-name {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #181818;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

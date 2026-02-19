@@ -16,7 +16,7 @@ export default class ProjectAssignmentRecordInline extends LightningElement {
     @track rows = [];
     @track statusOptions = [];
     @track errorBanner = null;
-
+    _paStartNumber = null;   // vindo do Apex
     // Global lookup fields
     @track globalExecutiveReportId = null;
     @track globalExecutiveReportLabel = null;
@@ -116,6 +116,17 @@ export default class ProjectAssignmentRecordInline extends LightningElement {
         return crypto.randomUUID();
     }
 
+    async initPANumberIfNeeded() {
+        if (this._paStartNumber !== null) return;
+
+        const nextPANumber = await getNextPANumber();
+        const number = parseInt(nextPANumber.replace(/\D/g, ''), 10);
+
+        this._paStartNumber = isNaN(number) ? 1 : number;
+    }
+
+
+
     async _hydrateExecutiveReportLabelToRows() {
         if (!this.recordId) return;
 
@@ -140,19 +151,105 @@ export default class ProjectAssignmentRecordInline extends LightningElement {
         }
     }
 
+    /* async addRow() {
+         try {
+             const nextPANumber = await getNextPANumber();
+             const numberPart = nextPANumber.replace('PA #', '').trim();
+             const itemNumber = parseInt(numberPart, 10) || 1;
+ 
+             this.rows = [
+                 ...this.rows,
+                 {
+                     key: this._uuid(),
+ 
+                     paNumber: nextPANumber,
+                     item: itemNumber,
+ 
+                     executiveReportId: null,
+                     executiveReportLabel: null,
+                     executiveReportSearch: '',
+                     executiveReportOptions: [],
+                     showExecutiveReportDropdown: false,
+ 
+                     projectId: null,
+                     projectLabel: null,
+                     projectSearch: '',
+                     projectOptions: [],
+                     showProjectDropdown: false,
+ 
+                     nextAction: '',
+                     assignment: '',
+                     targetDate: null,
+ 
+                     // Status custom combobox
+                     status: '',
+                     statusLabel: '',
+                     showStatusDropdown: false,
+                     statusComboboxClass: 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click',
+ 
+                     error: null,
+                     errorKey: this._uuid()
+                 }
+             ];
+         } catch (error) {
+             console.error('Error getting next PA Number:', error);
+ 
+             this.rows = [
+                 ...this.rows,
+                 {
+                     key: this._uuid(),
+                     paNumber: '',
+                     item: null,
+ 
+                     executiveReportId: null,
+                     executiveReportLabel: null,
+                     executiveReportSearch: '',
+                     executiveReportOptions: [],
+                     showExecutiveReportDropdown: false,
+ 
+                     projectId: null,
+                     projectLabel: null,
+                     projectSearch: '',
+                     projectOptions: [],
+                     showProjectDropdown: false,
+ 
+                     nextAction: '',
+                     assignment: '',
+                     targetDate: null,
+ 
+                     status: '',
+                     statusLabel: '',
+                     showStatusDropdown: false,
+                     statusComboboxClass: 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click',
+ 
+                     error: null,
+                     errorKey: this._uuid()
+                 }
+             ];
+         }
+     }
+ */
+
+
     async addRow() {
         try {
-            const nextPANumber = await getNextPANumber();
-            const numberPart = nextPANumber.replace('PA #', '').trim();
-            const itemNumber = parseInt(numberPart, 10) || 1;
+            await this.initPANumberIfNeeded();
+
+            const index = this.rows.length;
+
+            const paNumber = this._paStartNumber + index;
+            const itemNumber = index + 1;
 
             this.rows = [
                 ...this.rows,
                 {
                     key: this._uuid(),
 
-                    paNumber: nextPANumber,
-                    item: itemNumber,
+                    /* paNumber: 'PA #${paNumber}',*/
+                    /* paNumber: `PA #${this._paStartNumber + index}`,*/
+                    paNumber: `PA #${String(this._paStartNumber + index).padStart(4, '0')}`,
+                    /* item: itemNumber,*/
+                    item: String(this._paStartNumber + index).padStart(2, '0'),
 
                     executiveReportId: null,
                     executiveReportLabel: null,
@@ -168,61 +265,42 @@ export default class ProjectAssignmentRecordInline extends LightningElement {
 
                     nextAction: '',
                     assignment: '',
-                    targetDate: null,
-
-                    // Status custom combobox
-                    status: '',
-                    statusLabel: '',
-                    showStatusDropdown: false,
-                    statusComboboxClass: 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click',
-
-                    error: null,
-                    errorKey: this._uuid()
-                }
-            ];
-        } catch (error) {
-            console.error('Error getting next PA Number:', error);
-
-            this.rows = [
-                ...this.rows,
-                {
-                    key: this._uuid(),
-                    paNumber: '',
-                    item: null,
-
-                    executiveReportId: null,
-                    executiveReportLabel: null,
-                    executiveReportSearch: '',
-                    executiveReportOptions: [],
-                    showExecutiveReportDropdown: false,
-
-                    projectId: null,
-                    projectLabel: null,
-                    projectSearch: '',
-                    projectOptions: [],
-                    showProjectDropdown: false,
-
-                    nextAction: '',
-                    assignment: '',
+                    actionBy: '',
                     targetDate: null,
 
                     status: '',
                     statusLabel: '',
                     showStatusDropdown: false,
-                    statusComboboxClass: 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click',
+                    statusComboboxClass:
+                        'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click',
 
                     error: null,
                     errorKey: this._uuid()
                 }
             ];
+        } catch (e) {
+            console.error('Error initializing PA Number', e);
         }
     }
 
-    removeRow(event) {
-        const index = Number(event.target.dataset.index);
-        this.rows = this.rows.filter((row, i) => i !== index);
-    }
+    /*   removeRow(event) {
+           const index = Number(event.target.dataset.index);
+           this.rows = this.rows.filter((row, i) => i !== index);
+       }
+   */
 
+    removeRow(event) {
+        const index = Number(event.currentTarget.dataset.index);
+        if (isNaN(index)) return;
+
+        const updated = this.rows.filter((_, i) => i !== index);
+
+        this.rows = updated.map((row, i) => ({
+            ...row,
+            paNumber: `PA #${String(this._paStartNumber + i).padStart(4, '0')}`,
+            item: String(this._paStartNumber + i).padStart(2, '0')
+        }));
+    }
     handleRowEdit(event) {
         const index = Number(event.target.dataset.index);
 
@@ -514,6 +592,7 @@ export default class ProjectAssignmentRecordInline extends LightningElement {
                     item: (row.item != null && row.item !== '' && !isNaN(row.item)) ? Number(row.item) : null,
                     nextAction: (row.nextAction != null && row.nextAction !== '') ? String(row.nextAction).trim() : null,
                     assignment: (row.assignment != null && row.assignment !== '') ? String(row.assignment).trim() : null,
+                    actionBy: (row.actionBy != null && row.actionBy !== '') ? String(row.actionBy).trim() : null,
                     targetDate: (row.targetDate != null && row.targetDate !== '') ? String(row.targetDate) : null,
                     status: (row.status != null && row.status !== '') ? String(row.status) : null,
                     project: (row.projectId != null && row.projectId !== '') ? String(row.projectId) : (this.globalProjectId ? String(this.globalProjectId) : null),
@@ -543,6 +622,9 @@ export default class ProjectAssignmentRecordInline extends LightningElement {
                     copy[targetIndex] = { ...copy[targetIndex], error: msg, errorKey: this._uuid() };
                 }
             });
+
+
+
 
             let nextRows = copy;
 
