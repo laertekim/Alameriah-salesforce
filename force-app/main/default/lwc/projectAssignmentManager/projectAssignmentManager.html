@@ -1,0 +1,663 @@
+<template>
+    <lightning-card title="Project Assignments Manager" icon-name="custom:custom63">
+        
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <div class="slds-align_absolute-center slds-p-around_medium">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                <p class="slds-m-top_small">Loading assignments...</p>
+            </div>
+        </template>
+
+        <!-- Error Message -->
+        <template if:true={errorMessage}>
+            <div class="slds-p-around_small">
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <h2>{errorMessage}</h2>
+                </div>
+            </div>
+        </template>
+
+        <!-- Add New Row Button -->
+        <div class="slds-p-horizontal_small slds-p-top_small">
+            <lightning-button 
+                label="Add New Assignment" 
+                icon-name="utility:add" 
+                onclick={openModal}
+                variant="brand">
+            </lightning-button>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="slds-p-horizontal_small slds-p-vertical_small">
+            <div class="slds-box slds-theme_shade slds-p-around_small">
+                <div class="slds-grid slds-wrap slds-gutters_small">
+                    <!-- Filter Header -->
+                    <div class="slds-col slds-size_1-of-1 slds-m-bottom_x-small">
+                        <div class="slds-grid slds-grid_align-spread">
+                            <h3 class="slds-text-heading_small">Filters</h3>
+                            <lightning-button 
+                                label="Clear Filters" 
+                                icon-name="utility:clear"
+                                onclick={clearFilters}
+                                variant="neutral"
+                                size="small">
+                            </lightning-button>
+                        </div>
+                    </div>
+
+                    <!-- Project Filter -->
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-6">
+                        <lightning-combobox
+                            label="Project"
+                            placeholder="All Projects"
+                            value={filters.projectId}
+                            options={projectFilterOptions}
+                            onchange={handleFilterChange}
+                            data-filter="projectId">
+                        </lightning-combobox>
+                    </div>
+
+                    
+
+                    <!-- Assignment Filter (text search) -->
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-6">
+                        <lightning-input
+                            label="Assignment"
+                            placeholder="Search..."
+                            value={filters.assignment}
+                            onchange={handleFilterChange}
+                            data-filter="assignment">
+                        </lightning-input>
+                    </div>
+
+                    <!-- Next Action Filter (text search) -->
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-6">
+                        <lightning-input
+                            label="Next Action/Status"
+                            placeholder="Search..."
+                            value={filters.nextAction}
+                            onchange={handleFilterChange}
+                            data-filter="nextAction">
+                        </lightning-input>
+                    </div>
+
+                    <!-- Action By Filter (text search) -->
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-12">
+                        <lightning-input
+                            label="Action By"
+                            placeholder="Search..."
+                            value={filters.actionBy}
+                            onchange={handleFilterChange}
+                            data-filter="actionBy">
+                        </lightning-input>
+                    </div>
+
+                    <!-- Target Date From -->
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-12">
+                        <lightning-input
+                            type="date"
+                            label="Target Date From"
+                            value={filters.targetDateFrom}
+                            onchange={handleFilterChange}
+                            data-filter="targetDateFrom">
+                        </lightning-input>
+                    </div>
+
+                    <!-- Target Date To -->
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-12">
+                        <lightning-input
+                            type="date"
+                            label="Target Date To"
+                            value={filters.targetDateTo}
+                            onchange={handleFilterChange}
+                            data-filter="targetDateTo">
+                        </lightning-input>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-6">
+                        <lightning-combobox
+                            label="Status"
+                            placeholder="All Statuses"
+                            value={filters.status}
+                            options={statusFilterOptions}
+                            onchange={handleFilterChange}
+                            data-filter="status">
+                        </lightning-combobox>
+                    </div>
+                </div>
+
+                <!-- Filter Results Count -->
+                <div class="slds-col slds-size_1-of-1 slds-m-top_x-small">
+                    <p class="slds-text-body_small slds-text-color_weak">
+                        Showing {filteredCount} of {totalCount} assignments
+                    </p>
+                </div>
+            </div>
+
+            <!-- Project Color Legend -->
+            <template if:true={hasProjects}>
+                <div class="slds-box slds-m-top_small slds-p-around_small">
+                    <h3 class="slds-text-heading_small slds-m-bottom_x-small">Project Legend</h3>
+                    <div class="slds-grid slds-wrap slds-gutters_xx-small">
+                        <template for:each={projectLegend} for:item="project">
+                            <div key={project.id} class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-4 slds-m-bottom_xx-small">
+                                <div class="legend-item">
+                                    <span class="legend-color-box" lwc:dom="manual" data-color={project.color}></span>
+                                    <span class="legend-project-name" style="padding-left: 10px;">{project.name}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- New Assignment Modal -->
+        <template if:true={isModalOpen}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal Header -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" 
+                                title="Close" 
+                                onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-modal__title slds-hyphenate">New Project Assignment</h2>
+                    </header>
+
+                    <!-- Modal Body -->
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <div class="slds-form">
+                            <!-- Project (Required) -->
+                            <lightning-combobox
+                                label="Project"
+                                placeholder="Select Project"
+                                value={newRow.projectId}
+                                options={projectOptions}
+                                onchange={handleModalFieldChange}
+                                data-field="projectId"
+                                required
+                                class="slds-m-bottom_small">
+                            </lightning-combobox>
+
+                            <!-- PA Number -->
+                            <lightning-input
+                                label="PA Number"
+                                value={newRow.paNumber}
+                                onchange={handleModalFieldChange}
+                                data-field="paNumber"
+                                readonly
+                                class="slds-m-bottom_small">
+                            </lightning-input>
+
+                            <!-- Item Number -->
+                            <lightning-input
+                                type="number"
+                                label="Item Number"
+                                value={newRow.item}
+                                onchange={handleModalFieldChange}
+                                data-field="item"
+                                class="slds-m-bottom_small">
+                            </lightning-input>
+
+                           
+
+                            <!-- Assignment Description -->
+                            <lightning-textarea
+                                label="Assignment Description"
+                                value={newRow.assignment}
+                                onchange={handleModalFieldChange}
+                                data-field="assignment"
+                                class="slds-m-bottom_small">
+                            </lightning-textarea>
+
+                             <!-- Next Action -->
+                            <lightning-textarea
+                                label="Next Action/Status"
+                                value={newRow.nextAction}
+                                onchange={handleModalFieldChange}
+                                data-field="nextAction"
+                                class="slds-m-bottom_small">
+                            </lightning-textarea>
+
+                            <!-- Action By -->
+                            <lightning-input
+                                label="Action By"
+                                value={newRow.actionBy}
+                                onchange={handleModalFieldChange}
+                                data-field="actionBy"
+                                class="slds-m-bottom_small">
+                            </lightning-input>
+
+                            <!-- Target Date -->
+                            <lightning-input
+                                type="date"
+                                label="Target Date"
+                                value={newRow.targetDate}
+                                onchange={handleModalFieldChange}
+                                data-field="targetDate"
+                                class="slds-m-bottom_small">
+                            </lightning-input>
+
+                            <!-- Status -->
+                            <lightning-combobox
+                                label="Status"
+                                placeholder="Select Status"
+                                value={newRow.status}
+                                options={statusOptions}
+                                onchange={handleModalFieldChange}
+                                data-field="status"
+                                class="slds-m-bottom_small">
+                            </lightning-combobox>
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <footer class="slds-modal__footer">
+                        <lightning-button 
+                            label="Cancel" 
+                            onclick={closeModal}>
+                        </lightning-button>
+                        <lightning-button 
+                            variant="brand" 
+                            label="Save" 
+                            onclick={saveFromModal}
+                            disabled={isSavingModal}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- File Upload Modal -->
+        <template if:true={isUploadModalOpen}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" 
+                                title="Close" 
+                                onclick={closeUploadModal}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-modal__title slds-hyphenate">Upload Attachment</h2>
+                    </header>
+
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <lightning-file-upload
+                            label="Attach PDF Files"
+                            multiple
+                            accept=".pdf"
+                            record-id={uploadRecordId}
+                            onuploadfinished={handleUploadFinished}>
+                        </lightning-file-upload>
+                    </div>
+
+                    <footer class="slds-modal__footer">
+                        <lightning-button 
+                            label="Close" 
+                            onclick={closeUploadModal}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- File Management Modal -->
+        <template if:true={isManageFilesModalOpen}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" 
+                                title="Close" 
+                                onclick={closeManageFilesModal}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-modal__title slds-hyphenate">Manage Attachments</h2>
+                    </header>
+
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <template if:true={currentFiles}>
+                            <template if:true={currentFiles.length}>
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th scope="col" style="width: 60px;">
+                                                <div class="slds-truncate">Type</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">File Name</div>
+                                            </th>
+                                            <th scope="col" style="width: 120px;">
+                                                <div class="slds-truncate">Size</div>
+                                            </th>
+                                            <th scope="col" style="width: 150px;">
+                                                <div class="slds-truncate">Uploaded</div>
+                                            </th>
+                                            <th scope="col" style="width: 100px;">
+                                                <div class="slds-truncate">Actions</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={currentFiles} for:item="file">
+                                            <tr key={file.contentDocumentId}>
+                                                <td>
+                                                    <lightning-icon 
+                                                        icon-name="doctype:pdf" 
+                                                        size="small">
+                                                    </lightning-icon>
+                                                </td>
+                                                <td>
+                                                    <a href={file.fileUrl} 
+                                                       target="_blank"
+                                                       class="file-link-preview"
+                                                       title="Click to view in Salesforce">
+                                                        {file.fileName}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    {file.fileSizeFormatted}
+                                                </td>
+                                                <td>
+                                                    <lightning-formatted-date-time
+                                                        value={file.createdDate}
+                                                        year="numeric"
+                                                        month="short"
+                                                        day="2-digit"
+                                                        hour="2-digit"
+                                                        minute="2-digit">
+                                                    </lightning-formatted-date-time>
+                                                </td>
+                                                <td>
+                                                    <lightning-button-icon
+                                                        icon-name="utility:delete"
+                                                        alternative-text="Delete"
+                                                        title="Delete File"
+                                                        variant="border-filled"
+                                                        data-document-id={file.contentDocumentId}
+                                                        data-file-name={file.fileName}
+                                                        onclick={handleDeleteFile}
+                                                        disabled={file.isDeleting}>
+                                                    </lightning-button-icon>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </template>
+                            <template if:false={currentFiles.length}>
+                                <div class="slds-text-align_center slds-p-around_medium">
+                                    <p class="slds-text-color_weak">No files attached.</p>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+
+                    <footer class="slds-modal__footer">
+                        <lightning-button 
+                            label="Add More Files" 
+                            icon-name="utility:add"
+                            onclick={handleAddMoreFiles}>
+                        </lightning-button>
+                        <lightning-button 
+                            variant="brand"
+                            label="Close" 
+                            onclick={closeManageFilesModal}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Assignments Table -->
+        <template if:false={isLoading}>
+            <template if:true={assignments.length}>
+                <div class="slds-p-around_small">
+                    <div class="table-container">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                            <thead>
+                               <tr class="slds-line-height_reset">
+                                    <th scope="col" class="col-drag" style="width: 80px;">
+                                        <div class="slds-truncate" title="Drag">Drag</div>
+                                    </th>
+                                    <th scope="col" class="col-project resizable-column">
+                                        <div class="slds-truncate" title="Project">Project</div>
+                                        <div class="resize-handle" data-column="col-project"></div>
+                                    </th>
+                                    <!-- PA Number column hidden -->
+                                    <th scope="col" class="col-item resizable-column" style="width: 60px;">
+                                        <div class="slds-truncate" title="Item">Item</div>
+                                        <div class="resize-handle" data-column="col-item"></div>
+                                    </th>
+                                    
+                                    <th scope="col" class="col-assignment resizable-column" style="width: 380px">
+                                        <div class="slds-truncate" title="Assignment Description">Assignment</div>
+                                        <div class="resize-handle" data-column="col-assignment"></div>
+                                    </th>
+                                    <th scope="col" class="col-next-action resizable-column" style="width: 380px">
+                                        <div class="slds-truncate" title="Next Action / Decision Required">Next Action/Status</div>
+                                        <div class="resize-handle" data-column="col-next-action"></div>
+                                    </th>
+                                    <th scope="col" class="col-action-by resizable-column" style="width: 120px">
+                                        <div class="slds-truncate" title="Action By">Action By</div>
+                                        <div class="resize-handle" data-column="col-action-by"></div>
+                                    </th>
+                                    <th scope="col" class="col-target-date resizable-column" style="width: 140px">
+                                        <div class="slds-truncate" title="Target Date">Target Date</div>
+                                        <div class="resize-handle" data-column="col-target-date"></div>
+                                    </th>
+                                    <th scope="col" class="col-status resizable-column" style="width: 160px">
+                                        <div class="slds-truncate" title="Status">Status</div>
+                                        <div class="resize-handle" data-column="col-status"></div>
+                                    </th>
+                                    <th scope="col" class="col-attachments resizable-column">
+                                        <div class="slds-truncate" title="Attachments">Attachments</div>
+                                        <div class="resize-handle" data-column="col-attachments"></div>
+                                    </th>
+                                    <th scope="col" class="col-actions">
+                                        <div class="slds-truncate" title="Actions">Actions</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={filteredAssignments} for:item="row" for:index="index">
+                                    <tr key={row.id} 
+                                        data-id={row.id}
+                                        draggable="true"
+                                        ondragstart={handleDragStart}
+                                        ondragover={handleDragOver}
+                                        ondrop={handleDrop}
+                                        ondragend={handleDragEnd}
+                                        class={row.rowClass}
+                                        style={row.rowStyle}>
+                                        
+                                        <!-- Drag Handle -->
+                                        <td class="col-drag">
+                                            <lightning-icon 
+                                                icon-name="utility:rows" 
+                                                size="x-small"
+                                                class="drag-handle">
+                                            </lightning-icon>
+                                        </td>
+
+                                        <!-- Project (Combobox for new, readonly for existing) -->
+                                        <td class="col-project">
+                                            <template if:true={row.isNew}>
+                                                <lightning-combobox
+                                                    variant="label-hidden"
+                                                    placeholder="Select Project"
+                                                    value={row.projectId}
+                                                    options={projectOptions}
+                                                    data-id={row.id}
+                                                    data-field="projectId"
+                                                    onchange={handleFieldChange}
+                                                    required>
+                                                </lightning-combobox>
+                                            </template>
+                                            <template if:false={row.isNew}>
+                                                <div class="slds-truncate" title={row.projectName}>
+                                                    {row.projectName}
+                                                </div>
+                                            </template>
+                                        </td>
+
+                                        <!-- PA Number - HIDDEN -->
+
+                                        <!-- Item -->
+                                        <td class="col-item">
+                                            <lightning-input
+                                                type="number"
+                                                variant="label-hidden"
+                                                value={row.item}
+                                                data-id={row.id}
+                                                data-field="item"
+                                                onchange={handleFieldChange}
+                                                formatter="decimal"
+                                                step="1">
+                                            </lightning-input>
+                                        </td>
+
+                                        
+
+                                        <!-- Assignment -->
+                                        <td class="col-assignment">
+                                            <lightning-textarea
+                                                variant="label-hidden"
+                                                value={row.assignment}
+                                                data-id={row.id}
+                                                data-field="assignment"
+                                                onchange={handleFieldChange}>
+                                            </lightning-textarea>
+                                        </td>
+                                        
+                                        <!-- Next Action -->
+                                        <td class="col-next-action">
+                                            <lightning-textarea
+                                                variant="label-hidden"
+                                                value={row.nextAction}
+                                                data-id={row.id}
+                                                data-field="nextAction"
+                                                onchange={handleFieldChange}>
+                                            </lightning-textarea>
+                                        </td>
+
+                                        <!-- Action By -->
+                                        <td class="col-action-by">
+                                            <lightning-input
+                                                variant="label-hidden"
+                                                value={row.actionBy}
+                                                data-id={row.id}
+                                                data-field="actionBy"
+                                                onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </td>
+
+                                        <!-- Target Date -->
+                                        <td class="col-target-date">
+                                            <lightning-input
+                                                type="date"
+                                                variant="label-hidden"
+                                                value={row.targetDate}
+                                                data-id={row.id}
+                                                data-field="targetDate"
+                                                onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </td>
+
+                                        <!-- Status -->
+                                        <td class="col-status">
+                                            <lightning-combobox
+                                                variant="label-hidden"
+                                                placeholder="Select Status"
+                                                value={row.status}
+                                                options={statusOptions}
+                                                data-id={row.id}
+                                                data-field="status"
+                                                onchange={handleFieldChange}>
+                                            </lightning-combobox>
+                                        </td>
+
+                                        <!-- Attachments -->
+                                        <td class="col-attachments">
+                                            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                                <div style="flex: 0 0 auto;">
+                                                    <!-- Plain HTML badge instead of lightning-button -->
+                                                    <div class="attachment-badge" 
+                                                         data-id={row.id}
+                                                         onclick={handleManageFiles}
+                                                         title={row.attachmentTooltip}
+                                                         style={row.attachmentBadgeStyle}>
+                                                        <svg width="26" height="26" viewBox="0 0 24 24">
+                                                            <path fill="#d62727" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                                        </svg>
+                                                        <span class="attachment-count-text">{row.attachmentCount} attachment(s)</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div style="flex: 0 0 auto; margin-left: auto; padding-right: 20px;">
+                                                    <lightning-button-icon 
+                                                        icon-name="utility:add" 
+                                                        variant="border-filled"
+                                                        alternative-text="Add Files"
+                                                        title="Add Files"
+                                                        data-id={row.id}
+                                                        onclick={handleUploadClick}
+                                                        size="small">
+                                                    </lightning-button-icon>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Actions -->
+                                        <td class="col-actions">
+                                            <lightning-button-group>
+                                                <lightning-button-icon
+                                                    icon-name="utility:save"
+                                                    alternative-text="Save"
+                                                    title="Save"
+                                                    data-id={row.id}
+                                                    onclick={handleSaveRow}
+                                                    disabled={row.isSaving}>
+                                                </lightning-button-icon>
+                                                <lightning-button-icon
+                                                    icon-name="utility:delete"
+                                                    alternative-text="Delete"
+                                                    title="Delete"
+                                                    data-id={row.id}
+                                                    onclick={handleDeleteRow}
+                                                    disabled={row.isDeleting}
+                                                    variant="border-filled">
+                                                </lightning-button-icon>
+                                            </lightning-button-group>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Empty State -->
+            <template if:true={showEmptyState}>
+                <div class="slds-p-around_small">
+                    <div class="slds-text-align_center slds-p-around_medium">
+                        <p class="slds-text-color_weak">
+                            No assignments found. Click "Add New Assignment" to get started.
+                        </p>
+                    </div>
+                </div>
+            </template>
+        </template>
+    </lightning-card>
+</template>

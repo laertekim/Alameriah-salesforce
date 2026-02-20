@@ -47,20 +47,22 @@ public class ExecRepAssignmentsLwcControllerTest {
         createAssignment(report.Id, project.Id);
 
         Test.startTest();
-        List<Project_Assignment__c> results =
+        List<ExecutiveReportAssignmentsLwcController.AssignmentWrapper> results =
             ExecutiveReportAssignmentsLwcController.getAssignments(report.Id);
         Test.stopTest();
 
-        Project_Assignment__c match;
-        for (Project_Assignment__c row : results) {
-            if (row.Project__r != null && row.Project__r.Name == 'Project A') {
+        ExecutiveReportAssignmentsLwcController.AssignmentWrapper match;
+        for (ExecutiveReportAssignmentsLwcController.AssignmentWrapper row : results) {
+            if (row.assignment != null &&
+                row.assignment.Project__r != null &&
+                row.assignment.Project__r.Name == 'Project A') {
                 match = row;
                 break;
             }
         }
 
         System.assertNotEquals(null, match, 'Should include Project A');
-        System.assertEquals(Date.today(), match.Target_Status__c, 'Target status');
+        System.assertEquals(Date.today(), match.assignment.Target_Status__c, 'Target status');
     }
 
     @IsTest

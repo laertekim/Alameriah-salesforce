@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Refundable_Security_Deposit_SR__c</fullName>
     <defaultValue>1000</defaultValue>
+    <externalId>false</externalId>
     <label>Refundable Security Deposit (SR)</label>
     <precision>18</precision>
     <required>false</required>

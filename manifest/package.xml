@@ -10,5 +10,29 @@
         <name>CustomObject</name>
     </types>
     
+    <types>
+        <members>OpportunityReportController</members>
+        <members>FieldDataRetriever</members>
+        <members>DefaultFieldConfigurationProvider</members>
+        <members>FieldDescriptor</members>
+        <members>IFieldConfigurationProvider</members>
+        
+        <members>RecordDescriptor</members>
+        <members>OpportunityQueryBuilder</members>
+        <name>ApexClass</name>
 
+    </types>
+
+    <!-- visualforce types -->
+    <types>
+        <members>OpportunityReport</members>
+        <name>ApexPage</name>
+    </types>
+
+    <types>
+        <members>AlameriahReportLogo</members>
+        <name>StaticResource</name>
+    </types>
+
+    <version>57.0</version>
 </Package>

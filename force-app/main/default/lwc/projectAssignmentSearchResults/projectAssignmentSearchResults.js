@@ -78,6 +78,7 @@ export default class ProjectAssignmentSearchResults extends LightningElement {
                 item: r.item,
                 nextActionText: this._stripHtml(r.nextAction),
                 assignmentText: this._stripHtml(r.assignment),
+                actionByText: this._stripHtml(r.actionBy),
                 targetDate: r.targetDate,
                 status: r.status,
                 projectName: r.projectName,
@@ -146,6 +147,7 @@ export default class ProjectAssignmentSearchResults extends LightningElement {
                 item: row.item !== '' && row.item != null ? Number(row.item) : null,
                 nextAction: row.nextActionText,
                 assignment: row.assignmentText,
+                actionBy: row.actionByText,
                 targetDate: row.targetDate || null,
                 status: row.status
             });

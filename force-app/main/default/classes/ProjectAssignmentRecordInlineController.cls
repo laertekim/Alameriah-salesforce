@@ -8,6 +8,7 @@ public with sharing class ProjectAssignmentRecordInlineController {
         @AuraEnabled public Long item;
         @AuraEnabled public String nextAction;
         @AuraEnabled public String assignment;
+        @AuraEnabled public String actionBy;
         @AuraEnabled public Date targetDate;
         @AuraEnabled public String status;
         @AuraEnabled public Id project;
@@ -38,6 +39,7 @@ public with sharing class ProjectAssignmentRecordInlineController {
         @AuraEnabled public Long item;
         @AuraEnabled public String nextAction;
         @AuraEnabled public String assignment;
+        @AuraEnabled public String actionBy;
         @AuraEnabled public Date targetDate;
         @AuraEnabled public String status;
         @AuraEnabled public String projectName;
@@ -114,6 +116,7 @@ public with sharing class ProjectAssignmentRecordInlineController {
                    Assignment_Description__c,
                    Target_Status__c,
                    Priority_Notes__c,
+                   Action_By2__c, 
                    Project__r.Name
             FROM Project_Assignment__c
             WHERE Project__r.Name LIKE :searchPattern
@@ -133,6 +136,7 @@ public with sharing class ProjectAssignmentRecordInlineController {
             row.item = rec.Item__c != null ? rec.Item__c.longValue() : null;
             row.nextAction = rec.Next_Action_Decision_Required__c;
             row.assignment = rec.Assignment_Description__c;
+            row.actionBy = rec.Action_By2__c;
             row.targetDate = rec.Target_Status__c;
             row.status = rec.Priority_Notes__c;
             row.projectName = rec.Project__r != null ? rec.Project__r.Name : null;
@@ -149,6 +153,7 @@ public with sharing class ProjectAssignmentRecordInlineController {
         Long item,
         String nextAction,
         String assignment,
+        String actionBy,
         Date targetDate,
         String status
     ) {
@@ -165,6 +170,7 @@ public with sharing class ProjectAssignmentRecordInlineController {
             Item__c = item,
             Next_Action_Decision_Required__c = nextAction,
             Assignment_Description__c = assignment,
+            Action_By2__c = actionBy,
             Target_Status__c = targetDate,
             Priority_Notes__c = status
         );
@@ -330,6 +336,7 @@ public with sharing class ProjectAssignmentRecordInlineController {
                 row.item == null &&
                 String.isBlank(row.nextAction) &&
                 String.isBlank(row.assignment) &&
+                String.isBlank(row.actionBy) &&
                 row.targetDate == null &&
                 String.isBlank(row.status) &&
                 row.project == null &&
@@ -344,6 +351,7 @@ public with sharing class ProjectAssignmentRecordInlineController {
             rec.Item__c = row.item;
             rec.Next_Action_Decision_Required__c = row.nextAction;
             rec.Assignment_Description__c = row.assignment;
+            rec.Action_By2__c = row.actionBy;
             rec.Target_Status__c = row.targetDate;
             rec.Priority_Notes__c = row.status;
             rec.Project__c = row.project;

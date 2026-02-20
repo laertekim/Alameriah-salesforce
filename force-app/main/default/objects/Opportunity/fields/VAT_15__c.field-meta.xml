@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>VAT_15__c</fullName>
     <defaultValue>false</defaultValue>
+    <externalId>false</externalId>
     <label>VAT 15%</label>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Checkbox</type>
