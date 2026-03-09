@@ -34,16 +34,26 @@
             text-align: left;
             padding: 10px;
             vertical-align: middle;
-
-            /* max logo area */
             max-width: 180px;
             max-height: 60px;
         }
-
         
         .logo-cell img {
             max-height: 60px;
             max-width: 180px;
+        }
+        
+        .header {
+            background-color: #f4b400;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            padding: 6px;
+            font-size: 16px;
+        }
+        
+        .label {
+            font-weight: bold;
         }
         
         .title-bar {
@@ -57,36 +67,20 @@
             margin-bottom: 20px;
         }
         
-        .info-row {
-            display: table;
-            width: 100%;
-            margin-bottom: 8px;
+        .section {
+            margin-top: 15px;
         }
-        
-        .info-cell {
-            display: table-cell;
-            width: 50%;
-            padding: 3px 0;
-        }
-        
-        .info-label {
-            font-weight: normal;
-        }
-        
-        .info-value {
-            font-weight: normal;
-        }
-        
+        <!--
         .section-title {
             text-decoration: underline;
             font-weight: bold;
             margin: 20px 0 10px 0;
-        }
+        } --> 
         
         .field-row {
             display: table;
             width: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
         
         .field-cell {
@@ -95,37 +89,33 @@
         }
         
         .field-cell-label {
-            width: 35%;
+            width: 39%;
         }
         
         .field-cell-value {
-            width: 65%;
-        }
-        
-        .greeting {
-            margin: 15px 0;
+            width: 61%;
         }
         
         .units-table {
-            width: 100%;
+            width: 70%;
+            margin-left:auto;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 10px;
         }
         
         .units-table th {
-            background-color: #f5f5f5;
-            border: 1px solid #333;
-            padding: 8px;
-            text-align: center;
+            padding: 6px 4px;
+            text-align: left;
             font-weight: bold;
             font-size: 10pt;
+            border: none;
+            border-bottom: 1px solid #999;
         }
         
         .units-table td {
-            border: 1px solid #333;
-            padding: 8px;
-            text-align: center;
+            padding: 1px 2px;
             font-size: 10pt;
+            border: none;
         }
         
         .units-table .total-row {
@@ -134,30 +124,30 @@
             font-weight: bold;
         }
         
-        .charges-table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
         }
         
-        .charges-table th {
-            background-color: #f5f5f5;
-            border: 1px solid #333;
-            padding: 8px;
-            text-align: left;
-            font-weight: bold;
-            font-size: 10pt;
+        table td {
+            padding: 3px 2px;
+            vertical-align: top;
         }
         
-        .charges-table td {
-            border: 1px solid #333;
-            padding: 8px;
-            text-align: left;
-            font-size: 10pt;
+        .right {
+            text-align: right;
         }
         
         .page-break {
             page-break-before: always;
+        }
+        
+        .small-note {
+            text-align: left;
+        }
+        
+        .signature-section {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -167,10 +157,10 @@
         <tr>
             <!-- LEFT LOGO -->
             <td style="
-                width:180px;
+                width:50%;
                 height:60px;
-                overflow:hidden;
                 vertical-align:middle;
+                text-align:left;
             ">
                 <img src="{!$Resource.AlameriahReportLogo}"
                     style="
@@ -180,162 +170,298 @@
                     " />
             </td>
 
-
-            
-
-            <!-- RIGHT EMPTY SPACE (BALANCE) -->
-            <td style="width:180px;"></td>
+            <!-- RIGHT LOGO -->
+            <td style="
+                width:50%;
+                height:60px;
+                vertical-align:middle;
+                text-align:right;
+            ">
+                <img src="{!$Resource.AlameriahDLogo}"
+                    style="
+                        height:60px;
+                        width:auto;
+                        display:inline-block;
+                        margin-left: auto;
+                        margin-right: 0;
+                    " />
+            </td>
         </tr>
     </table>
 
     
-    <div class="title-bar">
-        Sales Offer
+    <div class="header">
+            SALES / PURCHASE OFFER
     </div>
     
-    <div class="info-row">
-        <div class="info-cell">
-            <span class="info-label">Date : </span>
-            <span class="info-value">{!TODAY()}</span>
-        </div>
-        <div class="info-cell" style="text-align: right;">
-            <span class="info-label">Deal Number : </span>
-            <span class="info-value">
-                <apex:outputText value="{!opportunity.Deal_Number__c}"/>
-            </span>
-        </div>
-    </div>
-    
-    <div class="info-row">
-        <div class="info-cell">
-            <span class="info-label">Attention : </span>
-            <span class="info-value">
-                <apex:outputText value="{!opportunity.Primary_Contact__c}"/>
-            </span>
-        </div>
-        <div class="info-cell" style="text-align: right;">
-            <!-- Additional info can go here -->
-        </div>
-    </div>
-    
-    <div class="info-row">
-        <div class="info-cell">
-            <span class="info-label">Email : </span>
-            <span class="info-value">
-                <apex:outputText value="{!opportunity.AccountId}"/>
-            </span>
-        </div>
-        <div class="info-cell" style="text-align: right;">
-            <span class="info-label">Phone No : </span>
-            <span class="info-value">
-                <!-- Phone field if available -->
-            </span>
-        </div>
-    </div>
-    
-    <div class="section-title">Subjected to :</div>
-    
-    <div class="field-row">
-        <div class="field-cell field-cell-label">
-            <span class="info-label">Site</span>
-        </div>
-        <div class="field-cell field-cell-value">
-            <span class="info-label">: </span>
-            <span class="info-value">
-                <apex:outputText value="{!opportunity.Site__c}"/>
-            </span>
-        </div>
-    </div>
-    
-    <div class="field-row">
-        <div class="field-cell field-cell-label">
-            <span class="info-label">Opportunity Name</span>
-        </div>
-        <div class="field-cell field-cell-value">
-            <span class="info-label">: </span>
-            <span class="info-value">
-                <apex:outputText value="{!opportunity.Name}"/>
-            </span>
-        </div>
-    </div>
-    
-    <div class="greeting">
-        Dear Valued Customer,
-    </div>
-    
-    <div style="margin: 10px 0;">
-        <strong>Property Details:</strong>
-    </div>
-    
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
-        <apex:repeat value="{!opportunityFields}" var="oppField">
-            <tr>
-                <td style="padding: 5px 10px; width: 35%; border-bottom: 1px solid #eee;">
-                    <strong>{!oppField.label}</strong>
-                </td>
-                <td style="padding: 5px 10px; width: 65%; border-bottom: 1px solid #eee;">
-                    <apex:outputText value="{!oppField.formattedValue}" escape="false"/>
-                </td>
-            </tr>
-        </apex:repeat>
+    <table>
+    <tr>
+        <td width="5%">
+            <span class="label">To:</span>
+        </td>
+        <td width="55%">
+            {!Opportunity.Primary_Contact__r.Name}<br/>
+            {!Opportunity.Primary_Contact__r.Title}<br/>
+            {!Opportunity.Primary_Contact__r.MailingStreet}<br/>
+            {!Opportunity.Primary_Contact__r.MailingCity},
+            {!Opportunity.Primary_Contact__r.MailingState}<br/>
+            {!Opportunity.Primary_Contact__r.MailingPostalCode}<br/>
+            {!Opportunity.Primary_Contact__r.MailingCountry}
+        </td>
+        <td width="40%">
+            <span class="label">Date: </span>
+                <apex:outputText value="{0,date,MM/dd/yyyy}">
+                <apex:param value="{!TODAY()}"/>
+                </apex:outputText><br/>
+            <span class="label">Tel:</span> {!Opportunity.Primary_Contact__r.Phone}<br/>
+            <span class="label">Fax:</span> {!Opportunity.Primary_Contact__r.Fax}
+        </td>
+    </tr>
     </table>
     
-    <apex:outputPanel rendered="{!hasPaymentSchedules}">
-        <div style="margin-top: 25px;">
-            <strong>Payment Schedule:</strong>
-        </div>
-        
-        <table class="units-table">
-            <thead>
-                <tr>
-                    <apex:repeat value="{!paymentScheduleFields}" var="headerField">
-                        <th>{!headerField.label}</th>
+    <br/>
+
+    Dear Sir/Madam,
+    
+    <div class="section">
+    
+        <!-- PROPERTY INFORMATION TABLE -->
+        <table>
+            <tr>
+                <td class="label" style="width:35%">Site:</td>
+                <td style="vertical-align:top; padding:4px 0;">{!Opportunity.Site__r.Name}</td>
+            </tr>
+            
+            <apex:outputPanel rendered="{!hasDealBuildings}">
+
+            <apex:variable var="firstRecord" value="{!dealBuildingRecords[0]}" />
+            
+            <tr>
+                <td class="label">Sector, location or level:</td>
+                <td>
+                    <apex:repeat value="{!firstRecord.fields}" var="field">
+                        <apex:outputPanel rendered="{!field.apiName == 'LocationAndVisibility__c'}">
+                            {!field.formattedValue}
+                        </apex:outputPanel>
                     </apex:repeat>
+            
+                    &nbsp;&nbsp;&nbsp;
+                    <span class="label">Plot No. :</span>
+                    <apex:outputText value="{!dealBuildings[0].Building__r.Name}" />
+                </td>
+            </tr>
+            
+            <tr>
+                <td class="label">Unit number:</td>
+                    <td>
+                        <apex:repeat value="{!firstRecord.fields}" var="field">
+                            <apex:outputPanel rendered="{!field.apiName == 'Unit_No__c'}">
+                                {!field.formattedValue}
+                            </apex:outputPanel>
+                        </apex:repeat>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                <apex:repeat value="{!paymentScheduleRecords}" var="scheduleRecord">
+            
+            </apex:outputPanel>
+    
+            <tr>
+                <td class="label">Land Area:</td>
+                <td>{!Opportunity.LandArea__c} sqm.</td>
+            </tr>
+    
+            <tr>
+                <td class="label">Land Price per sqm:</td>
+                <td>
+                    <apex:outputText value="{0,number,#,##0.00}">
+                        <apex:param value="{!Opportunity.LandPricePerSqm__c}" />
+                    </apex:outputText> SAR/sqm.
+                </td>
+            </tr>
+    
+            <tr>
+                <td class="label">Built Up Area:</td>
+                <td>{!Opportunity.BuildUpArea__c} sqm.</td>
+            </tr>
+    
+            <tr>
+                <td class="label">Rate per sqm:</td>
+                <td>
+                    <apex:outputText value="{0,number,#,##0.00}">
+                        <apex:param value="{!Opportunity.Rate_per_Sqm_SR_Sqm__c}" />
+                    </apex:outputText> SAR/sqm.
+                </td>
+            </tr>
+    
+            <tr>
+                <td class="label">Total Selling Price:</td>
+                <td>
+                    <apex:outputText value="{0,number,#,##0.00}">
+                        <apex:param value="{!Opportunity.TotalSellingPrice__c}" />
+                    </apex:outputText> SAR.
+                </td>
+            </tr>
+    
+            <tr>
+                <td class="label">Date of Sale:</td>
+                <td>
+                    <apex:outputText value="{0,date,MM/dd/yyyy}">
+                        <apex:param value="{!Opportunity.CloseDate}" />
+                    </apex:outputText>
+                </td>
+            </tr>
+        </table>
+    
+        <!-- PAYMENT SCHEDULE -->
+        <apex:outputPanel rendered="{!hasPaymentSchedules}">
+            <div style="margin-top:10px;">
+                <strong>Payment Schedule:</strong>
+            </div>
+    
+            <table class="units-table">
+                <thead>
                     <tr>
-                        <apex:repeat value="{!scheduleRecord.fields}" var="cellField">
-                            <td>
-                                <apex:outputText value="{!cellField.formattedValue}"/>
-                            </td>
+                        <apex:repeat value="{!paymentScheduleFields}" var="headerField">
+                            <th rendered="{!OR(
+                                headerField.apiName = 'Amount__c',
+                                headerField.apiName = 'Percentage__c',
+                                headerField.apiName = 'Description__c'
+                            )}">
+                                {!headerField.label}
+                            </th>
                         </apex:repeat>
                     </tr>
-                </apex:repeat>
-            </tbody>
-        </table>
-    </apex:outputPanel>
-    
-    <apex:outputPanel rendered="{!hasOtherCharges}">
-        <div style="margin-top: 25px;">
-            <strong>Other Charges:</strong>
-        </div>
-        
-        <table class="charges-table">
-            <thead>
-                <tr>
-                    <apex:repeat value="{!otherChargeFields}" var="headerField">
-                        <th>{!headerField.label}</th>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!paymentScheduleRecords}" var="scheduleRecord">
+                        <tr>
+                            <apex:repeat value="{!scheduleRecord.fields}" var="cellField">
+                                <td rendered="{!OR(
+                                    cellField.apiName = 'Amount__c',
+                                    cellField.apiName = 'Percentage__c',
+                                    cellField.apiName = 'Description__c'
+                                )}">
+                                    <apex:outputText value="{!cellField.formattedValue}" />
+                                </td>
+                            </apex:repeat>
+                        </tr>
                     </apex:repeat>
-                </tr>
-            </thead>
-            <tbody>
-                <apex:repeat value="{!otherChargeRecords}" var="chargeRecord">
+                </tbody>
+            </table>
+        </apex:outputPanel>
+
+        <!-- OTHER CHARGES -->
+        <apex:outputPanel rendered="{!hasOtherCharges}">
+            <div style="margin-top:10px;">
+                <strong>Other Charges:</strong>
+            </div>
+    
+            <table class="units-table">
+                <thead>
                     <tr>
-                        <apex:repeat value="{!chargeRecord.fields}" var="cellField">
-                            <td>
-                                <apex:outputText value="{!cellField.formattedValue}"/>
-                            </td>
+                        <apex:repeat value="{!otherChargeFields}" var="headerField">
+                            <th rendered="{!OR(
+                                headerField.apiName = 'Year__c',
+                                headerField.apiName = 'Category__c',
+                                headerField.apiName = 'Amount__c'
+                            )}">
+                                {!headerField.label}
+                            </th>
                         </apex:repeat>
                     </tr>
-                </apex:repeat>
-            </tbody>
-        </table>
-    </apex:outputPanel>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!otherChargeRecords}" var="chargeRecord">
+                        <tr>
+                            <apex:repeat value="{!chargeRecord.fields}" var="cellField">
+                                <td rendered="{!OR(
+                                    cellField.apiName = 'Year__c',
+                                    cellField.apiName = 'Category__c',
+                                    cellField.apiName = 'Amount__c'
+                                )}">
+                                    <apex:outputText value="{!cellField.formattedValue}" />
+                                </td>
+                            </apex:repeat>
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+        </apex:outputPanel>
+        
+        <div class="field-row" style="margin-top:10px;">
+            <div class="field-cell field-cell-label">
+                <b>VAT 15% :</b>
+            </div>
+            <div class="field-cell field-cell-value">
+                <apex:outputText value="{!IF(Opportunity.VAT_15__c, 'Yes', 'No')}" />
+            </div>
+        </div>
     
-    <div style="margin-top: 30px; font-size: 10pt; color: #666;">
-        <em>This report was automatically generated from Salesforce on {!NOW()}</em>
+        <div class="field-row">
+            <div class="field-cell field-cell-label">
+                <b>VAT Amount:</b>
+            </div>
+            <div class="field-cell field-cell-value">
+                <apex:outputText value="{0,number,#,##0.00}">
+                    <apex:param value="{!Opportunity.VAT_Amount__c}" />
+                </apex:outputText> SAR
+            </div>
+        </div>
+    </div>
+   
+    <br/>
+        <div class="field-row">
+            <div class="field-cell field-cell-label">
+                <span class="info-label"><b>This offer is valid till: </b></span>
+            </div>
+            <div class="field-cell field-cell-value">
+                <span class="info-value">
+                    <apex:outputText value="{0,date,MM/dd/yyyy}">
+                    <apex:param value="{!Opportunity.Offer_Valid_till__c}" />
+                    </apex:outputText>
+                </span>
+            </div>
+        </div>
+    <br/>
+
+    Kindly provide us with your official acceptance of the above offer by counter signing this document in the space below and return it to us along with the first installment deposit mentioned above.
+        
+    <br/><br/>
+    
+    Yours truly,
+    
+    <br/><br/>
+    
+    <table class="signature-section">
+    <tr>
+        <td width="50%">
+            <span class="label">Sales and Leasing Representative</span><br/><br/>
+            <!--Name: {!Opportunity.Submitted_By_Name__c}-->
+            
+        </td>
+        <td width="50%">
+            <span class="label">Purchaser Representative:</span><br/><br/>
+            Name: {!Opportunity.Primary_Contact__r.Name}<br/>
+            Signature: ___________________________<br/>
+            Date:  ______________________________
+        </td>
+    </tr>
+    </table>
+    <br/>
+    <div class="small-note">
+        <span class="label">Note : &nbsp;Checks required at signature of this document :</span><br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1st Instalment Deposit:&nbsp;
+        <apex:outputPanel rendered="{!hasPaymentSchedules}">
+
+            <apex:variable var="firstSchedule" value="{!paymentScheduleRecords[0]}" />
+    
+            <apex:repeat value="{!firstSchedule.fields}" var="field">
+                <apex:outputPanel rendered="{!field.apiName == 'Amount__c'}">
+                    <apex:outputText value="{!field.formattedValue}" />
+                </apex:outputPanel>
+            </apex:repeat>
+    
+        </apex:outputPanel><strong> SAR</strong>. In favour of "Alameriah Development". <br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Current Dated Cheque)
     </div>
 </body>
 </html>

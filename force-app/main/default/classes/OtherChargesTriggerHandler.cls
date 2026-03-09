@@ -8,7 +8,7 @@ public without sharing class OtherChargesTriggerHandler {
         
         if (!affectedOpportunityIds.isEmpty()) {
             DealBuildingService service = new DealBuildingService();
-            service.recalculateOpportunities(affectedOpportunityIds);
+            service.recalculateTotalSellingPriceOnly(affectedOpportunityIds);
         }
     }
     
@@ -38,7 +38,7 @@ public without sharing class OtherChargesTriggerHandler {
         
         if (!affectedOpportunityIds.isEmpty()) {
             DealBuildingService service = new DealBuildingService();
-            service.recalculateOpportunities(affectedOpportunityIds);
+            service.recalculateTotalSellingPriceOnly(affectedOpportunityIds);
         }
     }
     
@@ -50,7 +50,7 @@ public without sharing class OtherChargesTriggerHandler {
         
         if (!affectedOpportunityIds.isEmpty()) {
             DealBuildingService service = new DealBuildingService();
-            service.recalculateOpportunities(affectedOpportunityIds);
+            service.recalculateTotalSellingPriceOnly(affectedOpportunityIds);
         }
     }
     
@@ -62,7 +62,7 @@ public without sharing class OtherChargesTriggerHandler {
         
         if (!affectedOpportunityIds.isEmpty()) {
             DealBuildingService service = new DealBuildingService();
-            service.recalculateOpportunities(affectedOpportunityIds);
+            service.recalculateTotalSellingPriceOnly(affectedOpportunityIds);
         }
     }
     

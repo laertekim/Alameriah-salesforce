@@ -16,6 +16,14 @@ import { getPicklistValues } from 'lightning/uiObjectInfoApi';
 import Status__FIELD from '@salesforce/schema/Building__c.Status__c';
 import Unit_Type__FIELD from '@salesforce/schema/Building__c.Unit_Type__c';
 import LocationAndVisibility__FIELD from '@salesforce/schema/Building__c.LocationAndVisibility__c';
+import Tower_Name__FIELD from '@salesforce/schema/Building__c.Tower_Name__c';
+import Tower_No__FIELD from '@salesforce/schema/Building__c.Tower_No__c';
+import TowerCode__FIELD from '@salesforce/schema/Building__c.TowerCode__c';
+import Level__FIELD from '@salesforce/schema/Building__c.Level__c';
+import Apartment_Type__FIELD from '@salesforce/schema/Building__c.Apartment_Type__c';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import SITE from '@salesforce/schema/Opportunity.Site__c';
+import getOpportunity from '@salesforce/apex/DealJunkTableController.getOpportunity';
 //----------------------------------------------------------------
 
 import Opport_OBJECT from '@salesforce/schema/Opportunity';
@@ -24,6 +32,8 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
     @track isModalOpen = false;
     @track isModalOpen2 = false;
     @track error;
+    @track isResidentialProperty = false;
+    @track isResidential = false;
     showPagination = false;
     
     @track objectDTO ;
@@ -33,6 +43,7 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
     booleItem = false;
     @track records;
     @track dealRecords;
+	siteId;
 	
     @wire(getObjectInfo, { objectApiName: DEAL_BUILDING_OBJECT })
     DealBuildInfo;
@@ -45,10 +56,29 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
     getobjectInfo(result) {
         if (result.data) {
             const rtis = result.data.recordTypeInfos;
-            this.recordTypeId = Object.keys(rtis).find((rti) => rtis[rti].name === 'Residential Property');
+            this.recordTypeId = Object.keys(rtis).find((rti) => rtis[rti].name === 'Residential Property' || rtis[rti].name === 'Residential' );
         }
     }
-	
+
+
+	async LoadOpportunityData() {
+    	const opp = await getOpportunity({ recordId: this.recordId });
+    	this.siteId = opp.Site__c;
+    	this.isResidentialProperty = opp.RecordType && opp.RecordType.Name === 'Residential Property';
+    	this.isResidential = opp.RecordType && opp.RecordType.Name === 'Residential';
+	}
+
+    get villaAreaLabel() {
+        return this.isResidential ? 'Unit Area' : 'Villa Area';
+    }
+    get villaSellableAreaLabel() {
+        return this.isResidential ? 'Unit Sellable Area / Sqm' : 'Villa Sellable Area / Sqm';
+    }
+    get villaSellableAmountLabel() {
+        return this.isResidential ? 'Unit Sellable Amount' : 'Villa Sellable Amount';
+    }
+
+
     //---------------------------Location And Visibility-------------------------------
 
     valueLocationAndVisibilityPicklist = '';
@@ -139,6 +169,81 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
     }
 
 
+	//---------------------------Tower Name-------------------------------
+    valueTowerName = '';
+    optionsTowerName = [];
+    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: Tower_Name__FIELD })
+    towerNameInfoValue({error, data}) {
+        if (data) {
+            this.optionsTowerName = [{ label: '--None--', value: '' }];
+            data.values.forEach(opt => this.optionsTowerName.push(opt));
+        }
+    }
+    handleChangeTowerName(event) {
+        this.valueTowerName = event.detail.value;
+        this.updatePage();
+    }
+
+    //---------------------------Tower No-------------------------------
+    valueTowerNo = '';
+    optionsTowerNo = [];
+    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: Tower_No__FIELD })
+    towerNoInfoValue({error, data}) {
+        if (data) {
+            this.optionsTowerNo = [{ label: '--None--', value: '' }];
+            data.values.forEach(opt => this.optionsTowerNo.push(opt));
+        }
+    }
+    handleChangeTowerNo(event) {
+        this.valueTowerNo = event.detail.value;
+        this.updatePage();
+    }
+
+    //---------------------------Tower Code-------------------------------
+    valueTowerCode = '';
+    optionsTowerCode = [];
+    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: TowerCode__FIELD })
+    towerCodeInfoValue({error, data}) {
+        if (data) {
+            this.optionsTowerCode = [{ label: '--None--', value: '' }];
+            data.values.forEach(opt => this.optionsTowerCode.push(opt));
+        }
+    }
+    handleChangeTowerCode(event) {
+        this.valueTowerCode = event.detail.value;
+        this.updatePage();
+    }
+
+    //---------------------------Level-------------------------------
+    valueLevel = '';
+    optionsLevel = [];
+    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: Level__FIELD })
+    levelInfoValue({error, data}) {
+        if (data) {
+            this.optionsLevel = [{ label: '--None--', value: '' }];
+            data.values.forEach(opt => this.optionsLevel.push(opt));
+        }
+    }
+    handleChangeLevel(event) {
+        this.valueLevel = event.detail.value;
+        this.updatePage();
+    }
+
+    //---------------------------Apartment Type-------------------------------
+    valueApartmentType = '';
+    optionsApartmentType = [];
+    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: Apartment_Type__FIELD })
+    apartmentTypeInfoValue({error, data}) {
+        if (data) {
+            this.optionsApartmentType = [{ label: '--None--', value: '' }];
+            data.values.forEach(opt => this.optionsApartmentType.push(opt));
+        }
+    }
+    handleChangeApartmentType(event) {
+        this.valueApartmentType = event.detail.value;
+        this.updatePage();
+    }
+
 	//------------------PICKLIST END-----------------------------------
 
 	handleSuccess() {
@@ -189,8 +294,12 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
     }
     //--------------------------Show data-----------------------------
     connectedCallback() {
-			
-		this.updatePage();
+		//wait for the record to be loaded using loadopportunitydata method to get the site name before calling getdata method
+		this.LoadOpportunityData().then(() => {
+			this.updatePage();
+		});
+	
+		
 	}
 
 	resetData() {
@@ -198,14 +307,19 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 		this.updatePage();
 	}
 
-    getData() {
-		//send objectDTO to getAllBuildingsResidentialProperty method - the hashtable key is the field name (salesforce field name) and the value is the field value
+    getData() {	
 		this.objectDTO = {
 			fieldAndValue : {
+				Center_name__c :  this.siteId,
 				LocationAndVisibility__c : this.valueLocationAndVisibilityPicklist,
 				Unit_No__c : this.valueUnitNo,
 				Status__c : this.valueStatusPicklist,
-				Unit_Type__c : this.valueUnitType
+				Unit_Type__c : this.valueUnitType,
+				Tower_Name__c : this.valueTowerName,
+				Tower_No__c : this.valueTowerNo,
+				TowerCode__c : this.valueTowerCode,
+				Level__c : this.valueLevel,
+				Apartment_Type__c : this.valueApartmentType
 			}
 		};
         //pass the parameters to the method as lwc needs specify the parameter name
@@ -218,7 +332,6 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 			.catch(error => {
 				this.error = error;
 				this.records = undefined;
-				console.log('@@ error getAllBuildingsResidentialProperty ' + JSON.stringify(error));
 			});
 
             getRelatedDealBuilding({ dealRecordId : this.recordId }) 

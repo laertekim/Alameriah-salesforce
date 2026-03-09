@@ -27,19 +27,25 @@ public class DefaultFieldConfigurationProvider implements IFieldConfigurationPro
     
     public List<String> getPaymentScheduleFields() {
         return new List<String>{
-            'Name',
-            'Description__c',
-            'Percentage__c',
             'Amount__c',
-            'Scheduled_Payment_Date__c'
+            'Percentage__c',
+            'Description__c'
         };
     }
     
     public List<String> getOtherChargeFields() {
         return new List<String>{
+            'Amount__c',
             'Year__c',
-            'Category__c',
-            'Amount__c'
+            'Category__c'
+        };
+    }
+    
+    public List<String> getDealBuildingFields() {
+        return new List<String>{
+            'Building__r.Name',
+            'LocationAndVisibility__c',
+            'Unit_No__c'
         };
     }
 }

@@ -43,8 +43,14 @@ public class OpportunityRepository {
                    PreLaunchPrice__c,
                    LandArea__c,
                    LandSellableAmount__c,
-                   BuildUpArea__c
-            FROM Opportunity 
+                   BuildUpArea__c,
+                   LandAreaAtCreation__c,
+                   LandPriceAtCreation__c,
+                   BuildUpAreaAtCreation__c,
+                   RatePerSqmSRSqmAtCreation__c,
+                   Area__c,
+                   AreaAtCreation__c
+            FROM Opportunity
             WHERE Id IN :opportunityIds
         ]);
     }

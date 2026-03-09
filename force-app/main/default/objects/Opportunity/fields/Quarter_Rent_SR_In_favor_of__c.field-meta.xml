@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Quarter_Rent_SR_In_favor_of__c</fullName>
-    <externalId>false</externalId>
     <formula>Total_Annual_Rent__c/4</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Quarter Rent (SR In favor of )</label>

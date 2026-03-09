@@ -7,14 +7,23 @@
                 <tr class="slds-line-height_reset">
                     <th>Unit Name</th>
                     <th>Unit No</th>
-                    <th>Location And Visibility</th>
-                    <th>Land Area</th>
-                    <th>Land Sellable Area / Sqm</th>
-                    <th>Land Sellable Amount</th>
-                    <th>Villa Area</th>
-                    <th>Villa Sellable Area / Sqm</th>
-                    <th>Villa Sellable Amount</th>
-                    <th>Pre Launch Price</th>
+                    <template if:false={isResidential}><th>Location And Visibility</th></template>
+                    <template if:true={isResidential}>
+                        <th>Tower Name</th>
+                        <th>Tower No</th>
+                        <th>Tower Code</th>
+                        <th>Level</th>
+                        <th>Apartment Type</th>
+                    </template>
+                    <template if:true={isResidentialProperty}>
+                        <th>Land Area</th>
+                        <th>Land Sellable Area / Sqm</th>
+                        <th>Land Sellable Amount</th>
+                    </template>
+                    <th>{villaAreaLabel}</th>
+                    <th>{villaSellableAreaLabel}</th>
+                    <th>{villaSellableAmountLabel}</th>
+                    <th>Minimum Price</th>
                     <th>Asking Price</th>
                     <th>Total Selling Price</th>
                     <th>
@@ -31,46 +40,57 @@
                             <td data-label="Unit No">
                                 {dealrecord.Unit_No__c}
                             </td>
-                            <td data-label="Location And Visibility">
-                                {dealrecord.LocationAndVisibility__c}
-                            </td>
-                            <td data-label="Land Area">
-                                <lightning-formatted-number
-                                value={dealrecord.LandArea__c}
-                                format-style="decimal">
-                            </lightning-formatted-number>
-                            </td>
-                            <td data-label="Land Sellable Area / Sqm">
-                                <lightning-formatted-number
-                                value={dealrecord.LandSellableAreaSqm__c}
-                                format-style="currency">
-                            </lightning-formatted-number>
-                            </td>
-                            <td data-label="Land Sellable Amount">
-                                <lightning-formatted-number
-                                value={dealrecord.LandSellableAmount__c}
-                                format-style="currency">
-                            </lightning-formatted-number>
-                            </td>
-                            <td data-label="Villa Area">
+                            <template if:false={isResidential}>
+                                <td data-label="Location And Visibility">
+                                    {dealrecord.LocationAndVisibility__c}
+                                </td>
+                            </template>
+                            <template if:true={isResidential}>
+                                <td data-label="Tower Name">{dealrecord.Tower_Name__c}</td>
+                                <td data-label="Tower No">{dealrecord.Tower_No__c}</td>
+                                <td data-label="Tower Code">{dealrecord.TowerCode__c}</td>
+                                <td data-label="Level">{dealrecord.Level__c}</td>
+                                <td data-label="Apartment Type">{dealrecord.Apartment_Type__c}</td>
+                            </template>
+                            <template if:true={isResidentialProperty}>
+                                <td data-label="Land Area">
+                                    <lightning-formatted-number
+                                    value={dealrecord.LandArea__c}
+                                    format-style="decimal">
+                                </lightning-formatted-number>
+                                </td>
+                                <td data-label="Land Sellable Area / Sqm">
+                                    <lightning-formatted-number
+                                    value={dealrecord.LandSellableAreaSqm__c}
+                                    format-style="currency">
+                                </lightning-formatted-number>
+                                </td>
+                                <td data-label="Land Sellable Amount">
+                                    <lightning-formatted-number
+                                    value={dealrecord.LandSellableAmount__c}
+                                    format-style="currency">
+                                </lightning-formatted-number>
+                                </td>
+                            </template>
+                            <td data-label={villaAreaLabel}>
                                 <lightning-formatted-number
                                 value={dealrecord.VillaArea__c}
                                 format-style="decimal">
                             </lightning-formatted-number>
                             </td>
-                            <td data-label="Villa Sellable Area / Sqm">
+                            <td data-label={villaSellableAreaLabel}>
                                 <lightning-formatted-number
                                 value={dealrecord.VillaSellableAreaSqm__c}
                                 format-style="currency">
                             </lightning-formatted-number>
                             </td>
-                            <td data-label="Villa Sellable Amount">
+                            <td data-label={villaSellableAmountLabel}>
                                 <lightning-formatted-number
                                 value={dealrecord.VillaSellableAmount__c}
                                 format-style="currency">
                             </lightning-formatted-number>
                             </td>
-                            <td data-label="Pre Launch Price">
+                            <td data-label="Minimum Price">
                                 <lightning-formatted-number
                                 value={dealrecord.PreLaunchPrice__c}
                                 format-style="currency">
@@ -106,20 +126,22 @@
                 
                 <div class="slds-grid slds-gutters ">
 
-                    <div class="slds-col slds-size_1-of-8">
-                        <lightning-combobox
-                                label="Location And Visibility"
-                                options={optionsLocationAndVisibility}
-                                value={valueLocationAndVisibilityPicklist}
-                                onchange={handleChangeLocationAndVisibility}></lightning-combobox>
-                    </div>
-                    <div class="slds-col slds-size_1-of-8">
-                        <lightning-combobox
-                                label="Unit Type"
-                                options={optionsUnitType}
-                                value={valueUnitType}
-                                onchange={handleChangeUnitType}></lightning-combobox>
-                    </div>
+                    <template if:false={isResidential}>
+                        <div class="slds-col slds-size_1-of-8">
+                            <lightning-combobox
+                                    label="Location And Visibility"
+                                    options={optionsLocationAndVisibility}
+                                    value={valueLocationAndVisibilityPicklist}
+                                    onchange={handleChangeLocationAndVisibility}></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-8">
+                            <lightning-combobox
+                                    label="Unit Type"
+                                    options={optionsUnitType}
+                                    value={valueUnitType}
+                                    onchange={handleChangeUnitType}></lightning-combobox>
+                        </div>
+                    </template>
                     <div class="slds-col slds-size_1-of-8">
                         <!--field to type the unit no only number-->
                         <lightning-input 
@@ -140,13 +162,50 @@
                         </lightning-combobox>
                     </div>
                     
+                    <template if:true={isResidential}>
+                        <div class="slds-col slds-size_1-of-8">
+                            <lightning-combobox
+                                label="Tower Name"
+                                options={optionsTowerName}
+                                value={valueTowerName}
+                                onchange={handleChangeTowerName}></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-8">
+                            <lightning-combobox
+                                label="Tower No"
+                                options={optionsTowerNo}
+                                value={valueTowerNo}
+                                onchange={handleChangeTowerNo}></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-8">
+                            <lightning-combobox
+                                label="Tower Code"
+                                options={optionsTowerCode}
+                                value={valueTowerCode}
+                                onchange={handleChangeTowerCode}></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-8">
+                            <lightning-combobox
+                                label="Level"
+                                options={optionsLevel}
+                                value={valueLevel}
+                                onchange={handleChangeLevel}></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-8">
+                            <lightning-combobox
+                                label="Apartment Type"
+                                options={optionsApartmentType}
+                                value={valueApartmentType}
+                                onchange={handleChangeApartmentType}></lightning-combobox>
+                        </div>
+                    </template>
                     <div class="slds-col slds-size_1-of-8">
                         <div class="slds-form-element" style="display: flex; align-items: flex-end; height: 95%; ">
-                            <lightning-button 
-                                variant="brand" 
-                                label="Add Units" 
-                                title="Add Units" 
-                                onclick={getAllId} 
+                            <lightning-button
+                                variant="brand"
+                                label="Add Units"
+                                title="Add Units"
+                                onclick={getAllId}
                                 data-id="reprocess">
                             </lightning-button>
                             </div>
@@ -167,16 +226,25 @@
                     <th>
                         <lightning-input class="slds-p-left_x-large" type="checkbox" onchange={handleChange} ></lightning-input>
                     </th>
-                        <th>Location And Visibility</th>
+                        <template if:false={isResidential}><th>Location And Visibility</th></template>
                         <th>Unit No</th>
-                        <th>Unit Type</th>
-                        <th>Land Area</th>
-                        <th>Land Sellable Area / Sqm</th>
-                        <th>Land Sellable Amount</th>
-                        <th>Villa Area</th>
-                        <th>Villa Sellable Area / Sqm</th>
-                        <th>Villa Sellable Amount</th>
-                        <th>Pre Launch Price</th>
+                        <template if:false={isResidential}><th>Unit Type</th></template>
+                        <template if:true={isResidential}>
+                            <th>Tower Name</th>
+                            <th>Tower No</th>
+                            <th>Tower Code</th>
+                            <th>Level</th>
+                            <th>Apartment Type</th>
+                        </template>
+                        <template if:true={isResidentialProperty}>
+                            <th>Land Area</th>
+                            <th>Land Sellable Area / Sqm</th>
+                            <th>Land Sellable Amount</th>
+                        </template>
+                        <th>{villaAreaLabel}</th>
+                        <th>{villaSellableAreaLabel}</th>
+                        <th>{villaSellableAmountLabel}</th>
+                        <th>Minimum Price</th>
                         <th>Asking Price</th>
                         <th>Status</th>
                 </tr>
@@ -188,22 +256,31 @@
                                 <lightning-input class="slds-p-left_x-large" type="checkbox" checked={record.selected} onchange={oneChange} title="checkboxTitle" data-id={record.Id} ></lightning-input>
                             </td>
                              <!-- add all fields from Building__c object from residential property record type -->
-                             <td>{record.LocationAndVisibility__c}</td>
+                             <template if:false={isResidential}><td>{record.LocationAndVisibility__c}</td></template>
                              <td>{record.Unit_No__c}</td>
-                             <td>{record.Unit_Type__c}</td>
-                             <td><lightning-formatted-number
-                                value={record.LandArea__c}
-                                format-style="decimal">
-                            </lightning-formatted-number>
-                            </td>
-                             <td><lightning-formatted-number
-                                value={record.LandSellableAreaSqm__c}
-                                format-style="currency">
-                            </lightning-formatted-number></td>
-                             <td><lightning-formatted-number
-                                value={record.LandSellableAmount__c}
-                                format-style="currency">
-                            </lightning-formatted-number></td>
+                             <template if:false={isResidential}><td>{record.Unit_Type__c}</td></template>
+                             <template if:true={isResidential}>
+                                 <td>{record.Tower_Name__c}</td>
+                                 <td>{record.Tower_No__c}</td>
+                                 <td>{record.TowerCode__c}</td>
+                                 <td>{record.Level__c}</td>
+                                 <td>{record.Apartment_Type__c}</td>
+                             </template>
+                             <template if:true={isResidentialProperty}>
+                                 <td><lightning-formatted-number
+                                    value={record.LandArea__c}
+                                    format-style="decimal">
+                                </lightning-formatted-number>
+                                </td>
+                                 <td><lightning-formatted-number
+                                    value={record.LandSellableAreaSqm__c}
+                                    format-style="currency">
+                                </lightning-formatted-number></td>
+                                 <td><lightning-formatted-number
+                                    value={record.LandSellableAmount__c}
+                                    format-style="currency">
+                                </lightning-formatted-number></td>
+                             </template>
                              <td><lightning-formatted-number
                                 value={record.VillaArea__c}
                                 format-style="decimal">
@@ -254,24 +331,30 @@
 
                             <lightning-layout multiple-rows>
                                 <!--not editable fields-->           
-                                <lightning-layout-item size="6">
-                                    <lightning-output-field field-name="LocationAndVisibility__c"></lightning-output-field>
-                                </lightning-layout-item>
+                                <template if:false={isResidential}>
+                                    <lightning-layout-item size="6">
+                                        <lightning-output-field field-name="LocationAndVisibility__c"></lightning-output-field>
+                                    </lightning-layout-item>
+                                </template>
                                 <lightning-layout-item size="6">
                                     <lightning-output-field  field-name="Unit_No__c"></lightning-output-field>
                                 </lightning-layout-item>
-                                <lightning-layout-item size="6">
-                                    <lightning-output-field  field-name="Unit_Type__c"></lightning-output-field>
-                                </lightning-layout-item>
-                                <lightning-layout-item size="6">
-                                    <lightning-output-field  field-name="LandArea__c"></lightning-output-field>
-                                </lightning-layout-item>
-                                <lightning-layout-item size="6">
-                                    <lightning-output-field  field-name="LandSellableAreaSqm__c"></lightning-output-field>
-                                </lightning-layout-item>
-                                <lightning-layout-item size="6">
-                                    <lightning-output-field  field-name="LandSellableAmount__c"></lightning-output-field>
-                                </lightning-layout-item>
+                                <template if:false={isResidential}>
+                                    <lightning-layout-item size="6">
+                                        <lightning-output-field  field-name="Unit_Type__c"></lightning-output-field>
+                                    </lightning-layout-item>
+                                </template>
+                                <template if:true={isResidentialProperty}>
+                                    <lightning-layout-item size="6">
+                                        <lightning-output-field  field-name="LandArea__c"></lightning-output-field>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="6">
+                                        <lightning-output-field  field-name="LandSellableAreaSqm__c"></lightning-output-field>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="6">
+                                        <lightning-output-field  field-name="LandSellableAmount__c"></lightning-output-field>
+                                    </lightning-layout-item>
+                                </template>
                                 <lightning-layout-item size="6">
                                     <lightning-output-field  field-name="VillaArea__c"></lightning-output-field>
                                 </lightning-layout-item>

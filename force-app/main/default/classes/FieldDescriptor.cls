@@ -27,8 +27,13 @@ public class FieldDescriptor {
             when DATETIME {
                 return ((DateTime) this.rawValue).format('yyyy-MM-dd HH:mm:ss');
             }
-            when CURRENCY, DOUBLE, PERCENT {
-                return String.valueOf(this.rawValue);
+            when CURRENCY, DOUBLE {
+                Decimal value = (Decimal) this.rawValue;
+                return value.setScale(2).format();
+            }
+            when PERCENT {
+                Decimal value = (Decimal) this.rawValue;
+                return value.setScale(2).format() + ' %';
             }
             when BOOLEAN {
                 return (Boolean) this.rawValue ? 'Yes' : 'No';

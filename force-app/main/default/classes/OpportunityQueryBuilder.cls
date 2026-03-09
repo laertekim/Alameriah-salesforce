@@ -1,8 +1,14 @@
 public class OpportunityQueryBuilder {
     private String opportunityId;
     private List<String> opportunityFields;
+    private List<String> dealBuildingFields;
     private List<String> paymentScheduleFields;
     private List<String> otherChargeFields;
+
+    public OpportunityQueryBuilder withDealBuildingFields(List<String> fields) {
+        this.dealBuildingFields = fields;
+        return this;
+    }
     
     public OpportunityQueryBuilder withOpportunityId(String opportunityId) {
         this.opportunityId = opportunityId;
@@ -38,6 +44,11 @@ public class OpportunityQueryBuilder {
         if (otherChargeFields != null && !otherChargeFields.isEmpty()) {
             query += ', (SELECT ' + String.join(otherChargeFields, ', ') + 
                      ' FROM Other_Charges__r ORDER BY Year__c, Category__c)';
+        }
+        
+        if (dealBuildingFields != null && !dealBuildingFields.isEmpty()) {
+            query += ', (SELECT ' + String.join(dealBuildingFields, ', ') + 
+                     ' FROM Deal_Buildings__r ORDER BY Name)';
         }
         
         query += ' FROM Opportunity WHERE Id = \'' + this.opportunityId + '\' LIMIT 1';

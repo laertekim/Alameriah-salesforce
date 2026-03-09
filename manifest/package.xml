@@ -1,38 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-  <types>
-    <members>Opportunity.PaymentPlan__c</members>
-        <name>CustomField</name>
-    </types>
+ 
  
     <types>
-        <members>Opportunity</members>
+        <members>Payment_Schedule__c</members>
         <name>CustomObject</name>
     </types>
     
-    <types>
-        <members>OpportunityReportController</members>
-        <members>FieldDataRetriever</members>
-        <members>DefaultFieldConfigurationProvider</members>
-        <members>FieldDescriptor</members>
-        <members>IFieldConfigurationProvider</members>
-        
-        <members>RecordDescriptor</members>
-        <members>OpportunityQueryBuilder</members>
-        <name>ApexClass</name>
-
-    </types>
-
-    <!-- visualforce types -->
-    <types>
-        <members>OpportunityReport</members>
-        <name>ApexPage</name>
-    </types>
-
-    <types>
-        <members>AlameriahReportLogo</members>
-        <name>StaticResource</name>
-    </types>
+    
 
     <version>57.0</version>
 </Package>

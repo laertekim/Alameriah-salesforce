@@ -4,6 +4,8 @@ import {refreshApex} from '@salesforce/apex';
 import getAllBuildings from '@salesforce/apex/DealJunkTableController.getAllBuildings';
 import getRelatedDealBuilding from '@salesforce/apex/DealJunkTableController.getRelatedDealBuilding';
 import createJunctionObject from '@salesforce/apex/DealJunkTableController.createJunctionObject';
+import getOpportunity from '@salesforce/apex/DealJunkTableController.getOpportunity';
+import getFieldConfig from '@salesforce/apex/DealJunkTableController.getFieldConfig';
 //Other
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -23,7 +25,6 @@ import Unit_No__FIELD from '@salesforce/schema/Building__c.Unit_No__c';
 import View__FIELD from '@salesforce/schema/Building__c.View__c';
 //----------------------------------------------------------------
 import Tower_Name__DBFIELD from '@salesforce/schema/Deal_Building__c.Tower_Name__c';
-import Opport_OBJECT from '@salesforce/schema/Opportunity';
 export default class DealJunctionObjectTable extends NavigationMixin(LightningElement) {
 	value6_5 = '';
 	value11 = '';
@@ -36,7 +37,15 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 	recordDeleteId;
     booleItem = false;
     @track records;
-    @track dealRecords;
+    @track DealRecords;
+	@track isOffices = false;
+	@track opportunityRecordTypeName = '';
+	_buildingObjectInfoData = null;
+	// Dynamic column config from metadata
+	@track _columns = [];            // [{ apiName, label }]
+	@track _processedRecords = [];   // Building__c rows for the Units table
+	@track _processedDealRecords = []; // Deal_Building__c rows for the Deal Units table
+
 	@wire(getObjectInfo, { objectApiName: DEAL_BUILDING_OBJECT })
     DealBuildInfo;
 	@wire(getObjectInfo, { objectApiName: BUILDING_OBJECT })
@@ -46,18 +55,76 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 	@wire(getObjectInfo, { objectApiName: BUILDING_OBJECT})
     getobjectInfo(result) {
         if (result.data) {
-            const rtis = result.data.recordTypeInfos;
-            this.recordTypeId = Object.keys(rtis).find((rti) => rtis[rti].name === 'Offices');
-			console.log('this.recordTypeId1 '+this.recordTypeId);
+			this._buildingObjectInfoData = result.data;
+			this._resolveRecordTypeId();
         }
     }
+
+	_resolveRecordTypeId() {
+		if (!this._buildingObjectInfoData) return;
+		const rtis = this._buildingObjectInfoData.recordTypeInfos;
+		const rtName = this.opportunityRecordTypeName || 'Offices';
+		this.recordTypeId = Object.keys(rtis).find((rti) => rtis[rti].name === rtName);
+		console.log('this.recordTypeId ' + this.recordTypeId + ' for ' + rtName);
+	}
+
+	async LoadOpportunityData() {
+		const opp = await getOpportunity({ recordId: this.recordId });
+		this.opportunityRecordTypeName = (opp.RecordType && opp.RecordType.Name) ? opp.RecordType.Name : 'Offices';
+		this.isOffices = opp.RecordType && opp.RecordType.Name === 'Offices';
+		this._resolveRecordTypeId();
+		// Load visible columns from metadata — only Is_Visible__c = true records are returned
+		const configs = await getFieldConfig({ recordTypeName: this.opportunityRecordTypeName });
+		this._columns = (configs || []).map(c => ({ apiName: c.Field_API_Name__c, label: c.Column_Label__c }));
+	}
+
+	// Returns true if a field is in the visible column list (for filter comboboxes)
+	_hasColumn(apiName) {
+		return this._columns.some(c => c.apiName === apiName);
+	}
+
+	// Returns the label for a specific field (for filter combobox labels)
+	_getColumnLabel(apiName, defaultLabel) {
+		const col = this._columns.find(c => c.apiName === apiName);
+		return col ? col.label : defaultLabel;
+	}
+
+	// Builds processed row array from raw Salesforce records using current _columns
+	_processRecords(rawRecords, defaultSelected) {
+		return (rawRecords || []).map(r => ({
+			id: r.Id,
+			selected: defaultSelected !== undefined ? defaultSelected : (r.selected || false),
+			cells: this._columns.map(col => ({
+				key: col.apiName,
+				value: r[col.apiName] !== undefined && r[col.apiName] !== null ? String(r[col.apiName]) : ''
+			}))
+		}));
+	}
+
+	// Filter combobox visibility — show only if the field is a visible column
+	get showZoneFilter() { return this._hasColumn('Zone__c'); }
+	get showTowerNameFilter() { return this._hasColumn('Tower_Name__c'); }
+	get showBuildingTypeFilter() { return this._hasColumn('Building_Type__c'); }
+	get showStatusFilter() { return this._hasColumn('Status__c'); }
+	get showLevelFilter() { return this._hasColumn('Level__c'); }
+	get showUnitNoFilter() { return this._hasColumn('Unit_No__c'); }
+	get showViewFilter() { return this._hasColumn('View__c'); }
+
+	// Filter combobox labels — use metadata label if present
+	get zoneLabel() { return this._getColumnLabel('Zone__c', 'Zone'); }
+	get towerNameLabel() { return this._getColumnLabel('Tower_Name__c', 'Tower Name'); }
+	get buildingTypeLabel() { return this._getColumnLabel('Building_Type__c', 'Building Type'); }
+	get levelLabel() { return this._getColumnLabel('Level__c', 'Level'); }
+	get unitNoLabel() { return this._getColumnLabel('Unit_No__c', 'Unit No'); }
+	get viewLabel() { return this._getColumnLabel('View__c', 'View'); }
+
 	//---------------------------ZONE-------------------------------
 	value = '';
-	options1 = []; 
+	options1 = [];
 
 	@track isModalOpen = false;
 	@track isModalOpen2 = false;
-	
+
 	@wire(getPicklistValues,
         {
             recordTypeId: '$recordTypeId',
@@ -82,8 +149,8 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
     }
 	//----------------------------Lease Phases------------------------
 	value2 = '';
-	options2 = []; 
-	
+	options2 = [];
+
 	@wire(getPicklistValues,
         {
             recordTypeId: '$recordTypeId',
@@ -93,7 +160,6 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
     LTFinfoValue2({error, data}) {
         if (data) {
 			console.log('data.values '+data.values);
-            //this.options2 = data.values;
 			let optionsValue = data.values;
 			this.options2 = [{ label: '--None--', value: "" }];
 			optionsValue.forEach(opt => this.options2.push(opt));
@@ -109,8 +175,8 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 
 	//---------------------------Tower Name-------------------------------
 	value3 = '';
-	options3 = []; 
-	
+	options3 = [];
+
 	@wire(getPicklistValues,
         {
             recordTypeId: '$recordTypeId',
@@ -136,8 +202,8 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 
 	//---------------------------Building Type-------------------------------
 	value4 = '';
-	options4 = []; 
-	
+	options4 = [];
+
 	@wire(getPicklistValues,
         {
             recordTypeId: '$recordTypeId',
@@ -163,8 +229,8 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 
 	//---------------------------Status-------------------------------
 	value5 = '';
-	options5 = []; 
-	
+	options5 = [];
+
 	@wire(getPicklistValues,
         {
             recordTypeId: '$recordTypeId',
@@ -190,8 +256,8 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 
 	//---------------------------Level-------------------------------
 	value6 = '';
-	options6 = []; 
-	
+	options6 = [];
+
 	@wire(getPicklistValues,
         {
             recordTypeId: '$recordTypeId',
@@ -217,8 +283,8 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 
 	//---------------------------Unit No-------------------------------
 	value7 = '';
-	options7 = []; 
-	
+	options7 = [];
+
 	@wire(getPicklistValues,
         {
             recordTypeId: '$recordTypeId',
@@ -245,7 +311,7 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 	//---------------------------View-------------------------------
 	value8 = '';
 	options8 = [];
-	
+
 	@wire(getPicklistValues,
         {
             recordTypeId: '$recordTypeId',
@@ -277,20 +343,15 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 			message: "The record has been successfully saved.",
 			variant: "success",
 		});
-
 		this.dispatchEvent(evt);
 		refreshApex(this.getData());
-		//eval("$A.get('e.force:refreshView').fire();");
 		this.isModalOpen = false;
-		
-		
-		//
 	}
 
 	updatePage() {
 		refreshApex(this.getData());
 	}
-	   
+
 	handleError() {
 		const evt = new ShowToastEvent({
 			title: "Error!",
@@ -304,54 +365,46 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 		this.isModalOpen = false;
 	}
     //--------------------------Show data-----------------------------
-    connectedCallback() {
-		/*this.readyToPublish = 'Ready to be Published';
-		this.productState = 'All';
-		this.sortBy = 'ProductCode';
-		this.orderType = 'ASC';*/
+    async connectedCallback() {
 		console.log('ZONE_FIELD '+ZONE_FIELD);
+		await this.LoadOpportunityData();
 		this.getData();
 	}
 
 	resetData() {
-		/*this.readyToPublish = 'Ready to be Published';
-		this.productState = 'All';
-		this.sortBy = 'ProductCode';
-		this.orderType = 'ASC';*/
 		this.value = '';
 		this.getData();
 	}
 
     getData() {
-		console.log('this.value2 '+this.value);		
-		getAllBuildings({ dealRecordId : this.recordId, zone : this.value, Lease_Phases : this.value2, Tower_Name : this.value3, Building_Type : this.value4, Status : this.value5, Level : this.value6, Apartment_Type : this.value6_5, Unit_No : this.value7, View : this.value8, Unit_Type : this.value11, Retail_Category : this.value12, Type_of_Activity : this.value13}) 
+		console.log('this.value2 '+this.value);
+		getAllBuildings({ dealRecordId : this.recordId, zone : this.value, leasePhases : this.value2, towerName : this.value3, buildingType : this.value4, status : this.value5, level : this.value6, apartmentType : this.value6_5, unitNo : this.value7, viewValue : this.value8, unitType : this.value11, retailCategory : this.value12, typeOfActivity : this.value13})
 			.then(result => {
 				console.log( 'Fetched Data ' + JSON.stringify( result[0] ) );
-					this.records = result;
-					console.log('this.records: ', this.records);
-					for(let item of this.records){
-						item.selected = this.booleItem;
-					}
+				this.records = result.map(r => ({ ...r, selected: this.booleItem }));
+				this._processedRecords = this._processRecords(this.records, this.booleItem);
+				console.log('this.records: ', this.records);
 			})
 			.catch(error => {
 				this.error = error;
 				this.records = undefined;
+				this._processedRecords = [];
 				console.log('getData error: ', error);
 			});
 
-            getRelatedDealBuilding({ dealRecordId : this.recordId }) 
+        getRelatedDealBuilding({ dealRecordId : this.recordId })
 			.then(result => {
 				console.log( 'Fetched Data21 ' + JSON.stringify( result[0] ) );
-					this.DealRecords = result;
-					console.log('this.records: ', this.DealRecords);
-					
+				this.DealRecords = result;
+				this._processedDealRecords = this._processRecords(result);
+				console.log('this.DealRecords: ', this.DealRecords);
 			})
 			.catch(error => {
 				this.error = error;
 				this.DealRecords = undefined;
+				this._processedDealRecords = [];
 				console.log('getData error: ', error);
 			});
-			
 	}
 
     //--------------------------Navigate Record Link-----------------------------
@@ -364,13 +417,6 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 				objectApiName: 'Building__c',
 				actionName: 'view'
 			}
-            /*,
-            state: {
-                nooverride: 1,
-                navigationLocation: 'DETAIL',
-                backgroundContext: '/lightning/r/Building__c/'+recordIdToRedirect+'/view'
-                //backgroundContext: back_url
-            }*/
 		}).then(url => {
 			 window.open(url);
 		});
@@ -378,37 +424,36 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 
     //--------------------------Selected Records logic-----------------------------
     handleChange(event) {
-        let i;
-        let checkboxes = this.template.querySelectorAll('[title="checkboxTitle"]');
-		
 		if(event.target.checked == true){
+			this.booleItem = true;
 			for(let item of this.records){
-				this.booleItem = true;
-				item.selected = this.booleItem;
+				item.selected = true;
+			}
+			for(let row of this._processedRecords){
+				row.selected = true;
 			}
 		}else{
+			this.booleItem = false;
 			for(let item of this.records){
-				this.booleItem = false;
-				item.selected = this.booleItem;
+				item.selected = false;
+			}
+			for(let row of this._processedRecords){
+				row.selected = false;
 			}
 		}
-		
-		this.getData();
     }
 
-
     oneChange(event) {
-		if(event.target.checked){
-			for(let item of this.records){
-				if(item.Id == event.target.dataset.id){
-					item.selected = true;
-				}
+		const id = event.target.dataset.id;
+		const checked = event.target.checked;
+		for(let item of this.records){
+			if(item.Id == id){
+				item.selected = checked;
 			}
-		}else{
-			for(let item of this.records){
-				if(item.Id == event.target.dataset.id){
-					item.selected = false;
-				}
+		}
+		for(let row of this._processedRecords){
+			if(row.id == id){
+				row.selected = checked;
 			}
 		}
 	}
@@ -421,16 +466,14 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
                 .filter(element => element.checked)
                 .map(element => element.dataset.id);
 
-				//--------------------------------------------//
-				let errormessageitem = '';
-				for(let item of this.records){
-					if(item.selected && item.Status__c != 'Available Units'){
-						console.log(item.selected+' ------ '+item.Status__c);
-						errormessageitem = errormessageitem+item.Status__c;
-						console.log(' ------ '+errormessageitem);
-					}
+			let errormessageitem = '';
+			for(let item of this.records){
+				if(item.selected && item.Status__c != 'Available Units'){
+					console.log(item.selected+' ------ '+item.Status__c);
+					errormessageitem = errormessageitem+item.Status__c;
+					console.log(' ------ '+errormessageitem);
 				}
-				//---------------------------------------------//
+			}
             let selection = checked.join(', ');
             console.log('selection: ', selection);
 			if(errormessageitem != ''){
@@ -442,12 +485,11 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
                         variant: 'error'
                     })
                 );
-				/**/
 			}else{
 				console.log('selection321: ');
 				createJunctionObject({dealRecordId : this.recordId,
 					stringBuildingsIds : selection})
-				.then(result => {            
+				.then(result => {
 				this.showSuccessEvent();
 				this.getData();
 				eval("$A.get('e.force:refreshView').fire();");
@@ -457,12 +499,8 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 				console.log('update community error: ', error);
 				});
 			}
-                
-				//return refreshApex(this.getData());
-				//this.getData();
-				//eval("$A.get('e.force:refreshView').fire();");
         }
-    
+
         showSuccessEvent() {
             const event = new ShowToastEvent({
                             title: 'Success!',
@@ -471,20 +509,15 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
             });
         }
 
-		
 		openModal(event) {
 			this.recordEditId = event.target.dataset.id;
-			// to open modal set isModalOpen tarck value as true
 			console.log('event.target.dataset.id '+event.target.dataset.id);
 			this.isModalOpen = true;
 		}
 		closeModal() {
-			// to close modal set isModalOpen tarck value as false
 			this.isModalOpen = false;
 		}
 		submitDetails() {
-			// to close modal set isModalOpen tarck value as false
-			//Add your code to call apex method or do some processing
 			console.log('tttetttetetetet');
 			this.isModalOpen = false;
 			return refreshApex(this.getData());
@@ -492,19 +525,15 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
 
 		deleteRecordModal(event) {
 			this.recordDeleteId = event.target.dataset.id;
-			// to open modal set isModalOpen tarck value as true
 			console.log('event.target.dataset.id '+event.target.dataset.id);
 			this.isModalOpen2 = true;
 		}
 
 		closeModal2() {
-			// to close modal set isModalOpen tarck value as false
 			this.isModalOpen2 = false;
 		}
 		@track error;
 		submitDetails2() {
-			// to close modal set isModalOpen tarck value as false
-			//Add your code to call apex method or do some processing
 			console.log('TESTTESTETS11');
 			deleteRecord(this.recordDeleteId)
             .then(() => {
@@ -517,7 +546,6 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
                 );
 				console.log('TESTTESTETS2211');
 				this.getData();
-				//eval("$A.get('e.force:refreshView').fire();");
             })
             .catch(error => {
 				console.log('TESTTESTETS24433');
@@ -531,6 +559,5 @@ export default class DealJunctionObjectTable extends NavigationMixin(LightningEl
             });
 			console.log('TESTTESTETS23322');
 			this.isModalOpen2 = false;
-			
 		}
 }
