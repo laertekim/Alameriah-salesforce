@@ -1,5 +1,13 @@
 public class DealBuildingService {
-    
+
+    /**
+     * Static guard that prevents recalculateTotalSellingPriceOnly from
+     * re-entering itself via the Opportunity afterUpdate trigger.
+     * (e.g. updating TotalSellingPrice causes VAT_Amount__c formula to recalc,
+     *  which triggers handleVATChanges, which would call this method again.)
+     */
+    public static Boolean isRecalculating = false;
+
     private OpportunityRepository opportunityRepo = new OpportunityRepository();
     private BuildingRepository buildingRepo = new BuildingRepository();
     
@@ -24,7 +32,7 @@ public class DealBuildingService {
             }
             
             // For Residential Property: use Asking_Price__c as fallback if Total_Selling_Price_SAR__c is empty
-            if (opp != null && opp.RecordType.Name == 'Residential Property') {
+            if (opp != null && (opp.RecordType.Name == 'Residential Property' || opp.RecordType.Name == 'Residential')) {
                 if (dealBuilding.Total_Selling_Price_SAR__c == null || dealBuilding.Total_Selling_Price_SAR__c == 0) {
                     dealBuilding.Total_Selling_Price_SAR__c = nvl(dealBuilding.Asking_Price__c);
                 }
@@ -33,17 +41,18 @@ public class DealBuildingService {
     }
     
     /**
-     * Updates related Opportunities with aggregated data on insert
+     * Updates related Opportunities with aggregated data on insert.
+     * Also sets the AtCreation snapshot fields because a new Deal_Building was added.
      */
     public void updateRelatedOpportunitiesOnInsert(List<Deal_Building__c> dealBuildings) {
         Set<Id> opportunityIds = extractOpportunityIds(dealBuildings);
-    
+
         if (opportunityIds.isEmpty()) {
             return;
         }
-    
-        // FULL recalculation from DB (same behavior as update/delete)
-        recalculateOpportunities(opportunityIds);
+
+        // FULL recalculation from DB — also update AtCreation fields on insert
+        recalculateOpportunities(opportunityIds, true);
     }
     
     
@@ -73,22 +82,45 @@ public class DealBuildingService {
     }
     
     /**
-     * Handles after delete - recalculates opportunities that lost Deal Buildings
+     * Handles after delete - recalculates opportunities that lost Deal Buildings.
+     * Also refreshes AtCreation snapshot fields because the Deal_Building count changed.
      */
     public void handleDelete(List<Deal_Building__c> deletedRecords) {
         Set<Id> affectedOpportunityIds = extractOpportunityIds(deletedRecords);
-        
+
         if (!affectedOpportunityIds.isEmpty()) {
-            recalculateOpportunities(affectedOpportunityIds);
+            recalculateOpportunities(affectedOpportunityIds, true);
         }
     }
     
     /**
-     * Recalculates all values for given opportunities from scratch
+     * Recalculates all values for given opportunities from scratch.
+     * AtCreation fields are NOT modified (preserved from DB).
      */
     public void recalculateOpportunities(Set<Id> opportunityIds) {
+        recalculateOpportunities(opportunityIds, false);
+    }
+
+    /**
+     * Recalculates all values for given opportunities from scratch.
+     * When updateAtCreation=true (Deal_Building inserted or deleted),
+     * the four AtCreation snapshot fields are also refreshed from the current sum.
+     */
+    public void recalculateOpportunities(Set<Id> opportunityIds, Boolean updateAtCreation) {
         // Get all Deal Buildings for these opportunities
-        List<Deal_Building__c> allDealBuildings = [
+        //get all fiends from Deal_Building__c object using schema describe
+
+        Map<String, Schema.SObjectField> fieldMap = Deal_Building__c.sObjectType.getDescribe().fields.getMap();
+        List<String> fields = new List<String>();
+        for(Schema.SObjectField field : fieldMap.values()){
+            fields.add(field.getDescribe().getName());
+        }
+        
+        String query = 'SELECT ' + String.join(fields, ', ') + ' FROM Deal_Building__c WHERE Deal__c IN :opportunityIds';
+        
+        List<Deal_Building__c> allDealBuildings = Database.query(query);
+
+        /*List<Deal_Building__c> allDealBuildings = [
             SELECT Id, Deal__c, Building__c, Total_Selling_Price_SAR__c,
                    Unit_Area_Sqm_NSA__c, Total_NSA__c, Service_Area_Sqm__c,
                    Terrace_Area_Sqm__c, Total_Prices_Services_Areas__c,
@@ -97,18 +129,18 @@ public class DealBuildingService {
                    Total_Leasable_Area_Sqm__c, Unit_Area_Sqm__c,
                    Asking_Price__c, Minimum_Annual_Rent__c, Unit_No__c,
                    PreLaunchPrice__c, LandArea__c, LandSellableAmount__c,
-                   VillaArea__c, VillaSellableAreaSqm__c
+                   LandSellableAreaSqm__c, VillaArea__c, VillaSellableAreaSqm__c
             FROM Deal_Building__c
             WHERE Deal__c IN :opportunityIds
-        ];
-        
+        ];*/
+
         // Get all Other Charges for these opportunities
         List<Other_Charges__c> allOtherCharges = [
             SELECT Id, Deal__c, Amount__c
             FROM Other_Charges__c
             WHERE Deal__c IN :opportunityIds
         ];
-        
+
         // Calculate total Other Charges per Opportunity
         Map<Id, Decimal> otherChargesMap = new Map<Id, Decimal>();
         for (Other_Charges__c oc : allOtherCharges) {
@@ -117,64 +149,171 @@ public class DealBuildingService {
             }
             otherChargesMap.put(oc.Deal__c, otherChargesMap.get(oc.Deal__c) + nvl(oc.Amount__c));
         }
-        
-        // Get opportunities and reset their values
+
+        // Get opportunities and reset their calculated values
+        // NOTE: AtCreation fields are fetched but NOT included in resetOpportunityFields,
+        // so they are preserved unless updateAtCreation=true is explicitly requested.
         Map<Id, Opportunity> opportunityMap = opportunityRepo.getOpportunitiesWithFields(opportunityIds);
-        
-        // Track opportunities where TotalSellingPrice changed (for payment schedule recalculation)
-        Map<Id, Decimal> oldTotalSellingPrices = new Map<Id, Decimal>();
+
         for (Opportunity opp : opportunityMap.values()) {
-            oldTotalSellingPrices.put(opp.Id, opp.TotalSellingPrice__c);
             resetOpportunityFields(opp);
         }
-        
+
         // Rebuild aggregations from scratch
         Map<Id, DealBuildingAggregator> aggregatorMap = buildAggregatorMap(allDealBuildings, opportunityMap);
-        
+
         List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
-        Set<Id> opportunitiesWithTotalSellingPriceChange = new Set<Id>();
-        
+
         for (Id oppId : opportunityIds) {
             Opportunity opp = opportunityMap.get(oppId);
-            
+
             if (opp != null) {
+                DealBuildingAggregator agg = aggregatorMap.get(oppId);
+
                 // If there are Deal Buildings, apply aggregated values
-                if (aggregatorMap.containsKey(oppId)) {
-                    aggregatorMap.get(oppId).applyToOpportunity(opp);
+                if (agg != null) {
+                    agg.applyToOpportunity(opp);
+
+                    // Update AtCreation snapshot only when a Deal_Building was inserted or deleted
+                    if (updateAtCreation) {
+                        agg.applyAtCreationFields(opp);
+                    }
+                } else if (updateAtCreation) {
+                    // All Deal_Buildings were removed — reset AtCreation to zero
+                    opp.LandAreaAtCreation__c = 0;
+                    opp.LandPriceAtCreation__c = 0;
+                    opp.BuildUpAreaAtCreation__c = 0;
+                    opp.RatePerSqmSRSqmAtCreation__c = 0;
+                    opp.AreaAtCreation__c = 0;
                 }
-                
+
                 // Add Other Charges to TotalSellingPrice
                 if (otherChargesMap.containsKey(oppId)) {
                     opp.TotalSellingPrice__c = nvl(opp.TotalSellingPrice__c) + otherChargesMap.get(oppId);
                 }
-                
+
                 // Add VAT if VAT_15__c is checked
                 if (opp.VAT_15__c == true && opp.VAT_Amount__c != null) {
                     opp.TotalSellingPrice__c = nvl(opp.TotalSellingPrice__c) + opp.VAT_Amount__c;
                 }
-                
-                // Check if TotalSellingPrice changed
-                Decimal oldValue = oldTotalSellingPrices.get(oppId);
-                Decimal newValue = opp.TotalSellingPrice__c;
-                if (oldValue != newValue) {
-                    opportunitiesWithTotalSellingPriceChange.add(oppId);
-                }
-                
-                // If no Deal Buildings, fields remain at zero (from reset)
+
                 opportunitiesToUpdate.add(opp);
             }
         }
-        
+
         if (!opportunitiesToUpdate.isEmpty()) {
             update opportunitiesToUpdate;
-            
-            // Recalculate payment schedules for opportunities where TotalSellingPrice changed
-            if (!opportunitiesWithTotalSellingPriceChange.isEmpty()) {
-                recalculatePaymentSchedules(opportunitiesWithTotalSellingPriceChange, opportunityMap);
-            }
+
+            // Re-query the final TotalSellingPrice after all triggers (beforeUpdate/afterUpdate)
+            // have run, then always refresh payment schedules for every affected opportunity.
+            Map<Id, Opportunity> freshOpps = new Map<Id, Opportunity>([
+                SELECT Id, TotalSellingPrice__c
+                FROM Opportunity
+                WHERE Id IN :opportunityIds
+            ]);
+            recalculatePaymentSchedules(opportunityIds, freshOpps);
         }
     }
     
+    /**
+     * Recalculates TotalSellingPrice WITHOUT touching LandArea, LandPricePerSqm,
+     * BuildUpArea or Rate_per_Sqm_SR_Sqm__c on the Opportunity.
+     *
+     * Used by OtherCharges and VAT changes so that manually-edited pricing fields
+     * on Residential Property records are never overridden.
+     *
+     * Formula for Residential Property:
+     *   TotalSellingPrice = (LandArea × LandPricePerSqm) + (BuildUpArea × RatePerSqm)
+     *                       + OtherCharges + VAT
+     *
+     * Non-Residential-Property records fall back to the full recalculateOpportunities.
+     */
+    public void recalculateTotalSellingPriceOnly(Set<Id> opportunityIds) {
+        if (isRecalculating) return;
+        isRecalculating = true;
+        try {
+            recalculateTotalSellingPriceOnlyImpl(opportunityIds);
+        } finally {
+            isRecalculating = false;
+        }
+    }
+
+    private void recalculateTotalSellingPriceOnlyImpl(Set<Id> opportunityIds) {
+        // Separate Residential Property records from other record types
+        List<Opportunity> allOpps = [
+            SELECT Id, RecordType.Name,
+                   LandArea__c, LandPricePerSqm__c, BuildUpArea__c, Rate_per_Sqm_SR_Sqm__c,
+                   VAT_15__c, VAT_Amount__c, TotalSellingPrice__c
+            FROM Opportunity
+            WHERE Id IN :opportunityIds
+        ];
+
+        Set<Id> residentialIds     = new Set<Id>();
+        Set<Id> otherRecordTypeIds = new Set<Id>();
+        Map<Id, Opportunity> residentialOpps = new Map<Id, Opportunity>();
+
+        for (Opportunity opp : allOpps) {
+            if (opp.RecordType.Name == 'Residential Property' || opp.RecordType.Name == 'Residential') {
+                residentialIds.add(opp.Id);
+                residentialOpps.put(opp.Id, opp);
+            } else {
+                otherRecordTypeIds.add(opp.Id);
+            }
+        }
+
+        // Non-Residential Property: full recalculation from Deal_Buildings (unchanged behaviour)
+        if (!otherRecordTypeIds.isEmpty()) {
+            recalculateOpportunities(otherRecordTypeIds);
+        }
+
+        if (residentialIds.isEmpty()) return;
+
+        // Residential Property: formula-based recalculation — never touches LandArea etc.
+        Map<Id, Decimal> otherChargesMap = new Map<Id, Decimal>();
+        for (Other_Charges__c oc : [
+            SELECT Deal__c, Amount__c
+            FROM Other_Charges__c
+            WHERE Deal__c IN :residentialIds
+        ]) {
+            if (!otherChargesMap.containsKey(oc.Deal__c)) {
+                otherChargesMap.put(oc.Deal__c, 0);
+            }
+            otherChargesMap.put(oc.Deal__c, otherChargesMap.get(oc.Deal__c) + nvl(oc.Amount__c));
+        }
+
+        List<Opportunity> toUpdate      = new List<Opportunity>();
+        Set<Id> priceChangedIds         = new Set<Id>();
+        Map<Id, Opportunity> changedMap = new Map<Id, Opportunity>();
+
+        for (Opportunity opp : residentialOpps.values()) {
+            Decimal newTotal = (nvl(opp.LandArea__c)            * nvl(opp.LandPricePerSqm__c))
+                             + (nvl(opp.BuildUpArea__c)         * nvl(opp.Rate_per_Sqm_SR_Sqm__c));
+
+            if (otherChargesMap.containsKey(opp.Id)) {
+                newTotal += otherChargesMap.get(opp.Id);
+            }
+
+            if (opp.VAT_15__c == true && opp.VAT_Amount__c != null) {
+                newTotal += opp.VAT_Amount__c;
+            }
+
+            if (opp.TotalSellingPrice__c != newTotal) {
+                opp.TotalSellingPrice__c = newTotal;
+                toUpdate.add(opp);
+                priceChangedIds.add(opp.Id);
+                changedMap.put(opp.Id, opp);
+            }
+        }
+
+        if (!toUpdate.isEmpty()) {
+            update toUpdate;
+            // handleTotalSellingPriceChange in OpportunityTrigger.afterUpdate will
+            // also update payment schedules, but calling it here avoids a second DML
+            // round-trip when the trigger fires.
+            recalculatePaymentSchedules(priceChangedIds, changedMap);
+        }
+    }
+
     /**
      * Recalculates payment schedules based on updated TotalSellingPrice
      * Only updates schedules with Payment_Status__c != 'Paid'
@@ -241,8 +380,10 @@ public class DealBuildingService {
         opp.Minimum_Acceptable_Rate_Sqm_SR_Sqm__c = 0;
         opp.PreLaunchPrice__c = 0;
         opp.LandArea__c = 0;
+        opp.LandPricePerSqm__c = 0;
         opp.LandSellableAmount__c = 0;
         opp.BuildUpArea__c = 0;
+        opp.Area__c = 0;
     }
     
     /**
@@ -282,7 +423,7 @@ public class DealBuildingService {
                 return nvl(building.Gross_Leasable_Amount_SAR__c);
             }
             when 'Residential' {
-                return nvl(building.Client_Asking_Price_SAR__c);
+                return nvl(building.Total_Selling_Price_SAR__c);
             }
             when 'Retail' {
                 return nvl(building.Asking_Annual_Rent__c);

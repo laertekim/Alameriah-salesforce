@@ -5,19 +5,49 @@ public class FieldDataRetriever {
         Map<String, Schema.SObjectField> fieldMap = getFieldMap(objectApiName);
         
         for (String fieldApiName : fieldApiNames) {
-            if (!fieldMap.containsKey(fieldApiName.toLowerCase())) {
-                continue;
+            // Verifica se é um campo relacional (contém '.__r.')
+            if (fieldApiName.contains('__r.')) {
+                // Para campos relacionais, precisamos extrair o valor de forma diferente
+                String[] relationshipParts = fieldApiName.split('\\.');
+                String relationshipName = relationshipParts[0];
+                String relatedField = relationshipParts[1];
+                
+                SObject relatedRecord = record.getSObject(relationshipName);
+                if (relatedRecord != null) {
+                    Object value = relatedRecord.get(relatedField);
+                    
+                    // Tenta obter o describe do campo relacional (isso é mais complexo)
+                    // Para simplificar, vamos criar um FieldDescriptor com tipo STRING
+                    fields.add(new FieldDescriptor(
+                        fieldApiName,
+                        fieldApiName, // Label será o próprio nome por enquanto
+                        value,
+                        Schema.DisplayType.STRING
+                    ));
+                } else {
+                    fields.add(new FieldDescriptor(
+                        fieldApiName,
+                        fieldApiName,
+                        null,
+                        Schema.DisplayType.STRING
+                    ));
+                }
+            } else {
+                // Campo normal
+                if (!fieldMap.containsKey(fieldApiName.toLowerCase())) {
+                    continue;
+                }
+                
+                Schema.SObjectField field = fieldMap.get(fieldApiName.toLowerCase());
+                Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
+                
+                fields.add(new FieldDescriptor(
+                    fieldApiName,
+                    fieldDescribe.getLabel(),
+                    record.get(fieldApiName),
+                    fieldDescribe.getType()
+                ));
             }
-            
-            Schema.SObjectField field = fieldMap.get(fieldApiName.toLowerCase());
-            Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
-            
-            fields.add(new FieldDescriptor(
-                fieldApiName,
-                fieldDescribe.getLabel(),
-                record.get(fieldApiName),
-                fieldDescribe.getType()
-            ));
         }
         
         return fields;
@@ -27,7 +57,7 @@ public class FieldDataRetriever {
         List<RecordDescriptor> recordDescriptors = new List<RecordDescriptor>();
         
         for (SObject record : records) {
-            RecordDescriptor descriptor = new RecordDescriptor();
+            RecordDescriptor descriptor = new RecordDescriptor(record);
             List<FieldDescriptor> fields = retrieveFields(record, fieldApiNames, objectApiName);
             
             for (FieldDescriptor field : fields) {

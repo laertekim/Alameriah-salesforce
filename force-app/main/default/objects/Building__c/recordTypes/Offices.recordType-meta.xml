@@ -245,6 +245,13 @@
         </values>
     </picklistValues>
     <picklistValues>
+        <picklist>TowerCode__c</picklist>
+        <values>
+            <fullName>BR-A01</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>Tower_Name__c</picklist>
         <values>
             <fullName>Building 1</fullName>

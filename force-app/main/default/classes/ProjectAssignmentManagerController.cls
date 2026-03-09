@@ -65,7 +65,7 @@ public with sharing class ProjectAssignmentManagerController {
                    Sort_Order__c
             FROM Project_Assignment__c
             WHERE Executive_Report__c = :executiveReportId
-            ORDER BY CreatedDate, Project__r.Name, Item__c
+            ORDER BY CreatedDate, Project__r.Name, Item__c NULLS LAST 
         ];
 
         SObjectAccessDecision sd = Security.stripInaccessible(AccessType.READABLE, records);

@@ -6,6 +6,8 @@ public class OpportunityReportController {
     private List<FieldDescriptor> opportunityFieldDescriptors;
     private List<RecordDescriptor> paymentScheduleRecordDescriptors;
     private List<RecordDescriptor> otherChargeRecordDescriptors;
+    private List<Deal_Building__c> dealBuildingList;
+    private List<RecordDescriptor> dealBuildingRecordDescriptors;
     
     public OpportunityReportController(ApexPages.StandardController stdController) {
         this.opportunity = (Opportunity) stdController.getRecord();
@@ -26,16 +28,25 @@ public class OpportunityReportController {
         List<String> oppFields = configProvider.getOpportunityFields();
         List<String> paymentFields = configProvider.getPaymentScheduleFields();
         List<String> chargeFields = configProvider.getOtherChargeFields();
+        List<String> dealBuildingFields = configProvider.getDealBuildingFields();
         
         String query = new OpportunityQueryBuilder()
-            .withOpportunityId(opportunity.Id)
-            .withOpportunityFields(oppFields)
-            .withPaymentScheduleFields(paymentFields)
-            .withOtherChargeFields(chargeFields)
-            .build();
+        .withOpportunityId(opportunity.Id)
+        .withOpportunityFields(oppFields)
+        .withPaymentScheduleFields(paymentFields)
+        .withOtherChargeFields(chargeFields)
+        .withDealBuildingFields(dealBuildingFields)
+        .build();
         
         Opportunity loadedOpp = Database.query(query);
         
+        this.dealBuildingList = new List<Deal_Building__c>();
+        List<SObject> dbs = loadedOpp.getSObjects('Deal_Buildings__r');
+        if (dbs != null) {
+            for (SObject s : dbs) {
+                this.dealBuildingList.add((Deal_Building__c) s);
+            }
+        }
         this.opportunityFieldDescriptors = dataRetriever.retrieveFields(
             loadedOpp, 
             oppFields, 
@@ -74,6 +85,20 @@ public class OpportunityReportController {
         );
 
         System.debug('@@ Other Charge Record Descriptors: ' + otherChargeRecordDescriptors);
+
+        System.debug('dns Deal Building Fields: ' + dealBuildingFields);
+        List<SObject> dealBuildings = new List<SObject>();
+        if (!dealBuildingFields.isEmpty()) {
+            List<SObject> buildings = loadedOpp.getSObjects('Deal_Buildings__r');
+            if (buildings != null) {
+                dealBuildings = buildings;
+            }
+        }
+        this.dealBuildingRecordDescriptors = dataRetriever.retrieveRecords(
+            dealBuildings,
+            dealBuildingFields,
+            'Deal_Building__c'
+        );
     }
     
     public List<FieldDescriptor> getOpportunityFields() {
@@ -137,4 +162,37 @@ public class OpportunityReportController {
     public Boolean hasOtherCharges {
         get { return getHasOtherCharges(); }
     }
+    
+    public List<Deal_Building__c> dealBuildings {
+    	get { return this.dealBuildingList; }
+    }
+    
+    public Boolean hasDealBuildings {
+        get { return !this.dealBuildingList.isEmpty(); }
+    }
+
+    public List<FieldDescriptor> getDealBuildingFields() {
+        if (this.dealBuildingRecordDescriptors.isEmpty()) {
+            return new List<FieldDescriptor>();
+        }
+        return this.dealBuildingRecordDescriptors[0].getFields();
+    }
+    
+    public List<FieldDescriptor> dealBuildingFields {
+        get { return getDealBuildingFields(); }
+    }
+    
+    public List<RecordDescriptor> getDealBuildingRecords() {
+        return this.dealBuildingRecordDescriptors;
+    }
+    
+    public List<RecordDescriptor> dealBuildingRecords {
+        get { return getDealBuildingRecords(); }
+    }
+
+    public Boolean getHasDealBuildings() {
+        return !this.dealBuildingRecordDescriptors.isEmpty();
+    }
+    
+   
 }

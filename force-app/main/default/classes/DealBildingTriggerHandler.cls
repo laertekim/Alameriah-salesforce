@@ -1,4 +1,5 @@
 public class DealBildingTriggerHandler {
+    /*NOT LONGER IN USE - DEACTIVATED TRIGGER*/
     public static void onBeforeInsert(list<Deal_Building__c> triggerNew){
         DealBuildingBeforeInsert.beforeInsert(triggerNew);
     }

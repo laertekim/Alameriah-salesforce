@@ -1,5 +1,6 @@
 trigger DealBildingTrigger on Deal_Building__c (before insert, after insert, after update, after delete) {
-   if(trigger.isBefore && trigger.isInsert) {
+   /*NOT LONGER IN USE - DEACTIVATED TRIGGER*/
+    if(trigger.isBefore && trigger.isInsert) {
         DealBildingTriggerHandler.onBeforeInsert(Trigger.new);
     }
     if(trigger.isAfter && trigger.isInsert) {
