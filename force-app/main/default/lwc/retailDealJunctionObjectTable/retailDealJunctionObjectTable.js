@@ -1,606 +1,324 @@
 import { LightningElement, api, track, wire } from 'lwc';
-import {refreshApex} from '@salesforce/apex';
-//apex classes
+import { refreshApex } from '@salesforce/apex';
+// Apex
 import getAllBuildings from '@salesforce/apex/DealJunkTableController.getAllBuildings';
 import getRelatedDealBuilding from '@salesforce/apex/DealJunkTableController.getRelatedDealBuilding';
 import createJunctionObject from '@salesforce/apex/DealJunkTableController.createJunctionObject';
-//Other
+import getFieldConfigForDeal from '@salesforce/apex/DealJunkTableController.getFieldConfigForDeal';
+// Other
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { deleteRecord } from 'lightning/uiRecordApi';
-//picklist
-import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+// Object / picklist wiring
+import { getObjectInfo, getPicklistValues } from 'lightning/uiObjectInfoApi';
 import BUILDING_OBJECT from '@salesforce/schema/Building__c';
 import DEAL_BUILDING_OBJECT from '@salesforce/schema/Deal_Building__c';
-import { getPicklistValues } from 'lightning/uiObjectInfoApi';
 import ZONE_FIELD from '@salesforce/schema/Building__c.Zone__c';
-import Lease_Phases__FIELD from '@salesforce/schema/Building__c.Lease_Phases__c';
-import Tower_Name__FIELD from '@salesforce/schema/Building__c.Tower_Name__c';
-import Building_Type__FIELD from '@salesforce/schema/Building__c.Building_Type__c';
-import Status__FIELD from '@salesforce/schema/Building__c.Status__c';
 import Level__FIELD from '@salesforce/schema/Building__c.Level__c';
+import Status__FIELD from '@salesforce/schema/Building__c.Status__c';
 import Unit_No__FIELD from '@salesforce/schema/Building__c.Unit_No__c';
-import View__FIELD from '@salesforce/schema/Building__c.View__c';
 import Unit_Type__FIELD from '@salesforce/schema/Building__c.Unit_Type__c';
 import Retail_Category__FIELD from '@salesforce/schema/Building__c.Retail_Category__c';
 import TypeOfActivity__FIELD from '@salesforce/schema/Building__c.Type_of_Activity__c';
-//----------------------------------------------------------------
 import Tower_Name__DBFIELD from '@salesforce/schema/Deal_Building__c.Tower_Name__c';
-import Opport_OBJECT from '@salesforce/schema/Opportunity';
-export default class DealJunctionObjectTable extends NavigationMixin(LightningElement) {
-	value6_5 = '';
+
+export default class RetailDealJunctionObjectTable extends NavigationMixin(LightningElement) {
     towernamefield = Tower_Name__DBFIELD;
-    showPagination = false;
     @api recordId;
-	recordEditId;
-	recordDeleteId;
+    recordEditId;
+    recordDeleteId;
     booleItem = false;
     @track records;
-    @track dealRecords;
-	@wire(getObjectInfo, { objectApiName: DEAL_BUILDING_OBJECT })
-    DealBuildInfo;
-	@wire(getObjectInfo, { objectApiName: BUILDING_OBJECT })
-    BuildInfo;
+    @track DealRecords;
+    _buildingObjectInfoData = null;
+    @track _columns = [];
+    @track _processedRecords = [];
+    @track _processedDealRecords = [];
+    opportunityRecordTypeName = null;
 
-	recordTypeId;
-	@wire(getObjectInfo, { objectApiName: BUILDING_OBJECT})
+    @wire(getObjectInfo, { objectApiName: DEAL_BUILDING_OBJECT })
+    DealBuildInfo;
+
+    // Resolve Building__c record type Id for picklist wiring (matches the Opportunity record type)
+    recordTypeId;
+    @wire(getObjectInfo, { objectApiName: BUILDING_OBJECT })
     getobjectInfo(result) {
         if (result.data) {
-            const rtis = result.data.recordTypeInfos;
-            this.recordTypeId = Object.keys(rtis).find((rti) => rtis[rti].name === 'Retail');
-			console.log('this.recordTypeId1 '+this.recordTypeId);
+            this._buildingObjectInfoData = result.data;
+            this._resolveRecordTypeId();
         }
     }
-	//---------------------------ZONE-------------------------------
-	value = '';
-	options1 = []; 
 
-	@track isModalOpen = false;
-	@track isModalOpen2 = false;
-	
-	@wire(getPicklistValues,
-        {
-            recordTypeId: '$recordTypeId',
-            fieldApiName: ZONE_FIELD
+    _resolveRecordTypeId() {
+        if (!this._buildingObjectInfoData || !this.opportunityRecordTypeName) return;
+        const rtis = this._buildingObjectInfoData.recordTypeInfos;
+        this.recordTypeId = Object.keys(rtis).find(id => rtis[id].name === this.opportunityRecordTypeName);
+    }
+
+    async connectedCallback() {
+        try {
+            const config = await getFieldConfigForDeal({ opportunityId: this.recordId });
+            this.opportunityRecordTypeName = config?.recordTypeName;
+            console.log('Opportunity RecordType:', this.opportunityRecordTypeName); // Debug
+            this._resolveRecordTypeId();
+            this._columns = (config?.columns || []).map(c => ({ apiName: c.Field_API_Name__c, label: c.Column_Label__c }));
+        } catch (e) {
+            console.error('Error getting field config:', e);
         }
-    )
-    LTFinfoValue1({error, data}) {
+        this.getData();
+    }
+
+    _hasColumn(apiName) {
+        return this._columns.some(c => c.apiName === apiName);
+    }
+
+    _getColumnLabel(apiName, defaultLabel) {
+        const col = this._columns.find(c => c.apiName === apiName);
+        return col ? col.label : defaultLabel;
+    }
+
+    _processRecords(rawRecords, defaultSelected) {
+        return (rawRecords || []).map(r => ({
+            id: r.Id,
+            selected: defaultSelected !== undefined ? defaultSelected : (r.selected || false),
+            cells: this._columns.map(col => ({
+                key: col.apiName,
+                value: r[col.apiName] !== undefined && r[col.apiName] !== null ? String(r[col.apiName]) : ''
+            }))
+        }));
+    }
+
+    // Filter visibility (controlled by Field_Display_Config__mdt)
+    get showZoneFilter()           { return this._hasColumn('Zone__c'); }
+    get showLevelFilter()          { return this._hasColumn('Level__c'); }
+    get showStatusFilter()         { return this._hasColumn('Status__c'); }
+    get showUnitNoFilter()         { return this._hasColumn('Unit_No__c'); }
+    get showUnitTypeFilter()       { return this._hasColumn('Unit_Type__c'); }
+    get showRetailCategoryFilter() { return this._hasColumn('Retail_Category__c'); }
+    get showTypeOfActivityFilter() { return this._hasColumn('Type_of_Activity__c'); }
+
+    // Filter labels
+    get zoneLabel()           { return this._getColumnLabel('Zone__c', 'Zone'); }
+    get levelLabel()          { return this._getColumnLabel('Level__c', 'Level'); }
+    get unitNoLabel()         { return this._getColumnLabel('Unit_No__c', 'Unit No'); }
+    get unitTypeLabel()       { return this._getColumnLabel('Unit_Type__c', 'Unit Type'); }
+    get retailCategoryLabel() { return this._getColumnLabel('Retail_Category__c', 'Retail Category'); }
+    get typeOfActivityLabel() { return this._getColumnLabel('Type_of_Activity__c', 'Type of Activity'); }
+
+    // Zone
+    value = '';
+    options1 = [];
+    @track isModalOpen = false;
+    @track isModalOpen2 = false;
+
+    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: ZONE_FIELD })
+    LTFinfoValue1({ error, data }) {
         if (data) {
-			console.log('data.values '+data.values);
-            let optionsValue = data.values;
-			this.options1 = [{ label: '--None--', value: "" }];
-			optionsValue.forEach(opt => this.options1.push(opt));
-			console.log('this.options1 '+this.options1);
-        } else if (error) {
-            console.log(error);
+            this.options1 = [{ label: '--None--', value: '' }];
+            data.values.forEach(opt => this.options1.push(opt));
         }
     }
+    handleChange1(event) { this.value = event.detail.value; this.getData(); }
 
-	handleChange1(event) {
-        this.value = event.detail.value;
-		this.getData();
-    }
-    //---------------------------Unit Type-------------------------------
-	value11 = '';
-	options11 = []; 
-	
-	@wire(getPicklistValues,
-        {
-            recordTypeId: '$recordTypeId',
-            fieldApiName: Unit_Type__FIELD
-        }
-    )
-    LTFinfoValue11({error, data}) {
+    // Level
+    value6 = '';
+    options6 = [];
+    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: Level__FIELD })
+    LTFinfoValue6({ error, data }) {
         if (data) {
-			console.log('data.values '+data.values);
-            let optionsValue = data.values;
-			this.options11 = [{ label: '--None--', value: "" }];
-			optionsValue.forEach(opt => this.options11.push(opt));
-			console.log('this.options1 '+this.options11);
-        } else if (error) {
-            console.log(error);
+            this.options6 = [{ label: '--None--', value: '' }];
+            data.values.forEach(opt => this.options6.push(opt));
         }
     }
+    handleChange6(event) { this.value6 = event.detail.value; this.getData(); }
 
-	handleChange11(event) {
-        this.value11 = event.detail.value;
-		this.getData();
-    }
-    //---------------------------Retail Category-------------------------------
-	value12 = '';
-	options12 = []; 
-	
-	@wire(getPicklistValues,
-        {
-            recordTypeId: '$recordTypeId',
-            fieldApiName: Retail_Category__FIELD
-        }
-    )
-    LTFinfoValue12({error, data}) {
+    // Status
+    value5 = '';
+    options5 = [];
+    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: Status__FIELD })
+    LTFinfoValue5({ error, data }) {
         if (data) {
-			console.log('data.values '+data.values);
-            let optionsValue = data.values;
-			this.options12 = [{ label: '--None--', value: "" }];
-			optionsValue.forEach(opt => this.options12.push(opt));
-			console.log('this.options1 '+this.options12);
-        } else if (error) {
-            console.log(error);
+            this.options5 = [{ label: '--None--', value: '' }];
+            data.values.forEach(opt => this.options5.push(opt));
         }
     }
+    handleChange5(event) { this.value5 = event.detail.value; this.getData(); }
 
-	handleChange12(event) {
-        this.value12 = event.detail.value;
-		this.getData();
-    }
-    //---------------------------Type Of Activity-------------------------------
-	value13 = '';
-	options13 = []; 
-	
-	@wire(getPicklistValues,
-        {
-            recordTypeId: '$recordTypeId',
-            fieldApiName: TypeOfActivity__FIELD
-        }
-    )
-    LTFinfoValue13({error, data}) {
+    // Unit No
+    value7 = '';
+    options7 = [];
+    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: Unit_No__FIELD })
+    LTFinfoValue7({ error, data }) {
         if (data) {
-			console.log('data.values '+data.values);
-            let optionsValue = data.values;
-			this.options13 = [{ label: '--None--', value: "" }];
-			optionsValue.forEach(opt => this.options13.push(opt));
-			console.log('this.options1 '+this.options13);
-        } else if (error) {
-            console.log(error);
+            this.options7 = [{ label: '--None--', value: '' }];
+            data.values.forEach(opt => this.options7.push(opt));
         }
     }
+    handleChange7(event) { this.value7 = event.detail.value; this.getData(); }
 
-	handleChange13(event) {
-        this.value13 = event.detail.value;
-		this.getData();
-    }
-	//----------------------------Lease Phases------------------------
-	value2 = '';
-	options2 = []; 
-	
-	@wire(getPicklistValues,
-        {
-            recordTypeId: '$recordTypeId',
-            fieldApiName: Lease_Phases__FIELD
-        }
-    )
-    LTFinfoValue2({error, data}) {
+    // Unit Type
+    value11 = '';
+    options11 = [];
+    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: Unit_Type__FIELD })
+    LTFinfoValue11({ error, data }) {
         if (data) {
-			console.log('data.values '+data.values);
-            //this.options2 = data.values;
-			let optionsValue = data.values;
-			this.options2 = [{ label: '--None--', value: "" }];
-			optionsValue.forEach(opt => this.options2.push(opt));
-        } else if (error) {
-            console.log(error);
+            this.options11 = [{ label: '--None--', value: '' }];
+            data.values.forEach(opt => this.options11.push(opt));
         }
     }
+    handleChange11(event) { this.value11 = event.detail.value; this.getData(); }
 
-	handleChange2(event) {
-        this.value2 = event.detail.value;
-		this.getData();
-    }
-
-	//---------------------------Tower Name-------------------------------
-	value3 = '';
-	options3 = []; 
-	
-	@wire(getPicklistValues,
-        {
-            recordTypeId: '$recordTypeId',
-            fieldApiName: Tower_Name__FIELD
-        }
-    )
-    LTFinfoValue3({error, data}) {
+    // Retail Category
+    value12 = '';
+    options12 = [];
+    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: Retail_Category__FIELD })
+    LTFinfoValue12({ error, data }) {
         if (data) {
-			console.log('data.values '+data.values);
-            let optionsValue = data.values;
-			this.options3 = [{ label: '--None--', value: "" }];
-			optionsValue.forEach(opt => this.options3.push(opt));
-			console.log('this.options1 '+this.options3);
-        } else if (error) {
-            console.log(error);
+            this.options12 = [{ label: '--None--', value: '' }];
+            data.values.forEach(opt => this.options12.push(opt));
         }
     }
+    handleChange12(event) { this.value12 = event.detail.value; this.getData(); }
 
-	handleChange3(event) {
-        this.value3 = event.detail.value;
-		this.getData();
-    }
-
-	//---------------------------Building Type-------------------------------
-	value4 = '';
-	options4 = []; 
-	
-	@wire(getPicklistValues,
-        {
-            recordTypeId: '$recordTypeId',
-            fieldApiName: Building_Type__FIELD
-        }
-    )
-    LTFinfoValue4({error, data}) {
+    // Type of Activity
+    value13 = '';
+    options13 = [];
+    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: TypeOfActivity__FIELD })
+    LTFinfoValue13({ error, data }) {
         if (data) {
-			console.log('data.values '+data.values);
-            let optionsValue = data.values;
-			this.options4 = [{ label: '--None--', value: "" }];
-			optionsValue.forEach(opt => this.options4.push(opt));
-			console.log('this.options4 '+this.options4);
-        } else if (error) {
-            console.log(error);
+            this.options13 = [{ label: '--None--', value: '' }];
+            data.values.forEach(opt => this.options13.push(opt));
         }
     }
+    handleChange13(event) { this.value13 = event.detail.value; this.getData(); }
 
-	handleChange4(event) {
-        this.value4 = event.detail.value;
-		this.getData();
+    //----------------------------------------------------------------
+
+    handleSuccess() {
+        this.dispatchEvent(new ShowToastEvent({ title: 'Success!', message: 'The record has been successfully saved.', variant: 'success' }));
+        refreshApex(this.getData());
+        this.isModalOpen = false;
     }
 
-	//---------------------------Status-------------------------------
-	value5 = '';
-	options5 = []; 
-	
-	@wire(getPicklistValues,
-        {
-            recordTypeId: '$recordTypeId',
-            fieldApiName: Status__FIELD
-        }
-    )
-    LTFinfoValue5({error, data}) {
-        if (data) {
-			console.log('data.values '+data.values);
-            let optionsValue = data.values;
-			this.options5 = [{ label: '--None--', value: "" }];
-			optionsValue.forEach(opt => this.options5.push(opt));
-			console.log('this.options5 '+this.options5);
-        } else if (error) {
-            console.log(error);
-        }
+    updatePage() { refreshApex(this.getData()); }
+
+    handleError() {
+        this.dispatchEvent(new ShowToastEvent({ title: 'Error!', message: 'An error occurred while attempting to save the record.', variant: 'error' }));
+        this.isModalOpen = false;
     }
 
-	handleChange5(event) {
-        this.value5 = event.detail.value;
-		this.getData();
-    }
-
-	//---------------------------Level-------------------------------
-	value6 = '';
-	options6 = []; 
-	
-	@wire(getPicklistValues,
-        {
-            recordTypeId: '$recordTypeId',
-            fieldApiName: Level__FIELD
-        }
-    )
-    LTFinfoValue6({error, data}) {
-        if (data) {
-			console.log('data.values '+data.values);
-            let optionsValue = data.values;
-			this.options6 = [{ label: '--None--', value: "" }];
-			optionsValue.forEach(opt => this.options6.push(opt));
-			console.log('this.options5 '+this.options6);
-        } else if (error) {
-            console.log(error);
-        }
-    }
-
-	handleChange6(event) {
-        this.value6 = event.detail.value;
-		this.getData();
-    }
-
-	//---------------------------Unit No-------------------------------
-	value7 = '';
-	options7 = []; 
-	
-	@wire(getPicklistValues,
-        {
-            recordTypeId: '$recordTypeId',
-            fieldApiName: Unit_No__FIELD
-        }
-    )
-    LTFinfoValue7({error, data}) {
-        if (data) {
-			console.log('data.values '+data.values);
-            let optionsValue = data.values;
-			this.options7 = [{ label: '--None--', value: "" }];
-			optionsValue.forEach(opt => this.options7.push(opt));
-			console.log('this.options5 '+this.options7);
-        } else if (error) {
-            console.log(error);
-        }
-    }
-
-	handleChange7(event) {
-        this.value7 = event.detail.value;
-		this.getData();
-    }
-
-	//---------------------------View-------------------------------
-	value8 = '';
-	options8 = [];
-	
-	@wire(getPicklistValues,
-        {
-            recordTypeId: '$recordTypeId',
-            fieldApiName: View__FIELD
-        }
-    )
-    LTFinfoValue8({error, data}) {
-        if (data) {
-			console.log('data.values '+data.values);
-            let optionsValue = data.values;
-			this.options8 = [{ label: '--None--', value: "" }];
-			optionsValue.forEach(opt => this.options8.push(opt));
-			console.log('this.options5 '+this.options8);
-        } else if (error) {
-            console.log(error);
-        }
-    }
-
-	handleChange8(event) {
-        this.value8 = event.detail.value;
-		this.getData();
-    }
-
-	//------------------PICKLIST END-----------------------------------
-
-	handleSuccess() {
-		const evt = new ShowToastEvent({
-			title: "Success!",
-			message: "The record has been successfully saved.",
-			variant: "success",
-		});
-
-		this.dispatchEvent(evt);
-		refreshApex(this.getData());
-		//eval("$A.get('e.force:refreshView').fire();");
-		this.isModalOpen = false;
-		
-		
-		//
-	}
-
-    updatePage() {
-		refreshApex(this.getData());
-	}
-	   
-	handleError() {
-		const evt = new ShowToastEvent({
-			title: "Error!",
-			message: "An error occurred while attempting to save the record.",
-			variant: "error",
-		});
-		this.dispatchEvent(evt);
-		this.isModalOpen = false;
-	}
-	handleCancel() {
-		this.isModalOpen = false;
-	}
-    //--------------------------Show data-----------------------------
-    connectedCallback() {
-		/*this.readyToPublish = 'Ready to be Published';
-		this.productState = 'All';
-		this.sortBy = 'ProductCode';
-		this.orderType = 'ASC';*/
-		console.log('ZONE_FIELD '+ZONE_FIELD);
-		this.getData();
-	}
-
-	resetData() {
-		/*this.readyToPublish = 'Ready to be Published';
-		this.productState = 'All';
-		this.sortBy = 'ProductCode';
-		this.orderType = 'ASC';*/
-		this.value = '';
-		this.getData();
-	}
+    handleCancel() { this.isModalOpen = false; }
 
     getData() {
-		console.log('this.value2 '+this.value);		
-		getAllBuildings({ dealRecordId : this.recordId, zone : this.value, Lease_Phases : this.value2, Tower_Name : this.value3, Building_Type : this.value4, Status : this.value5, Level : this.value6, Apartment_Type : this.value6_5, Unit_No : this.value7, View : this.value8, Unit_Type : this.value11, Retail_Category : this.value12, Type_of_Activity : this.value13}) 
-			.then(result => {
-				console.log( 'Fetched Data ' + JSON.stringify( result[0] ) );
-					this.records = result;
-					console.log('this.records321321: ', this.records);
-					for(let item of this.records){
-						item.selected = this.booleItem;
-					}
-			})
-			.catch(error => {
-				this.error = error;
-				this.records = undefined;
-				console.log('getData error: ', error);
-			});
+        // getAllBuildings filters by RecordType.Name (Retail) AND Center_Name__c (from Opportunity.Site__c)
+        // automatically — no extra params needed beyond the filter values
+        getAllBuildings({
+            dealRecordId: this.recordId,
+            zone: this.value,
+            leasePhases: '',
+            towerName: '',
+            buildingType: '',
+            status: this.value5,
+            level: this.value6,
+            apartmentType: '',
+            unitNo: this.value7,
+            viewValue: '',
+            unitType: this.value11,
+            retailCategory: this.value12,
+            typeOfActivity: this.value13
+        })
+        .then(result => {
+            this.records = result.map(r => ({ ...r, selected: this.booleItem }));
+            this._processedRecords = this._processRecords(this.records, this.booleItem);
+        })
+        .catch(error => {
+            this.error = error;
+            this.records = undefined;
+            this._processedRecords = [];
+        });
 
-            getRelatedDealBuilding({ dealRecordId : this.recordId }) 
-			.then(result => {
-				console.log( 'Fetched Data21 ' + JSON.stringify( result[0] ) );
-					this.DealRecords = result;
-					console.log('this.records21213: ', this.DealRecords);
-					
-			})
-			.catch(error => {
-				this.error = error;
-				this.DealRecords = undefined;
-				console.log('getData error: ', error);
-			});
-			
-	}
-
-    //--------------------------Navigate Record Link-----------------------------
-    navigateToRecordPage(event) {
-		let recordIdToRedirect = event.currentTarget.dataset.id;
-		this[NavigationMixin.GenerateUrl]({
-			type: 'standard__recordPage',
-			attributes: {
-				recordId: recordIdToRedirect,
-				objectApiName: 'Building__c',
-				actionName: 'view'
-			}
-            /*,
-            state: {
-                nooverride: 1,
-                navigationLocation: 'DETAIL',
-                backgroundContext: '/lightning/r/Building__c/'+recordIdToRedirect+'/view'
-                //backgroundContext: back_url
-            }*/
-		}).then(url => {
-			 window.open(url);
-		});
-	}
-
-    //--------------------------Selected Records logic-----------------------------
-    handleChange(event) {
-        let i;
-        let checkboxes = this.template.querySelectorAll('[title="checkboxTitle"]');
-		
-		if(event.target.checked == true){
-			for(let item of this.records){
-				this.booleItem = true;
-				item.selected = this.booleItem;
-			}
-		}else{
-			for(let item of this.records){
-				this.booleItem = false;
-				item.selected = this.booleItem;
-			}
-		}
-		
-		this.getData();
+        getRelatedDealBuilding({ dealRecordId: this.recordId })
+        .then(result => {
+            this.DealRecords = result;
+            this._processedDealRecords = this._processRecords(result);
+        })
+        .catch(error => {
+            this.error = error;
+            this.DealRecords = undefined;
+            this._processedDealRecords = [];
+        });
     }
 
+    navigateToRecordPage(event) {
+        let recordIdToRedirect = event.currentTarget.dataset.id;
+        this[NavigationMixin.GenerateUrl]({
+            type: 'standard__recordPage',
+            attributes: { recordId: recordIdToRedirect, objectApiName: 'Building__c', actionName: 'view' }
+        }).then(url => { window.open(url); });
+    }
+
+    handleChange(event) {
+        if (event.target.checked) {
+            this.booleItem = true;
+            for (let item of this.records) item.selected = true;
+            for (let row of this._processedRecords) row.selected = true;
+        } else {
+            this.booleItem = false;
+            for (let item of this.records) item.selected = false;
+            for (let row of this._processedRecords) row.selected = false;
+        }
+    }
 
     oneChange(event) {
-		if(event.target.checked){
-			for(let item of this.records){
-				if(item.Id == event.target.dataset.id){
-					item.selected = true;
-				}
-			}
-		}else{
-			for(let item of this.records){
-				if(item.Id == event.target.dataset.id){
-					item.selected = false;
-				}
-			}
-		}
-	}
+        const id = event.target.dataset.id;
+        const checked = event.target.checked;
+        for (let item of this.records) if (item.Id == id) item.selected = checked;
+        for (let row of this._processedRecords) if (row.id == id) row.selected = checked;
+    }
 
-    //--------------------------Update Selected Records-----------------------------
-    getAllId(event) {
-        const checked = Array.from(
-			this.template.querySelectorAll('lightning-input')
-			)
-				.filter(element => element.checked)
-				.map(element => element.dataset.id);
+    getAllId() {
+        const checked = Array.from(this.template.querySelectorAll('lightning-input'))
+            .filter(el => el.checked)
+            .map(el => el.dataset.id);
 
-				//--------------------------------------------//
-				let errormessageitem = '';
-				for(let item of this.records){
-					if(item.selected && item.Status__c != 'Available Units'){
-						console.log(item.selected+' ------ '+item.Status__c);
-						errormessageitem = errormessageitem+item.Status__c;
-						console.log(' ------ '+errormessageitem);
-					}
-				}
-				//---------------------------------------------//
-			let selection = checked.join(', ');
-			console.log('selection: ', selection);
-			if(errormessageitem != ''){
-				console.log('selection123: ');
-				this.dispatchEvent(
-					new ShowToastEvent({
-						title: 'Error adding Units',
-						message: 'Please select available unit!',
-						variant: 'error'
-					})
-				);
-				/**/
-			}else{
-				console.log('selection321: ');
-				createJunctionObject({dealRecordId : this.recordId,
-					stringBuildingsIds : selection})
-				.then(result => {            
-				this.showSuccessEvent();
-				this.getData();
-				eval("$A.get('e.force:refreshView').fire();");
-				})
-				.catch(error => {
-				this.error = error;
-				console.log('update community error: ', error);
-				});
-			}
-        }
-    
-        showSuccessEvent() {
-            const event = new ShowToastEvent({
-                            title: 'Success!',
-                            variant: 'success',
-                            message: 'Products were Unpublished successfully.',
-            });
+        let errormessageitem = '';
+        for (let item of this.records) {
+            if (item.selected && item.Status__c !== 'Available Units') {
+                errormessageitem += item.Status__c;
+            }
         }
 
-		
-		openModal(event) {
-			this.recordEditId = event.target.dataset.id;
-			// to open modal set isModalOpen tarck value as true
-			console.log('event.target.dataset.id '+event.target.dataset.id);
-			this.isModalOpen = true;
-		}
-		closeModal() {
-			// to close modal set isModalOpen tarck value as false
-			this.isModalOpen = false;
-		}
-		submitDetails() {
-			// to close modal set isModalOpen tarck value as false
-			//Add your code to call apex method or do some processing
-			console.log('tttetttetetetet');
-			this.isModalOpen = false;
-			return refreshApex(this.getData());
-		}
+        if (errormessageitem !== '') {
+            this.dispatchEvent(new ShowToastEvent({ title: 'Error adding Units', message: 'Please select available unit!', variant: 'error' }));
+            return;
+        }
 
-		deleteRecordModal(event) {
-			this.recordDeleteId = event.target.dataset.id;
-			// to open modal set isModalOpen tarck value as true
-			console.log('event.target.dataset.id '+event.target.dataset.id);
-			this.isModalOpen2 = true;
-		}
+        createJunctionObject({ dealRecordId: this.recordId, stringBuildingsIds: checked.join(', ') })
+        .then(() => {
+            this.dispatchEvent(new ShowToastEvent({ title: 'Success!', message: 'Units added successfully.', variant: 'success' }));
+            this.getData();
+            eval("$A.get('e.force:refreshView').fire();");
+        })
+        .catch(error => { this.error = error; });
+    }
 
-		closeModal2() {
-			// to close modal set isModalOpen tarck value as false
-			this.isModalOpen2 = false;
-		}
-		@track error;
-		submitDetails2() {
-			// to close modal set isModalOpen tarck value as false
-			//Add your code to call apex method or do some processing
-			deleteRecord(this.recordDeleteId)
-            .then(() => {
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Success',
-                        message: 'Record deleted',
-                        variant: 'success'
-                    })
-                );
-				this.getData();
-				//eval("$A.get('e.force:refreshView').fire();");
-            })
-            .catch(error => {
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error deleting record',
-                        message: error.body.message,
-                        variant: 'error'
-                    })
-                );
-            });
-			this.isModalOpen2 = false;
-			
-		}
+    openModal(event) { this.recordEditId = event.target.dataset.id; this.isModalOpen = true; }
+    closeModal()     { this.isModalOpen = false; }
+    submitDetails()  { this.isModalOpen = false; return refreshApex(this.getData()); }
+
+    deleteRecordModal(event) { this.recordDeleteId = event.target.dataset.id; this.isModalOpen2 = true; }
+    closeModal2()            { this.isModalOpen2 = false; }
+
+    @track error;
+    submitDetails2() {
+        deleteRecord(this.recordDeleteId)
+        .then(() => {
+            this.dispatchEvent(new ShowToastEvent({ title: 'Success', message: 'Record deleted', variant: 'success' }));
+            this.getData();
+        })
+        .catch(error => {
+            this.dispatchEvent(new ShowToastEvent({ title: 'Error deleting record', message: error.body.message, variant: 'error' }));
+        });
+        this.isModalOpen2 = false;
+    }
 }

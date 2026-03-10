@@ -33,6 +33,18 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>AO-01</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AO-02</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AO-03</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>B1</fullName>
             <default>false</default>
         </values>
@@ -131,6 +143,18 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>10</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>11</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>12</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>2</fullName>
             <default>false</default>
         </values>
@@ -156,6 +180,10 @@
         </values>
         <values>
             <fullName>8</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>9</fullName>
             <default>false</default>
         </values>
         <values>
@@ -388,6 +416,10 @@
     <picklistValues>
         <picklist>Type_of_Activity__c</picklist>
         <values>
+            <fullName>Bank</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Car Rentals</fullName>
             <default>false</default>
         </values>
@@ -396,7 +428,7 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>Co Working Office</fullName>
+            <fullName>Co Working</fullName>
             <default>false</default>
         </values>
         <values>
@@ -428,10 +460,6 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>Retail Bank</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Super Market</fullName>
             <default>false</default>
         </values>
@@ -441,65 +469,6 @@
         </values>
         <values>
             <fullName>Womens Salon</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
-        <picklist>Unit_No__c</picklist>
-        <values>
-            <fullName>101</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>201</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>301</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>401</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>501</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>601</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>701</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>801</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>901</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B1</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B2</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B3</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>G1</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>G1 %2B G2</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -525,6 +494,10 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>FV</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>WD</fullName>
             <default>false</default>
         </values>
@@ -532,15 +505,7 @@
     <picklistValues>
         <picklist>Zone__c</picklist>
         <values>
-            <fullName>A - The Canyon Avenue</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>B - The Western District</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>C - The Eastern District</fullName>
+            <fullName>ZONE A - THE FALCON WEST AVENUE</fullName>
             <default>false</default>
         </values>
     </picklistValues>

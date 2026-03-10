@@ -177,7 +177,7 @@
                 vertical-align:middle;
                 text-align:right;
             ">
-                <img src="{!$Resource.AlameriahDLogo}"
+                <img src="{!$Resource.AraqaHillsLogo}"
                     style="
                         height:60px;
                         width:auto;
@@ -449,7 +449,7 @@
     <br/>
     <div class="small-note">
         <span class="label">Note : &nbsp;Checks required at signature of this document :</span><br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1st Instalment Deposit:&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Booking Deposit:&nbsp;
         <apex:outputPanel rendered="{!hasPaymentSchedules}">
 
             <apex:variable var="firstSchedule" value="{!paymentScheduleRecords[0]}" />

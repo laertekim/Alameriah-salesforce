@@ -69,6 +69,9 @@ public class DealBuildingAggregator {
             when 'Retail' {
                 addRetailFields(db);
             }
+            when 'Special Leasing' {
+                addRetailFields(db);
+            }
             when 'Residential Property' {
                 addResidentialPropertyFields(db);
             }
@@ -100,6 +103,9 @@ public class DealBuildingAggregator {
                 applyOfficeFields(opp);
             }
             when 'Retail' {
+                applyRetailFields(opp);
+            }
+            when 'Special Leasing' {
                 applyRetailFields(opp);
             }
             when 'Residential Property' {

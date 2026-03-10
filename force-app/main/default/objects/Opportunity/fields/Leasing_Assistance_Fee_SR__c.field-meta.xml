@@ -5,7 +5,7 @@
 IF( RecordType.Name =&apos;Retail&apos;,Total_Annual_Rent__c*0.10,
 NULL))</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <inlineHelpText>10%	of 1st year rent, In favor of D&amp;B GROUP.</inlineHelpText>
+    <inlineHelpText>10% of 1st Year rent , In favor of Alameriah Development</inlineHelpText>
     <label>Leasing Assistance Fee (SR)</label>
     <precision>18</precision>
     <required>false</required>

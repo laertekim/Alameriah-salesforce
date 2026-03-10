@@ -83,10 +83,10 @@
                 <label>Car Rentals</label>
             </value>
             <value>
-                <fullName>Co Working Office</fullName>
+                <fullName>Co Working</fullName>
                 <color>#FF9900</color>
                 <default>false</default>
-                <label>Co Working Office</label>
+                <label>Co Working</label>
             </value>
             <value>
                 <fullName>Female GYM</fullName>
@@ -119,10 +119,10 @@
                 <label>Printing</label>
             </value>
             <value>
-                <fullName>Retail Bank</fullName>
+                <fullName>Bank</fullName>
                 <color>#3366FF</color>
                 <default>false</default>
-                <label>Retail Bank</label>
+                <label>Bank</label>
             </value>
             <value>
                 <fullName>Super Market</fullName>
@@ -183,6 +183,30 @@
                 <color>#3366FF</color>
                 <default>false</default>
                 <label>MEN&apos;S SPA</label>
+            </value>
+            <value>
+                <fullName>Food Hall</fullName>
+                <color>#FF6600</color>
+                <default>false</default>
+                <label>Food Hall</label>
+            </value>
+            <value>
+                <fullName>Automotive Store</fullName>
+                <color>#78C953</color>
+                <default>false</default>
+                <label>Automotive Store</label>
+            </value>
+            <value>
+                <fullName>Gym</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>Gym</label>
+            </value>
+            <value>
+                <fullName>Ice Cream</fullName>
+                <color>#33CC00</color>
+                <default>false</default>
+                <label>Ice Cream</label>
             </value>
         </valueSetDefinition>
     </valueSet>

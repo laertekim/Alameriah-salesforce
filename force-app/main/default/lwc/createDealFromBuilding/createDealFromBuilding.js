@@ -5,6 +5,7 @@ import createDealWithPaymentPlan from '@salesforce/apex/ControllerCreateDeal.cre
 import { CloseActionScreenEvent } from "lightning/actions";
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import OPPORTUNITY_OBJECT from '@salesforce/schema/Opportunity';
 import PAYMENTPLAN_OBJECT from '@salesforce/schema/PaymentPlan__c';
 import getAllPaymentPlans from '@salesforce/apex/ControllerCreateDeal.getAllPaymentPlans';
 
@@ -19,11 +20,30 @@ export default class CreateDealFromBuilding extends LightningElement {
     @track paymentPlans;
     @track paymentPlan;
     @track recordTypeName; // Store the record type name from the building
+    @track selectedRecordTypeName = 'Special Leasing'; // User-selected Opportunity record type
     @track paymentPlanRecordTypeId; // Store the matching PaymentPlan record type ID
+    opportunityRecordTypeInfos; // Store Opportunity record type infos for dropdown
 
     // Getter to check if this is a Residential Property
     get isResidentialProperty() {
-        return this.recordTypeName === 'Residential Property';
+        return this.selectedRecordTypeName === 'Residential Property';
+    }
+
+    get recordTypeOptions() {
+        if (!this.opportunityRecordTypeInfos) return [];
+        return Object.keys(this.opportunityRecordTypeInfos)
+            .filter(id => this.opportunityRecordTypeInfos[id].name !== 'Master')
+            .map(id => ({
+                label: this.opportunityRecordTypeInfos[id].name,
+                value: this.opportunityRecordTypeInfos[id].name
+            }));
+    }
+
+    @wire(getObjectInfo, { objectApiName: OPPORTUNITY_OBJECT })
+    opportunityObjectInfo({ error, data }) {
+        if (data) {
+            this.opportunityRecordTypeInfos = data.recordTypeInfos;
+        }
     }
 
     @wire(getRecord, {oppId: '$recordId'})
@@ -61,12 +81,11 @@ export default class CreateDealFromBuilding extends LightningElement {
         }
     }
 
-    // Method to find the PaymentPlan record type that matches the building's record type
+    // Method to find the PaymentPlan record type that matches the selected Opportunity record type
     findMatchingPaymentPlanRecordType() {
-        if (this.recordTypeName && this.paymentPlanRecordTypeInfos) {
-            // Find the PaymentPlan record type with the same name as the building's record type
+        if (this.selectedRecordTypeName && this.paymentPlanRecordTypeInfos) {
             const matchingRecordType = Object.keys(this.paymentPlanRecordTypeInfos).find(
-                (rti) => this.paymentPlanRecordTypeInfos[rti].name === this.recordTypeName
+                (rti) => this.paymentPlanRecordTypeInfos[rti].name === this.selectedRecordTypeName
             );
             
             if (matchingRecordType) {
@@ -126,6 +145,13 @@ export default class CreateDealFromBuilding extends LightningElement {
         this.paymentPlan = event.detail.value;
     }
 
+    handleChangeRecordType(event) {
+        this.selectedRecordTypeName = event.detail.value;
+        this.paymentPlan = undefined;
+        this.showPaymentPlan = false;
+        this.findMatchingPaymentPlanRecordType();
+    }
+
     handleChangeName(event) {
         this.name = event.detail.value;
     }
@@ -154,13 +180,13 @@ export default class CreateDealFromBuilding extends LightningElement {
                 if (this.isResidentialProperty && this.paymentPlan) {
                     // Use the method with payment plan for Residential Property
                     createDealWithPaymentPlan({
-                        buildId: this.recordId, 
+                        buildId: this.recordId,
                         name: this.name,
                         closeDate: this.closeDate,
                         stage: this.stage,
-                        recordTypeName: this.recordTypeName,
+                        recordTypeName: this.selectedRecordTypeName,
                         siteId: this.record.Center_Name__c,
-                        tenantsName1: this.tenantsName.toString(), 
+                        tenantsName1: this.tenantsName.toString(),
                         paymentPlanId: this.paymentPlan
                     }).then(() => {
                         this.dispatchEvent(new CloseActionScreenEvent());
@@ -172,11 +198,11 @@ export default class CreateDealFromBuilding extends LightningElement {
                 } else {
                     // Use the regular method for other record types
                     createDeal({
-                        buildId: this.recordId, 
+                        buildId: this.recordId,
                         name: this.name,
                         closeDate: this.closeDate,
                         stage: this.stage,
-                        recordTypeName: this.recordTypeName,
+                        recordTypeName: this.selectedRecordTypeName,
                         siteId: this.record.Center_Name__c,
                         tenantsName1: this.tenantsName.toString()
                     }).then(() => {

@@ -58,6 +58,12 @@
                 <default>false</default>
                 <label>Specialty Retail</label>
             </value>
+            <value>
+                <fullName>Hard Goods</fullName>
+                <color>#78C953</color>
+                <default>false</default>
+                <label>Hard Goods</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

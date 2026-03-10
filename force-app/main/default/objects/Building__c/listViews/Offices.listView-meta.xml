@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Offices</fullName>
+    <columns>NAME</columns>
+    <columns>Center_Name__c</columns>
+    <columns>Tower_No__c</columns>
+    <columns>TowerCode__c</columns>
+    <columns>Building_Type__c</columns>
+    <columns>Level__c</columns>
+    <columns>Unit_No__c</columns>
+    <columns>View__c</columns>
+    <columns>Total_Prices_Lobby_Areas__c</columns>
+    <columns>Total_Prices_Services_Areas__c</columns>
+    <columns>Total_Prices_Terraces_Areas__c</columns>
+    <columns>Gross_Leasable_Amount_SAR__c</columns>
+    <columns>Total_Selling_Price_SAR__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Building__c.Offices</value>
+    </filters>
+    <label>Offices</label>
+</ListView>
