@@ -428,6 +428,9 @@ public class DealBuildingService {
             when 'Retail' {
                 return nvl(building.Asking_Annual_Rent__c);
             }
+            when 'Special Leasing' {
+                return nvl(building.Asking_Annual_Rent__c);
+            }
             when 'Residential Property' {
                 return nvl(building.Total_Selling_Price_SAR__c);
             }

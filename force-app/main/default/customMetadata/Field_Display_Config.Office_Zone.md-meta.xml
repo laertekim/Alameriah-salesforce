@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>Column_Label__c</field>
-        <value xsi:type="xsd:string">Zona</value>
+        <value xsi:type="xsd:string">Zone</value>
     </values>
     <values>
         <field>Display_Order__c</field>
@@ -16,7 +16,7 @@
     </values>
     <values>
         <field>Is_Visible__c</field>
-        <value xsi:type="xsd:boolean">true</value>
+        <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>RecordType__c</field>

@@ -39,6 +39,11 @@
                 <default>false</default>
                 <label>BV</label>
             </value>
+            <value>
+                <fullName>FV</fullName>
+                <default>false</default>
+                <label>FV</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

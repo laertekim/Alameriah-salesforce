@@ -10,6 +10,26 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
+                <fullName>B1</fullName>
+                <default>false</default>
+                <label>B1</label>
+            </value>
+            <value>
+                <fullName>B2</fullName>
+                <default>false</default>
+                <label>B2</label>
+            </value>
+            <value>
+                <fullName>B3</fullName>
+                <default>false</default>
+                <label>B3</label>
+            </value>
+            <value>
+                <fullName>G</fullName>
+                <default>false</default>
+                <label>G</label>
+            </value>
+            <value>
                 <fullName>1</fullName>
                 <default>false</default>
                 <label>1</label>
@@ -50,24 +70,24 @@
                 <label>8</label>
             </value>
             <value>
-                <fullName>B1</fullName>
+                <fullName>9</fullName>
                 <default>false</default>
-                <label>B1</label>
+                <label>9</label>
             </value>
             <value>
-                <fullName>B2</fullName>
+                <fullName>10</fullName>
                 <default>false</default>
-                <label>B2</label>
+                <label>10</label>
             </value>
             <value>
-                <fullName>B3</fullName>
+                <fullName>11</fullName>
                 <default>false</default>
-                <label>B3</label>
+                <label>11</label>
             </value>
             <value>
-                <fullName>G</fullName>
+                <fullName>12</fullName>
                 <default>false</default>
-                <label>G</label>
+                <label>12</label>
             </value>
             <value>
                 <fullName>R</fullName>

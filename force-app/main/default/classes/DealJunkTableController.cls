@@ -2,7 +2,33 @@ public with sharing class DealJunkTableController {
 
     public class ObjectDTO {
         @AuraEnabled public Map<String, String> fieldAndValue;
-        
+
+    }
+
+    public class DealFieldConfigDTO {
+        @AuraEnabled public String recordTypeName;
+        @AuraEnabled public List<Field_Display_Config__mdt> columns;
+    }
+
+    // Single non-cacheable call: resolves the Opportunity's record type
+    // and returns the matching Field_Display_Config__mdt rows in one round-trip.
+    @AuraEnabled
+    public static DealFieldConfigDTO getFieldConfigForDeal(Id opportunityId) {
+        DealFieldConfigDTO dto = new DealFieldConfigDTO();
+        dto.columns = new List<Field_Display_Config__mdt>();
+        if (String.isBlank(opportunityId)) return dto;
+
+        List<Opportunity> opps = [SELECT RecordType.Name FROM Opportunity WHERE Id = :opportunityId LIMIT 1];
+        if (opps.isEmpty()) return dto;
+
+        dto.recordTypeName = (opps[0].RecordType != null) ? opps[0].RecordType.Name : null;
+        if (!String.isBlank(dto.recordTypeName)) {
+            dto.columns = [SELECT Field_API_Name__c, Column_Label__c, Display_Order__c
+                           FROM Field_Display_Config__mdt
+                           WHERE RecordType__c = :dto.recordTypeName AND Is_Visible__c = true
+                           ORDER BY Display_Order__c ASC NULLS LAST];
+        }
+        return dto;
     }
 
     @AuraEnabled(cacheable=true)
@@ -44,113 +70,130 @@ public with sharing class DealJunkTableController {
         return Database.query(query);
     }
 
-    @AuraEnabled
-    public static List<Building__c> getAllBuildings(
-        String dealRecordId,
-        String zone,
-        String leasePhases,
-        String towerName,
-        String buildingType,
-        String status,
-        String level,
-        String apartmentType,
-        String unitNo,
-        String viewValue,
-        String unitType,
-        String retailCategory,
-        String typeOfActivity
-    ) {
-        if (String.isBlank(dealRecordId)) {
-            return new List<Building__c>();
-        }
     
-        List<Opportunity> oppList = [
-            SELECT Id, Site__c, RecordType.Name
-            FROM Opportunity
-            WHERE Id = :dealRecordId
-            LIMIT 1
-        ];
+   @AuraEnabled
+public static List<Building__c> getAllBuildings(
+    String dealRecordId,
+    String zone,
+    String leasePhases,
+    String towerName,
+    String buildingType,
+    String status,
+    String level,
+    String apartmentType,
+    String unitNo,
+    String viewValue,
+    String unitType,
+    String retailCategory,
+    String typeOfActivity
+) {
+    if (String.isBlank(dealRecordId)) {
+        return new List<Building__c>();
+    }
+
+    List<Opportunity> oppList = [
+        SELECT Id, Site__c, RecordType.Name
+        FROM Opportunity
+        WHERE Id = :dealRecordId
+        LIMIT 1
+    ];
+
+    if (oppList.isEmpty()) {
+        return new List<Building__c>();
+    }
+
+    Opportunity opp = oppList[0];
+
+    String opportunityRecordType = (opp.RecordType != null) ? opp.RecordType.Name : null;
+    String siteName = opp.Site__c;
+
+    System.debug('@@ Opportunity RecordType: ' + opportunityRecordType);
+    System.debug('@@ Site/Center Name: ' + siteName);
+
+    List<String> conditions = new List<String>();
+    conditions.add('Name != NULL');
+
     
-        if (oppList.isEmpty()) {
-            return new List<Building__c>();
-        }
-    
-        Opportunity opp = oppList[0];
-    
-        // ✅ Extract to simple variables (fix for dynamic SOQL bind)
-        String recordTypeName = (opp.RecordType != null) ? opp.RecordType.Name : null;
-        String siteName = opp.Site__c;
-    
-        List<String> conditions = new List<String>();
-        conditions.add('Name != NULL');
-    
-        if (!String.isBlank(recordTypeName)) {
-            conditions.add('RecordType.Name = :recordTypeName');
-        }
-    
+    if (opportunityRecordType == 'Special Leasing') {
+       
         if (!String.isBlank(siteName)) {
             conditions.add('Center_Name__c = :siteName');
         }
-    
-        if (!String.isBlank(leasePhases)) {
-            conditions.add('Lease_Phases__c = :leasePhases');
+      
+    } else {
+        
+        if (!String.isBlank(opportunityRecordType)) {
+            conditions.add('RecordType.Name = :opportunityRecordType');
         }
-    
-        if (!String.isBlank(towerName)) {
-            conditions.add('Tower_Name__c = :towerName');
+        
+        if (!String.isBlank(siteName)) {
+            conditions.add('Center_Name__c = :siteName');
         }
-    
-        if (!String.isBlank(buildingType)) {
-            conditions.add('Building_Type__c = :buildingType');
-        }
-    
-        if (!String.isBlank(unitNo)) {
-            conditions.add('Unit_No__c = :unitNo');
-        }
-    
-        if (!String.isBlank(status)) {
-            conditions.add('Status__c = :status');
-        }
-    
-        if (!String.isBlank(level)) {
-            conditions.add('Level__c = :level');
-        }
-    
-        if (!String.isBlank(apartmentType)) {
-            conditions.add('Apartment_Type__c = :apartmentType');
-        }
-    
-        if (!String.isBlank(unitType)) {
-            conditions.add('Unit_Type__c = :unitType');
-        }
-    
-        if (!String.isBlank(retailCategory)) {
-            conditions.add('Retail_Category__c = :retailCategory');
-        }
-    
-        if (!String.isBlank(typeOfActivity)) {
-            conditions.add('Type_of_Activity__c = :typeOfActivity');
-        }
-    
-        if (!String.isBlank(viewValue)) {
-            conditions.add('View__c = :viewValue');
-        }
-    
-        if (!String.isBlank(zone)) {
-            conditions.add('Zone__c = :zone');
-        }
-    
-        Schema.DescribeSObjectResult describeResult = Building__c.SObjectType.getDescribe();
-        Map<String, Schema.SObjectField> fieldMap = describeResult.fields.getMap();
-        List<String> selectFields = new List<String>(fieldMap.keySet());
-        String query = 'SELECT ' + String.join(selectFields, ', ') + ' FROM Building__c';
-    
-        if (!conditions.isEmpty()) {
-            query += ' WHERE ' + String.join(conditions, ' AND ');
-        }
-    
-        return Database.query(query);
     }
+
+    // Resto dos filtros...
+    if (!String.isBlank(leasePhases)) {
+        conditions.add('Lease_Phases__c = :leasePhases');
+    }
+
+    if (!String.isBlank(towerName)) {
+        conditions.add('Tower_Name__c = :towerName');
+    }
+
+    if (!String.isBlank(buildingType)) {
+        conditions.add('Building_Type__c = :buildingType');
+    }
+
+    if (!String.isBlank(unitNo)) {
+        conditions.add('Unit_No__c = :unitNo');
+    }
+
+    if (!String.isBlank(status)) {
+        conditions.add('Status__c = :status');
+    }
+
+    if (!String.isBlank(level)) {
+        conditions.add('Level__c = :level');
+    }
+
+    if (!String.isBlank(apartmentType)) {
+        conditions.add('Apartment_Type__c = :apartmentType');
+    }
+
+    if (!String.isBlank(unitType)) {
+        conditions.add('Unit_Type__c = :unitType');
+    }
+
+    if (!String.isBlank(retailCategory)) {
+        conditions.add('Retail_Category__c = :retailCategory');
+    }
+
+    if (!String.isBlank(typeOfActivity)) {
+        conditions.add('Type_of_Activity__c = :typeOfActivity');
+    }
+
+    if (!String.isBlank(viewValue)) {
+        conditions.add('View__c = :viewValue');
+    }
+
+    if (!String.isBlank(zone)) {
+        conditions.add('Zone__c = :zone');
+    }
+
+    // Construir a query
+    Schema.DescribeSObjectResult describeResult = Building__c.SObjectType.getDescribe();
+    Map<String, Schema.SObjectField> fieldMap = describeResult.fields.getMap();
+    List<String> selectFields = new List<String>(fieldMap.keySet());
+    String query = 'SELECT ' + String.join(selectFields, ', ') + ' FROM Building__c';
+
+    if (!conditions.isEmpty()) {
+        query += ' WHERE ' + String.join(conditions, ' AND ');
+    }
+
+    System.debug('@@ Final Query: ' + query);
+    System.debug('@@ Query result: ' + Database.query(query));    
+    return Database.query(query);
+}
     
     @AuraEnabled
     public static List<Deal_Building__c> getRelatedDealBuilding(String dealRecordId) {

@@ -129,6 +129,21 @@
                 <default>false</default>
                 <label>R2</label>
             </value>
+            <value>
+                <fullName>AO-01</fullName>
+                <default>false</default>
+                <label>AO-01</label>
+            </value>
+            <value>
+                <fullName>AO-02</fullName>
+                <default>false</default>
+                <label>AO-02</label>
+            </value>
+            <value>
+                <fullName>AO-03</fullName>
+                <default>false</default>
+                <label>AO-03</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

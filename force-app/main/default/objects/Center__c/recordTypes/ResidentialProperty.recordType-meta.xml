@@ -6,8 +6,20 @@
     <picklistValues>
         <picklist>Unit_Record_Type__c</picklist>
         <values>
+            <fullName>Offices</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Residential</fullName>
             <default>true</default>
+        </values>
+        <values>
+            <fullName>Retail</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Standard Retail</fullName>
+            <default>false</default>
         </values>
     </picklistValues>
 </RecordType>
