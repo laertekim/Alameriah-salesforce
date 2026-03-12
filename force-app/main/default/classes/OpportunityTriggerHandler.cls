@@ -247,7 +247,7 @@ public class OpportunityTriggerHandler {
                     paymentSchedule.CurrencyIsoCode = opp.CurrencyIsoCode;
                     paymentSchedule.Deal__c = opp.Id;
                     paymentSchedule.Description__c = paymentPlanLine.Description__c;
-                    paymentSchedule.Escalation__c = 1;
+                    paymentSchedule.Escalation__c = paymentPlanLine.Percentage__c;
                     paymentSchedule.Payment_Status__c = 'Not Paid';
                     paymentSchedule.Percentage__c = paymentPlanLine.Percentage__c;
                     paymentSchedule.Year__c = String.valueOf(Date.today().year());
@@ -384,7 +384,7 @@ public class OpportunityTriggerHandler {
                 schedule.CurrencyIsoCode = opp.CurrencyIsoCode;
                 schedule.Deal__c = opp.Id;
                 schedule.Description__c = line.Description__c;
-                schedule.Escalation__c = 1;
+                schedule.Escalation__c = line.Percentage__c;
                 schedule.Payment_Status__c = 'Not Paid';
                 schedule.Percentage__c = line.Percentage__c;
                 schedule.Year__c = String.valueOf(Date.today().year());
